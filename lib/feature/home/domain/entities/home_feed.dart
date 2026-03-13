@@ -11,4 +11,16 @@ class HomeFeed {
     required this.categories,
     required this.places,
   });
+
+  HomeFeed copyWith({
+    String? city,
+    List<PlaceCategory>? categories,
+    List<PlaceItem>? places,
+  }) {
+    return HomeFeed(
+      city: city ?? this.city,
+      categories: categories ?? this.categories,
+      places: places ?? this.places,
+    );
+  }
 }

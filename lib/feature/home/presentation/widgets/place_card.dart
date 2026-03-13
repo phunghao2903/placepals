@@ -5,10 +5,12 @@ import '../../domain/entities/place_item.dart';
 
 class PlaceCard extends StatelessWidget {
   final PlaceItem place;
+  final VoidCallback? onToggleFavorite;
 
   const PlaceCard({
     super.key,
     required this.place,
+    this.onToggleFavorite,
   });
 
   @override
@@ -22,7 +24,10 @@ class PlaceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _PlaceCardImage(place: place),
+          _PlaceCardImage(
+            place: place,
+            onToggleFavorite: onToggleFavorite,
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 8, 16, 12),
             child: Column(
@@ -42,9 +47,11 @@ class PlaceCard extends StatelessWidget {
 
 class _PlaceCardImage extends StatelessWidget {
   final PlaceItem place;
+  final VoidCallback? onToggleFavorite;
 
   const _PlaceCardImage({
     required this.place,
+    this.onToggleFavorite,
   });
 
   @override
@@ -68,20 +75,27 @@ class _PlaceCardImage extends StatelessWidget {
             Positioned(
               top: 12,
               left: 14,
-              child: Container(
-                width: 35,
-                height: 25,
-                decoration: BoxDecoration(
-                  color: const Color(0x662D2D2D),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  place.isFavorite
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  size: 16,
-                  color: Colors.white,
+              child: Material(
+                color: place.isFavorite
+                    ? ComponentColors.favoriteActiveBackground
+                    : ComponentColors.favoriteDefaultBackground,
+                borderRadius: BorderRadius.circular(25),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: onToggleFavorite,
+                  child: SizedBox(
+                    width: 35,
+                    height: 25,
+                    child: Icon(
+                      place.isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      size: 18,
+                      color: place.isFavorite
+                          ? ComponentColors.favoriteActiveIcon
+                          : ComponentColors.favoriteDefaultIcon,
+                    ),
+                  ),
                 ),
               ),
             ),

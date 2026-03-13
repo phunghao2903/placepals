@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../core/core.dart';
 
 class BottomNavItem extends StatelessWidget {
-  final IconData icon;
+  final String iconAsset;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   const BottomNavItem({
     super.key,
-    required this.icon,
+    required this.iconAsset,
     required this.label,
     required this.isActive,
     required this.onTap,
@@ -18,29 +18,44 @@ class BottomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = isActive ? AppColors.primary : AppColors.textSecondary;
+    final Color iconColor = isActive
+        ? AppSemanticColors.primary
+        : SemanticIconColors.tertiary;
+    final Color textColor = isActive
+        ? AppSemanticColors.primary
+        : SemanticTextColors.tertiary;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: onTap,
-      child: SizedBox(
-        width: 60,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(
-              icon,
-              size: 22,
-              color: color,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppTextStyles.caption.copyWith(
-                color: color,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: SizedBox(
+          width: 60,
+          height: 44,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ImageIcon(
+                AssetImage(iconAsset),
+                size: 24,
+                color: iconColor,
               ),
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: AppTextStyles.caption.copyWith(
+                  color: textColor,
+                  height: 1,
+                  fontSize: 13,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../search/presentation/pages/search_page.dart';
 import '../../domain/entities/home_feed.dart';
+import '../../domain/entities/place_category.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/place_card.dart';
@@ -67,33 +70,46 @@ class _HomeContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _HomeTopHeader(city: feed.city),
-          const SizedBox(height: 26),
+          const SizedBox(height: 8),
           Text(
             'Explore Nearby',
             style: AppTextStyles.heading4.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
-          Container(
-            height: 47,
-            padding: const EdgeInsets.symmetric(horizontal: 11),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceSoft,
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
               borderRadius: BorderRadius.circular(30),
-              border: Border.all(
-                color: AppColors.surfaceMuted,
-                width: 1.5,
-              ),
-            ),
-            child: Row(
-              children: <Widget>[
-                const Icon(
-                  Icons.search_rounded,
-                  color: AppColors.textPrimary,
-                  size: 22,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SearchPage(),
+                  ),
+                );
+              },
+              child: Container(
+                height: 47,
+                padding: const EdgeInsets.symmetric(horizontal: 11),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceSoft,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: AppColors.surfaceMuted, width: 1.5),
                 ),
-                const SizedBox(width: 16),
-                Text('Search for cafes,parks...', style: AppTextStyles.caption),
-              ],
+                child: Row(
+                  children: <Widget>[
+                    const Icon(
+                      Icons.search_rounded,
+                      color: AppColors.textPrimary,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      'Search for cafes,parks...',
+                      style: AppTextStyles.caption,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -104,19 +120,31 @@ class _HomeContent extends StatelessWidget {
               itemCount: feed.categories.length,
               separatorBuilder: (_, _) => const SizedBox(width: 15),
               itemBuilder: (context, index) {
-                final category = feed.categories[index];
+                final PlaceCategory category = feed.categories[index];
                 return CategoryChip(
                   label: category.label,
                   isSelected: category.isSelected,
+                  onTap: () {
+                    context.read<HomeBloc>().add(
+                      HomeCategorySelected(categoryId: category.id),
+                    );
+                  },
                 );
               },
             ),
           ),
           const SizedBox(height: 20),
-          ...List<Widget>.generate(
-            feed.places.length,
-            (index) => PlaceCard(place: feed.places[index]),
-          ),
+          ...List<Widget>.generate(feed.places.length, (index) {
+            final place = feed.places[index];
+            return PlaceCard(
+              place: place,
+              onToggleFavorite: () {
+                context.read<HomeBloc>().add(
+                  HomeFavoriteToggled(placeId: place.id),
+                );
+              },
+            );
+          }),
         ],
       ),
     );
@@ -147,13 +175,21 @@ class _HomeTopHeader extends StatelessWidget {
             ),
           ],
         ),
-        const Row(
+        Row(
           children: <Widget>[
             _CalendarActionButton(),
-            SizedBox(width: 11),
-            _ProfileButton(),
-            SizedBox(width: 11),
-            _NotificationActionButton(),
+            const SizedBox(width: 11),
+            _ProfileButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ProfilePage(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 11),
+            const _NotificationActionButton(),
           ],
         ),
       ],
@@ -169,29 +205,37 @@ class _CalendarActionButton extends StatelessWidget {
     return SizedBox(
       width: 40,
       height: 40,
-      child: Image.asset(
-        'assets/icons/calendar.png',
-        fit: BoxFit.contain,
-      ),
+      child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
     );
   }
 }
 
 class _ProfileButton extends StatelessWidget {
-  const _ProfileButton();
+  final VoidCallback onTap;
+
+  const _ProfileButton({
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        color: Color(0xFFC4C4C4),
-        shape: BoxShape.circle,
-      ),
-      padding: const EdgeInsets.all(6),
-      child: ClipOval(
-        child: Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            color: Color(0xFFC4C4C4),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(6),
+          child: ClipOval(
+            child: Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
+          ),
+        ),
       ),
     );
   }

@@ -13,6 +13,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required this.getHomeFeedUseCase,
   }) : super(const HomeState()) {
     on<HomeStarted>(_onStarted);
+    on<HomeCategorySelected>(_onCategorySelected);
+    on<HomeFavoriteToggled>(_onFavoriteToggled);
   }
 
   Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
@@ -35,5 +37,47 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     }
+  }
+
+  void _onCategorySelected(
+    HomeCategorySelected event,
+    Emitter<HomeState> emit,
+  ) {
+    final currentFeed = state.feed;
+    if (currentFeed == null) return;
+
+    final updatedCategories = currentFeed.categories
+        .map(
+          (c) => c.copyWith(isSelected: c.id == event.categoryId),
+        )
+        .toList(growable: false);
+
+    emit(
+      state.copyWith(
+        feed: currentFeed.copyWith(categories: updatedCategories),
+      ),
+    );
+  }
+
+  void _onFavoriteToggled(
+    HomeFavoriteToggled event,
+    Emitter<HomeState> emit,
+  ) {
+    final currentFeed = state.feed;
+    if (currentFeed == null) return;
+
+    final updatedPlaces = currentFeed.places
+        .map(
+          (p) => p.id == event.placeId
+              ? p.copyWith(isFavorite: !p.isFavorite)
+              : p,
+        )
+        .toList(growable: false);
+
+    emit(
+      state.copyWith(
+        feed: currentFeed.copyWith(places: updatedPlaces),
+      ),
+    );
   }
 }

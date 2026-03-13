@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../ai_recommendation/presentation/pages/ai_recommendation_page.dart';
+import '../../../create_moment/presentation/pages/create_moment_page.dart';
 import '../../../home/presentation/pages/home_page.dart';
+import '../../../map/presentation/pages/map_page.dart';
+import '../../../sos/presentation/pages/sos_page.dart';
 import '../bloc/bottom_appbar_bloc.dart';
 import '../widgets/bottom_nav_item.dart';
 
@@ -14,6 +18,7 @@ class BottomAppBarPage extends StatefulWidget {
 }
 
 class _BottomAppBarPageState extends State<BottomAppBarPage> {
+  static const double _bottomBarHeight = 82;
   late final List<Widget> _pages;
 
   @override
@@ -21,41 +26,85 @@ class _BottomAppBarPageState extends State<BottomAppBarPage> {
     super.initState();
     _pages = const <Widget>[
       HomePage(),
+      MapPage(),
       _BottomPlaceholderPage(title: 'Saved'),
-      _BottomPlaceholderPage(title: 'SOS'),
-      _BottomPlaceholderPage(title: 'Profile'),
+      SosPage(),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<BottomAppBarBloc>(
-      create: (_) => getIt<BottomAppBarBloc>(),
+      create: (_) => BottomAppBarBloc(),
       child: BlocBuilder<BottomAppBarBloc, BottomAppBarState>(
         builder: (context, state) {
-          return Scaffold(
-            extendBody: true,
-            backgroundColor: AppColors.background,
-            body: IndexedStack(
-              index: state.currentIndex,
-              children: _pages,
-            ),
-            floatingActionButton: _CenterAddButton(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Add action is not connected yet.'),
-                  ),
-                );
-              },
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            bottomNavigationBar: _PlacePalsBottomAppBar(
-              currentIndex: state.currentIndex,
-            ),
+          return Stack(
+            children: <Widget>[
+              Scaffold(
+                extendBody: true,
+                backgroundColor: AppColors.background,
+                body: IndexedStack(
+                  index: state.currentIndex,
+                  children: _pages,
+                ),
+                floatingActionButton: _CenterAddButton(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CreateMomentPage(),
+                      ),
+                    );
+                  },
+                ),
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                bottomNavigationBar: _PlacePalsBottomAppBar(
+                  currentIndex: state.currentIndex,
+                ),
+              ),
+              Positioned(
+                right: 18,
+                bottom: _bottomBarHeight + MediaQuery.paddingOf(context).bottom,
+                child: _AiAssistantButton(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AiRecommendationPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _AiAssistantButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _AiAssistantButton({
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 64,
+          height: 64,
+          child: Image.asset(
+            'assets/images/ai_button.png',
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
@@ -72,55 +121,68 @@ class _PlacePalsBottomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomAppBar(
       elevation: 0,
-      height: 88,
-      color: AppColors.surface,
+      height: _BottomAppBarPageState._bottomBarHeight,
+      color: AppSemanticColors.secondary,
       shape: const CircularNotchedRectangle(),
-      notchMargin: 10,
+      notchMargin: 4,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 18),
+        padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            BottomNavItem(
-              icon: Icons.home_rounded,
-              label: 'Home',
-              isActive: currentIndex == 0,
-              onTap: () {
-                context.read<BottomAppBarBloc>().add(
-                  const BottomAppBarTabChanged(index: 0),
-                );
-              },
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  BottomNavItem(
+                    iconAsset: 'assets/icons/home.png',
+                    label: 'Home',
+                    isActive: currentIndex == 0,
+                    onTap: () {
+                      context.read<BottomAppBarBloc>().add(
+                        const BottomAppBarTabChanged(index: 0),
+                      );
+                    },
+                  ),
+                  BottomNavItem(
+                    iconAsset: 'assets/icons/explore.png',
+                    label: 'Explore',
+                    isActive: currentIndex == 1,
+                    onTap: () {
+                      context.read<BottomAppBarBloc>().add(
+                        const BottomAppBarTabChanged(index: 1),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-            BottomNavItem(
-              icon: Icons.bookmark_border_rounded,
-              label: 'Saved',
-              isActive: currentIndex == 1,
-              onTap: () {
-                context.read<BottomAppBarBloc>().add(
-                  const BottomAppBarTabChanged(index: 1),
-                );
-              },
-            ),
-            const SizedBox(width: 48),
-            BottomNavItem(
-              icon: Icons.sos_outlined,
-              label: 'SOS',
-              isActive: currentIndex == 2,
-              onTap: () {
-                context.read<BottomAppBarBloc>().add(
-                  const BottomAppBarTabChanged(index: 2),
-                );
-              },
-            ),
-            BottomNavItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              isActive: currentIndex == 3,
-              onTap: () {
-                context.read<BottomAppBarBloc>().add(
-                  const BottomAppBarTabChanged(index: 3),
-                );
-              },
+            const SizedBox(width: 56),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  BottomNavItem(
+                    iconAsset: 'assets/icons/saved.png',
+                    label: 'Saved',
+                    isActive: currentIndex == 2,
+                    onTap: () {
+                      context.read<BottomAppBarBloc>().add(
+                        const BottomAppBarTabChanged(index: 2),
+                      );
+                    },
+                  ),
+                  BottomNavItem(
+                    iconAsset: 'assets/icons/sos.png',
+                    label: 'SOS',
+                    isActive: currentIndex == 3,
+                    onTap: () {
+                      context.read<BottomAppBarBloc>().add(
+                        const BottomAppBarTabChanged(index: 3),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -138,12 +200,29 @@ class _CenterAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      elevation: 0,
-      backgroundColor: AppColors.primary,
-      foregroundColor: Colors.white,
-      onPressed: onTap,
-      child: const Icon(Icons.add_rounded, size: 30),
+    return Material(
+      color: AppSemanticColors.primary,
+      shape: const CircleBorder(),
+      elevation: 6,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 54,
+          height: 54,
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(0, -0.5),
+              child: const Icon(
+                Icons.add_rounded,
+                size: 30,
+                color: SemanticTextColors.onBrand,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
