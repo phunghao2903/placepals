@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:placepals/core/core.dart';
+import 'package:placepals/feature/home/presentation/bloc/home_bloc.dart';
+import 'package:placepals/feature/map/presentation/bloc/map_bloc.dart';
+import 'package:placepals/feature/sos/presentation/bloc/sos_bloc.dart';
 import 'package:placepals/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await getIt.reset();
+    await configureDependencies();
+  });
+
+  tearDownAll(() async {
+    await getIt.reset();
+  });
+
+  test('configureDependencies registers required feature blocs', () {
+    expect(getIt.isRegistered<HomeBloc>(), isTrue);
+    expect(getIt.isRegistered<MapBloc>(), isTrue);
+    expect(getIt.isRegistered<SosBloc>(), isTrue);
+  });
+
+  testWidgets('MyApp renders the primary navigation shell', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Explore'), findsOneWidget);
+    expect(find.text('Saved'), findsOneWidget);
+    expect(find.text('SOS'), findsOneWidget);
   });
 }

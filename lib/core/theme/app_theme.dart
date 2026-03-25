@@ -4,13 +4,13 @@ import 'app_text_styles.dart';
 
 class AppTheme {
   static ThemeData light() {
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+    ).copyWith(surface: AppColors.surface);
+
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
-        surface: AppColors.surface,
-        background: AppColors.background,
-      ),
+      colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.background,
       textTheme: TextTheme(
         titleLarge: AppTextStyles.heading4,

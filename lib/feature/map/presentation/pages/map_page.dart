@@ -69,10 +69,7 @@ class _MapViewState extends State<_MapView> {
                 return const SizedBox.shrink();
               }
 
-              return _MapContent(
-                feed: feed,
-                controller: _searchController,
-              );
+              return _MapContent(feed: feed, controller: _searchController);
           }
         },
       ),
@@ -84,10 +81,7 @@ class _MapContent extends StatelessWidget {
   final MapFeed feed;
   final TextEditingController controller;
 
-  const _MapContent({
-    required this.feed,
-    required this.controller,
-  });
+  const _MapContent({required this.feed, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -96,10 +90,7 @@ class _MapContent extends StatelessWidget {
         return Stack(
           children: <Widget>[
             Positioned.fill(
-              child: Image.asset(
-                'assets/images/map.png',
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset('assets/images/map.png', fit: BoxFit.cover),
             ),
             _MapMarkerLayer(
               width: constraints.maxWidth,
@@ -127,8 +118,8 @@ class _MapContent extends StatelessWidget {
                       hintText: feed.searchHint,
                       onChanged: (query) {
                         context.read<MapBloc>().add(
-                              MapSearchChanged(query: query),
-                            );
+                          MapSearchChanged(query: query),
+                        );
                       },
                     ),
                     const SizedBox(height: 15),
@@ -159,10 +150,10 @@ class _MapContent extends StatelessWidget {
                                       isSelected: filter.isSelected,
                                       onTap: () {
                                         context.read<MapBloc>().add(
-                                              MapFriendFilterSelected(
-                                                filterId: filter.id,
-                                              ),
-                                            );
+                                          MapFriendFilterSelected(
+                                            filterId: filter.id,
+                                          ),
+                                        );
                                       },
                                     ),
                                   ),
@@ -187,10 +178,8 @@ class _MapContent extends StatelessWidget {
                             isSelected: category.isSelected,
                             onTap: () {
                               context.read<MapBloc>().add(
-                                    MapCategorySelected(
-                                      categoryId: category.id,
-                                    ),
-                                  );
+                                MapCategorySelected(categoryId: category.id),
+                              );
                             },
                           );
                         },
@@ -228,10 +217,7 @@ class _MapMarkerLayer extends StatelessWidget {
           Positioned(
             left: width * marker.avatarLeftRatio!,
             top: height * marker.avatarTopRatio!,
-            child: _FriendAvatar(
-              size: 30,
-              tintHex: marker.avatarTintHex,
-            ),
+            child: _FriendAvatar(size: 30, tintHex: marker.avatarTintHex),
           ),
         );
       }
@@ -247,9 +233,7 @@ class _MapMarkerLayer extends StatelessWidget {
       }
     }
 
-    return Stack(
-      children: markerChildren,
-    );
+    return Stack(children: markerChildren);
   }
 }
 
@@ -257,10 +241,7 @@ class _FriendAvatar extends StatelessWidget {
   final double size;
   final int? tintHex;
 
-  const _FriendAvatar({
-    required this.size,
-    this.tintHex,
-  });
+  const _FriendAvatar({required this.size, this.tintHex});
 
   @override
   Widget build(BuildContext context) {
@@ -271,26 +252,17 @@ class _FriendAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.surface,
-          width: 2,
-        ),
+        border: Border.all(color: AppColors.surface, width: 2),
       ),
       child: ClipOval(
         child: ColorFiltered(
           colorFilter: tintHex == null
-              ? const ColorFilter.mode(
-                  Colors.transparent,
-                  BlendMode.dst,
-                )
+              ? const ColorFilter.mode(Colors.transparent, BlendMode.dst)
               : ColorFilter.mode(
-                  Color(tintHex!).withOpacity(0.28),
+                  Color(tintHex!).withValues(alpha: 0.28),
                   BlendMode.srcATop,
                 ),
-          child: Image.asset(
-            'assets/images/profile.jpg',
-            fit: BoxFit.cover,
-          ),
+          child: Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
         ),
       ),
     );

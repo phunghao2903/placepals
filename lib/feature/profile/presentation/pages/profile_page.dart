@@ -65,9 +65,7 @@ class _ProfileContent extends StatelessWidget {
 
   final ProfileFeed feed;
 
-  const _ProfileContent({
-    required this.feed,
-  });
+  const _ProfileContent({required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -169,8 +167,8 @@ class _ProfileContent extends StatelessWidget {
                           unselectedFontWeight: FontWeight.w700,
                           onTap: () {
                             context.read<ProfileBloc>().add(
-                                  ProfileTabSelected(tabId: tab.id),
-                                );
+                              ProfileTabSelected(tabId: tab.id),
+                            );
                           },
                         ),
                       ),
@@ -221,8 +219,8 @@ class _ProfileContent extends StatelessWidget {
                         unselectedBorderColor: const Color(0xFFE8E0DF),
                         onTap: () {
                           context.read<ProfileBloc>().add(
-                                ProfileCityFilterSelected(filterId: filter.id),
-                              );
+                            ProfileCityFilterSelected(filterId: filter.id),
+                          );
                         },
                       );
                     },
@@ -272,8 +270,8 @@ class _ProfileContent extends StatelessWidget {
                         selectedFontWeight: FontWeight.w600,
                         onTap: () {
                           context.read<ProfileBloc>().add(
-                                ProfileSortSelected(sortId: sort.id),
-                              );
+                            ProfileSortSelected(sortId: sort.id),
+                          );
                         },
                       );
                     },
@@ -295,10 +293,10 @@ class _ProfileContent extends StatelessWidget {
                       isSelected: isGrid,
                       onTap: () {
                         context.read<ProfileBloc>().add(
-                              const ProfileViewModeChanged(
-                                viewMode: ProfileViewMode.grid,
-                              ),
-                            );
+                          const ProfileViewModeChanged(
+                            viewMode: ProfileViewMode.grid,
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(width: 4),
@@ -307,10 +305,10 @@ class _ProfileContent extends StatelessWidget {
                       isSelected: !isGrid,
                       onTap: () {
                         context.read<ProfileBloc>().add(
-                              const ProfileViewModeChanged(
-                                viewMode: ProfileViewMode.list,
-                              ),
-                            );
+                          const ProfileViewModeChanged(
+                            viewMode: ProfileViewMode.list,
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -345,10 +343,7 @@ class _ProfileContent extends StatelessWidget {
                       padding: EdgeInsets.only(
                         bottom: place == visiblePlaces.last ? 0 : 12,
                       ),
-                      child: ProfilePlaceTile(
-                        place: place,
-                        compact: true,
-                      ),
+                      child: ProfilePlaceTile(place: place, compact: true),
                     ),
                   )
                   .toList(growable: false),
@@ -407,9 +402,7 @@ class _ProfileContent extends StatelessWidget {
 class _ProfileHeader extends StatelessWidget {
   final String title;
 
-  const _ProfileHeader({
-    required this.title,
-  });
+  const _ProfileHeader({required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -422,15 +415,10 @@ class _ProfileHeader extends StatelessWidget {
         const Spacer(),
         Text(
           title,
-          style: AppTextStyles.heading3.copyWith(
-            color: AppColors.textPrimary,
-          ),
+          style: AppTextStyles.heading3.copyWith(color: AppColors.textPrimary),
         ),
         const Spacer(),
-        _CircleIconButton(
-          icon: Icons.settings_outlined,
-          onTap: () {},
-        ),
+        _CircleIconButton(icon: Icons.settings_outlined, onTap: () {}),
       ],
     );
   }
@@ -439,9 +427,7 @@ class _ProfileHeader extends StatelessWidget {
 class _ProfileHero extends StatelessWidget {
   final ProfileUser user;
 
-  const _ProfileHero({
-    required this.user,
-  });
+  const _ProfileHero({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -504,7 +490,7 @@ class _ProfileHero extends StatelessWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -537,10 +523,7 @@ class _ProfileHero extends StatelessWidget {
                     ],
                   ),
                   child: ClipOval(
-                    child: Image.asset(
-                      user.avatarPath,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset(user.avatarPath, fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -640,18 +623,9 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Text(
-          title,
-          style: AppTextStyles.heading3.copyWith(
-            color: titleColor,
-          ),
-        ),
+        Text(title, style: AppTextStyles.heading3.copyWith(color: titleColor)),
         const Spacer(),
-        Icon(
-          Icons.chevron_right_rounded,
-          size: 20,
-          color: trailingColor,
-        ),
+        Icon(Icons.chevron_right_rounded, size: 20, color: trailingColor),
       ],
     );
   }
@@ -660,40 +634,32 @@ class _SectionHeader extends StatelessWidget {
 class _InsightCard extends StatelessWidget {
   final ProfileInsight insight;
 
-  const _InsightCard({
-    required this.insight,
-  });
+  const _InsightCard({required this.insight});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            insight.label,
-            style: AppTextStyles.caption.copyWith(
-              color: Colors.white,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Text(
+          insight.label,
+          style: AppTextStyles.caption.copyWith(color: Colors.white),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          insight.value,
+          style: AppTextStyles.heading5.copyWith(
+            color: Colors.white,
+            fontSize: 24,
           ),
-          const SizedBox(height: 18),
-          Text(
-            insight.value,
-            style: AppTextStyles.heading5.copyWith(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            insight.delta,
-            style: AppTextStyles.caption.copyWith(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          insight.delta,
+          style: AppTextStyles.caption.copyWith(color: Colors.white),
+        ),
+      ],
     );
   }
 }
@@ -737,10 +703,7 @@ class _CircleIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _CircleIconButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _CircleIconButton({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -753,11 +716,7 @@ class _CircleIconButton extends StatelessWidget {
         child: SizedBox(
           width: 40,
           height: 40,
-          child: Icon(
-            icon,
-            size: 20,
-            color: AppColors.textPrimary,
-          ),
+          child: Icon(icon, size: 20, color: AppColors.textPrimary),
         ),
       ),
     );

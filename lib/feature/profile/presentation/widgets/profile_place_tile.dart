@@ -42,10 +42,7 @@ class ProfilePlaceTile extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-              child: Image.asset(
-                place.imagePath,
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(place.imagePath, fit: BoxFit.cover),
             ),
             Positioned.fill(
               child: DecoratedBox(
@@ -131,7 +128,7 @@ class ProfilePlaceTile extends StatelessWidget {
                       Text(
                         '${place.views}',
                         style: AppTextStyles.caption.copyWith(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -144,7 +141,7 @@ class ProfilePlaceTile extends StatelessWidget {
                       Text(
                         '${place.likes}',
                         style: AppTextStyles.caption.copyWith(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ],
@@ -162,9 +159,7 @@ class ProfilePlaceTile extends StatelessWidget {
 class _ProfilePlaceListTile extends StatelessWidget {
   final ProfilePlaceItem place;
 
-  const _ProfilePlaceListTile({
-    required this.place,
-  });
+  const _ProfilePlaceListTile({required this.place});
 
   @override
   Widget build(BuildContext context) {
@@ -231,10 +226,7 @@ class _ProfilePlaceListTile extends StatelessWidget {
                       color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      '${place.views}',
-                      style: AppTextStyles.caption,
-                    ),
+                    Text('${place.views}', style: AppTextStyles.caption),
                     const SizedBox(width: 12),
                     const Icon(
                       Icons.favorite_outline_rounded,
@@ -242,10 +234,7 @@ class _ProfilePlaceListTile extends StatelessWidget {
                       color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      '${place.likes}',
-                      style: AppTextStyles.caption,
-                    ),
+                    Text('${place.likes}', style: AppTextStyles.caption),
                   ],
                 ),
               ],
@@ -280,10 +269,7 @@ class _InfoPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (leading != null) ...<Widget>[
-            leading!,
-            const SizedBox(width: 4),
-          ],
+          if (leading != null) ...<Widget>[leading!, const SizedBox(width: 4)],
           Text(
             label,
             style: AppTextStyles.caption.copyWith(
