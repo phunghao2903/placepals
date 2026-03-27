@@ -79,8 +79,8 @@ class _SplashArtboard extends StatelessWidget {
     return Stack(
       children: <Widget>[
         const Positioned(
-          left: 5,
-          top: 223,
+          left: 37,
+          top: 258,
           child: _SplashGlow(),
         ),
         const Positioned(
@@ -94,8 +94,8 @@ class _SplashArtboard extends StatelessWidget {
           child: _SplashBrandBlock(),
         ),
         const Positioned(
-          left: 54,
-          top: 629,
+          left: 72,
+          top: 655,
           child: _SplashIllustration(),
         ),
       ],
@@ -110,43 +110,20 @@ class _SplashGlow extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: SizedBox(
-        width: 384,
-        height: 384,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              width: 384,
-              height: 384,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    blurRadius: 90,
-                    spreadRadius: 30,
-                  ),
-                ],
-              ),
+        width: 320,
+        height: 320,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: <Color>[
+                Colors.white.withValues(alpha: 0.14),
+                Colors.white.withValues(alpha: 0.06),
+                Colors.transparent,
+              ],
+              stops: <double>[0.0, 0.52, 1.0],
             ),
-            Positioned(
-              top: 28,
-              left: 0,
-              child: Container(
-                width: 384,
-                height: 384,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      blurRadius: 90,
-                      spreadRadius: 24,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -159,29 +136,29 @@ class _SplashBrandBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 240,
-      height: 290,
+      width: 232,
+      height: 280,
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
           const Positioned(
             top: 0,
             child: AuthLogo(
-              size: 112,
+              size: 104,
               showTitle: false,
               backgroundColor: Color(0xFFF4F1F0),
               iconColor: AppColors.primary,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: Color(0x40000000),
-                  blurRadius: 50,
+                  blurRadius: 36,
                   offset: Offset(0, 25),
                 ),
               ],
             ),
           ),
           Positioned(
-            top: 171,
+            top: 160,
             child: Container(
               width: 100,
               height: 15,
@@ -192,11 +169,11 @@ class _SplashBrandBlock extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 196,
+            top: 184,
             child: Text(
               'PlacePals',
               style: AppTextStyles.heading1.copyWith(
-                fontSize: 40,
+                fontSize: 38,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFFF4F1F0),
                 height: 1,
@@ -211,7 +188,7 @@ class _SplashBrandBlock extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 250,
+            top: 236,
             child: Text(
               'Share places, create memories',
               style: AppTextStyles.body1.copyWith(
@@ -222,8 +199,8 @@ class _SplashBrandBlock extends StatelessWidget {
             ),
           ),
           const Positioned(
-            top: 236,
-            left: -72,
+            top: 224,
+            left: -76,
             child: _SplashIndicator(),
           ),
         ],
@@ -324,10 +301,11 @@ class _SplashIllustration extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/images/group_30.png',
-      width: 286,
-      height: 212,
+      width: 250,
+      height: 186,
       fit: BoxFit.contain,
       filterQuality: FilterQuality.high,
     );
   }
 }
+

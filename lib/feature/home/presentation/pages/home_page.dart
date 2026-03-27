@@ -5,6 +5,7 @@ import '../../../../core/core.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
+import '../../../signup_signin/presentation/pages/notifications_page.dart';
 import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
@@ -286,3 +287,4 @@ class _NotificationActionButton extends StatelessWidget {
     );
   }
 }
+
