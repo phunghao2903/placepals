@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
-import 'data/datasources/signup_signin_local_datasource.dart';
+import '../../core/firebase/firebase_auth_service.dart';
+import 'data/datasources/signup_signin_remote_datasource.dart';
 import 'data/repositories/signup_signin_repository_impl.dart';
 import 'domain/repositories/signup_signin_repository.dart';
 import 'domain/usecases/forgot_password_usecase.dart';
@@ -9,12 +10,16 @@ import 'domain/usecases/register_usecase.dart';
 import 'presentation/bloc/signup_signin_bloc.dart';
 
 void registerSignupSigninDependencies(GetIt getIt) {
+  if (!getIt.isRegistered<FirebaseAuthService>()) {
+    getIt.registerLazySingleton<FirebaseAuthService>(FirebaseAuthService.new);
+  }
+
   getIt
-    ..registerLazySingleton<SignupSigninLocalDataSource>(
-      SignupSigninLocalDataSourceImpl.new,
+    ..registerLazySingleton<SignupSigninRemoteDataSource>(
+      () => SignupSigninRemoteDataSourceImpl(getIt<FirebaseAuthService>()),
     )
     ..registerLazySingleton<SignupSigninRepository>(
-      () => SignupSigninRepositoryImpl(getIt<SignupSigninLocalDataSource>()),
+      () => SignupSigninRepositoryImpl(getIt<SignupSigninRemoteDataSource>()),
     )
     ..registerLazySingleton<LoginUseCase>(
       () => LoginUseCase(getIt<SignupSigninRepository>()),

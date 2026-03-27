@@ -5,7 +5,6 @@ import '../../../../core/core.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
-import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
 import '../bloc/home_bloc.dart';
@@ -177,15 +176,7 @@ class _HomeTopHeader extends StatelessWidget {
         ),
         Row(
           children: <Widget>[
-            _CalendarActionButton(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SignupSigninPage(),
-                  ),
-                );
-              },
-            ),
+            const _CalendarActionButton(),
             const SizedBox(width: 11),
             _ProfileButton(
               onTap: () {
@@ -212,23 +203,14 @@ class _HomeTopHeader extends StatelessWidget {
 }
 
 class _CalendarActionButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _CalendarActionButton({required this.onTap});
+  const _CalendarActionButton();
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
-        ),
-      ),
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
     );
   }
 }
