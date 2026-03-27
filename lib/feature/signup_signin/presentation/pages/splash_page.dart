@@ -15,6 +15,9 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  static const double _designWidth = 394;
+  static const double _designHeight = 852;
+
   Timer? _timer;
 
   @override
@@ -40,48 +43,62 @@ class _SplashPageState extends State<SplashPage> {
       backgroundColor: AppColors.primary,
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final double frameWidth = math.min(constraints.maxWidth, 394);
+          final double scale = math.min(
+            constraints.maxWidth / _designWidth,
+            constraints.maxHeight / _designHeight,
+          );
+          final double fittedWidth = _designWidth * scale;
+          final double fittedHeight = _designHeight * scale;
 
-          return Stack(
-            children: <Widget>[
-              Positioned(
-                left: constraints.maxWidth * 0.5 - 192,
-                top: constraints.maxHeight * 0.26,
-                child: const _SplashGlow(),
-              ),
-              const Positioned(
-                right: 54,
-                top: 98,
-                child: _SparkDots(),
-              ),
-              Positioned.fill(
-                child: SafeArea(
-                  child: Center(
-                    child: SizedBox(
-                      width: frameWidth,
-                      height: constraints.maxHeight,
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned(
-                            top: 201,
-                            left: (frameWidth - 240) / 2,
-                            child: const _SplashBrandBlock(),
-                          ),
-                          Positioned(
-                            left: (frameWidth - 286) / 2,
-                            bottom: 18,
-                            child: const _SplashIllustration(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+          return Center(
+            child: SizedBox(
+              width: fittedWidth,
+              height: fittedHeight,
+              child: Transform.scale(
+                alignment: Alignment.topLeft,
+                scale: scale,
+                child: const SizedBox(
+                  width: _designWidth,
+                  height: _designHeight,
+                  child: _SplashArtboard(),
                 ),
               ),
-            ],
+            ),
           );
         },
       ),
+    );
+  }
+}
+
+class _SplashArtboard extends StatelessWidget {
+  const _SplashArtboard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        const Positioned(
+          left: 5,
+          top: 223,
+          child: _SplashGlow(),
+        ),
+        const Positioned(
+          left: 343,
+          top: 96,
+          child: _SparkDots(),
+        ),
+        const Positioned(
+          left: 77,
+          top: 281,
+          child: _SplashBrandBlock(),
+        ),
+        const Positioned(
+          left: 54,
+          top: 629,
+          child: _SplashIllustration(),
+        ),
+      ],
     );
   }
 }
