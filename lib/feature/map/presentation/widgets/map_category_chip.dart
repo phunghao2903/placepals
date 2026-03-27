@@ -43,11 +43,7 @@ class MapCategoryChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               if (iconAsset != null) ...<Widget>[
-                ImageIcon(
-                  AssetImage(iconAsset!),
-                  size: 18,
-                  color: foreground,
-                ),
+                ImageIcon(AssetImage(iconAsset!), size: 18, color: foreground),
                 const SizedBox(width: 6),
               ],
               Text(

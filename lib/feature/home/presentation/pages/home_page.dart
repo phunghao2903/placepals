@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 import '../../domain/entities/home_feed.dart';
@@ -82,9 +83,7 @@ class _HomeContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SearchPage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const SearchPage()),
                 );
               },
               child: Container(
@@ -182,14 +181,20 @@ class _HomeTopHeader extends StatelessWidget {
             _ProfileButton(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const ProfilePage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
                 );
               },
             ),
             const SizedBox(width: 11),
-            const _NotificationActionButton(),
+            _NotificationActionButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const NotificationsPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],
@@ -213,9 +218,7 @@ class _CalendarActionButton extends StatelessWidget {
 class _ProfileButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _ProfileButton({
-    required this.onTap,
-  });
+  const _ProfileButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -242,14 +245,26 @@ class _ProfileButton extends StatelessWidget {
 }
 
 class _NotificationActionButton extends StatelessWidget {
-  const _NotificationActionButton();
+  final VoidCallback onTap;
+
+  const _NotificationActionButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Image.asset('assets/icons/notification.png', fit: BoxFit.contain),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Image.asset(
+            'assets/icons/notification.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
     );
   }
 }
