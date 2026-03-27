@@ -5,6 +5,6 @@ class Validators {
 
   static bool isEmail(String? value) {
     if (value == null || value.trim().isEmpty) return false;
-    return RegExp(r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$').hasMatch(value);
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
   }
 }

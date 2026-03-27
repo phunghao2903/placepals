@@ -7,6 +7,7 @@ import '../../feature/home/home_injection.dart';
 import '../../feature/map/map_injection.dart';
 import '../../feature/profile/profile_injection.dart';
 import '../../feature/search/search_injection.dart';
+import '../../feature/signup_signin/signup_signin_injection.dart';
 import '../../feature/sos/sos_injection.dart';
 import '../services/time_provider.dart';
 import '../utils/app_logger.dart';
@@ -35,5 +36,6 @@ Future<void> _registerFeatures() async {
   registerMapDependencies(getIt);
   registerProfileDependencies(getIt);
   registerSearchDependencies(getIt);
+  registerSignupSigninDependencies(getIt);
   registerSosDependencies(getIt);
 }
