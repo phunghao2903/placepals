@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../widgets/auth_logo.dart';
+import 'welcome_page.dart';
 import 'whats_new_page.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  final bool showWhatsNewOnComplete;
+
+  const SplashPage({super.key, this.showWhatsNewOnComplete = true});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -23,7 +26,11 @@ class _SplashPageState extends State<SplashPage> {
     _timer = Timer(const Duration(milliseconds: 1800), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const WhatsNewPage()),
+        MaterialPageRoute<void>(
+          builder: (_) => widget.showWhatsNewOnComplete
+              ? const WhatsNewPage()
+              : const WelcomePage(),
+        ),
       );
     });
   }
@@ -49,11 +56,7 @@ class _SplashPageState extends State<SplashPage> {
                 top: constraints.maxHeight * 0.26,
                 child: const _SplashGlow(),
               ),
-              const Positioned(
-                right: 54,
-                top: 98,
-                child: _SparkDots(),
-              ),
+              const Positioned(right: 54, top: 98, child: _SparkDots()),
               Positioned.fill(
                 child: SafeArea(
                   child: Center(
@@ -204,11 +207,7 @@ class _SplashBrandBlock extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned(
-            top: 236,
-            left: -72,
-            child: _SplashIndicator(),
-          ),
+          const Positioned(top: 236, left: -72, child: _SplashIndicator()),
         ],
       ),
     );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
-import '../../../bottom_appbar/presentation/pages/bottom_appbar_page.dart';
 import '../bloc/signup_signin_bloc.dart';
 import '../widgets/auth_input_field.dart';
 import '../widgets/auth_logo.dart';
@@ -12,6 +11,7 @@ import '../widgets/auth_primary_button.dart';
 import '../widgets/auth_success_dialog.dart';
 import '../widgets/forgot_password_dialog.dart';
 import '../widgets/social_auth_button.dart';
+import 'auth_gate_page.dart';
 
 class SignupSigninPage extends StatelessWidget {
   final bool startInSignUp;
@@ -53,12 +53,8 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
   void initState() {
     super.initState();
     _fullNameController = TextEditingController();
-    _emailController = TextEditingController(
-      text: widget.startInSignUp ? '' : 'demo@placepals.com',
-    );
-    _passwordController = TextEditingController(
-      text: widget.startInSignUp ? '' : 'password123',
-    );
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -89,8 +85,9 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
 
         if (state.completedAction == SignupSigninAction.signedIn) {
           if (!mounted) return;
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute<void>(builder: (_) => const BottomAppBarPage()),
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute<void>(builder: (_) => const AuthGatePage()),
+            (route) => false,
           );
           return;
         }
@@ -100,12 +97,16 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
             context: context,
             barrierDismissible: false,
             builder: (_) => AuthSuccessDialog(
+              title: 'Verify your email',
+              message:
+                  'Your account has been created. We sent a verification link to ${state.email.trim()}.',
+              highlightMessage: 'Verify your email, then sign in to continue.',
               onContinue: () {
                 Navigator.of(context).pop();
                 context.read<SignupSigninBloc>().add(
                   const SignupSigninModeChanged(
                     mode: SignupSigninMode.signIn,
-                    clearSensitive: true,
+                    clearSensitive: false,
                   ),
                 );
                 context.read<SignupSigninBloc>().add(
@@ -479,7 +480,9 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
                             label: 'Google',
                             backgroundColor: Colors.white,
                             foregroundColor: const Color(0xFF3C4043),
-                            borderSide: const BorderSide(color: Color(0xFFE9E2E0)),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFE9E2E0),
+                            ),
                             leading: const _GoogleMark(size: 20),
                             onTap: () {},
                           ),
@@ -524,19 +527,20 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
   }
 
   void _switchMode(BuildContext context, SignupSigninMode mode) {
-    final bool toSignUp = mode == SignupSigninMode.signUp;
     final bloc = context.read<SignupSigninBloc>();
 
     _fullNameController.text = '';
-    _emailController.text = toSignUp ? '' : 'demo@placepals.com';
-    _passwordController.text = toSignUp ? '' : 'password123';
+    _emailController.text = '';
+    _passwordController.text = '';
     _confirmPasswordController.text = '';
 
     bloc.add(SignupSigninModeChanged(mode: mode, clearSensitive: true));
     bloc.add(SignupSigninFullNameChanged(_fullNameController.text));
     bloc.add(SignupSigninEmailChanged(_emailController.text));
     bloc.add(SignupSigninPasswordChanged(_passwordController.text));
-    bloc.add(SignupSigninConfirmPasswordChanged(_confirmPasswordController.text));
+    bloc.add(
+      SignupSigninConfirmPasswordChanged(_confirmPasswordController.text),
+    );
   }
 
   void _openForgotPasswordDialog(BuildContext context) {
@@ -568,11 +572,6 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
   }
 }
 
-
-
-
-
-
 class _GoogleMark extends StatelessWidget {
   final double size;
 
@@ -580,10 +579,7 @@ class _GoogleMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _GoogleMarkPainter(),
-    );
+    return CustomPaint(size: Size.square(size), painter: _GoogleMarkPainter());
   }
 }
 
@@ -605,13 +601,7 @@ class _GoogleMarkPainter extends CustomPainter {
         ..strokeWidth = strokeWidth
         ..strokeCap = StrokeCap.round;
 
-      canvas.drawArc(
-        rect,
-        _deg(startDeg),
-        _deg(sweepDeg),
-        false,
-        paint,
-      );
+      canvas.drawArc(rect, _deg(startDeg), _deg(sweepDeg), false, paint);
     }
 
     drawSegment(const Color(0xFFEA4335), -42, 84);
