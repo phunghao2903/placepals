@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
@@ -198,7 +199,7 @@ class _HomeTopHeader extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (_) => const SignupSigninPage(),
+                    builder: (_) => const NotificationsPage(),
                   ),
                 );
               },

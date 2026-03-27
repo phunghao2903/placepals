@@ -9,11 +9,7 @@ class MapFriendFilter {
     this.isSelected = false,
   });
 
-  MapFriendFilter copyWith({
-    String? id,
-    String? label,
-    bool? isSelected,
-  }) {
+  MapFriendFilter copyWith({String? id, String? label, bool? isSelected}) {
     return MapFriendFilter(
       id: id ?? this.id,
       label: label ?? this.label,
