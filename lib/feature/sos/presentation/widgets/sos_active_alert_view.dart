@@ -24,181 +24,205 @@ class SosActiveAlertView extends StatelessWidget {
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         children: <Widget>[
-          Expanded(
+          SizedBox(
+            height: 360,
             child: Stack(
-              fit: StackFit.expand,
               children: <Widget>[
-                Image.asset('assets/images/map.png', fit: BoxFit.cover),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: <Color>[
-                          Colors.white.withOpacity(0.1),
-                          Colors.white.withOpacity(0.55),
+                Column(
+                  children: <Widget>[
+                    SafeArea(
+                      bottom: false,
+                      child: Container(
+                        height: 82,
+                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                        color: Colors.white,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            _RoundIconButton(
+                              icon: Icons.arrow_back_ios_new_rounded,
+                              onTap: onBack,
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    alert.title,
+                                    style: AppTextStyles.heading6.copyWith(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    alert.city,
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: AppSemanticColors.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const _RoundIconButton(
+                              icon: Icons.warning_amber_rounded,
+                              iconColor: PrimitiveStateColors.warning500,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          Image.asset('assets/images/map.png', fit: BoxFit.cover),
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: <Color>[
+                                    Colors.white.withOpacity(0.08),
+                                    Colors.white.withOpacity(0.12),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _RoundIconButton(
-                          icon: Icons.arrow_back_ios_new_rounded,
-                          onTap: onBack,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                alert.title,
-                                style: AppTextStyles.heading6.copyWith(
-                                  color: AppColors.textPrimary,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                alert.city,
-                                style: AppTextStyles.caption.copyWith(
-                                  color: AppSemanticColors.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const _RoundIconButton(
-                          icon: Icons.warning_amber_rounded,
-                          iconColor: PrimitiveStateColors.warning500,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Center(
-                  child: _AlertLocationBadge(
-                    locationPrefix: alert.locationPrefix,
-                    locationName: alert.locationName,
-                  ),
+                  ],
                 ),
                 const Positioned(
                   right: 16,
-                  bottom: 24,
+                  top: 144,
                   child: _MapZoomControls(),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 112,
+                  child: _AlertLocationBadge(
+                    city: alert.city,
+                    locationName: alert.locationName,
+                  ),
                 ),
               ],
             ),
           ),
-          Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Color(0x14000000),
-                  blurRadius: 18,
-                  offset: Offset(0, -6),
-                ),
-              ],
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 20, 18, 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      alert.respondersTitle,
-                      style: AppTextStyles.heading6.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 280),
-                      child: showResponders
-                          ? Column(
-                              key: const ValueKey<String>('responders'),
-                              children: alert.responders
-                                  .map(
-                                    (responder) => Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: responder == alert.responders.last
-                                            ? 0
-                                            : 12,
-                                      ),
-                                      child: SosActiveResponderTile(
-                                        responder: responder,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(growable: false),
-                            )
-                          : Container(
-                              key: const ValueKey<String>('empty'),
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 32),
-                              alignment: Alignment.center,
-                              child: Text(
-                                alert.respondersEmptyLabel,
-                                style: AppTextStyles.body2.copyWith(
-                                  color: NeutralColors.neutral700,
-                                ),
-                              ),
-                            ),
-                    ),
-                    const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: OutlinedButton.icon(
-                        onPressed: onMarkSafe,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppSemanticColors.primary,
-                          side: const BorderSide(
-                            color: BrandColors.primary500,
-                          ),
-                          shape: RoundedRectangleBorder(
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Color(0x14000000),
+                    blurRadius: 18,
+                    offset: Offset(0, -6),
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Center(
+                        child: Container(
+                          width: 52,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: NeutralColors.neutral500,
                             borderRadius: BorderRadius.circular(999),
                           ),
                         ),
-                        icon: const Icon(
-                          Icons.favorite_border_rounded,
-                          size: 18,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        alert.respondersTitle,
+                        style: AppTextStyles.heading6.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
                         ),
-                        label: Text(
-                          alert.markSafeLabel,
-                          style: AppTextStyles.body2.copyWith(
-                            color: AppSemanticColors.primary,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 280),
+                          child: showResponders
+                              ? ListView.separated(
+                                  key: const ValueKey<String>('responders'),
+                                  itemCount: alert.responders.length,
+                                  separatorBuilder: (_, _) =>
+                                      const SizedBox(height: 12),
+                                  itemBuilder: (context, index) {
+                                    final responder = alert.responders[index];
+                                    return SosActiveResponderTile(
+                                      responder: responder,
+                                    );
+                                  },
+                                )
+                              : Center(
+                                  key: const ValueKey<String>('empty'),
+                                  child: Text(
+                                    alert.respondersEmptyLabel,
+                                    style: AppTextStyles.body2.copyWith(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: OutlinedButton.icon(
+                          onPressed: onMarkSafe,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppSemanticColors.primary,
+                            side: const BorderSide(
+                              color: BrandColors.primary500,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.shield_outlined,
+                            size: 18,
+                          ),
+                          label: Text(
+                            alert.markSafeLabel,
+                            style: AppTextStyles.body2.copyWith(
+                              color: AppSemanticColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        alert.holdToCancelLabel,
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.caption.copyWith(
-                          color: NeutralColors.neutral700,
-                          fontSize: 10,
-                          letterSpacing: 0.25,
+                      const SizedBox(height: 10),
+                      Center(
+                        child: Text(
+                          alert.holdToCancelLabel,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppSemanticColors.primary,
+                            fontSize: 10,
+                            letterSpacing: 0.35,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -251,11 +275,11 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 class _AlertLocationBadge extends StatelessWidget {
-  final String locationPrefix;
+  final String city;
   final String locationName;
 
   const _AlertLocationBadge({
-    required this.locationPrefix,
+    required this.city,
     required this.locationName,
   });
 
@@ -264,76 +288,74 @@ class _AlertLocationBadge extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Container(
-          width: 132,
-          height: 132,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: BrandColors.primary100.withOpacity(0.75),
-            border: Border.all(
-              color: BrandColors.primary500,
-              width: 1.5,
-            ),
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                color: Color(0x33FF6B5A),
-                blurRadius: 24,
-                offset: Offset(0, 12),
+        Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: <Widget>[
+            Container(
+              width: 182,
+              height: 182,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: BrandColors.primary500.withOpacity(0.28),
               ),
-            ],
-          ),
-          child: Center(
-            child: Container(
-              width: 78,
-              height: 78,
+              child: Center(
+                child: Text(
+                  city.replaceFirst(' City', '').replaceAll(' ', '\n'),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.heading4.copyWith(
+                    color: const Color(0xFF40241D),
+                    fontWeight: FontWeight.w600,
+                    height: 0.95,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: 38,
+              height: 38,
               decoration: const BoxDecoration(
-                color: BrandColors.primary500,
+                color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.sos_rounded,
-                size: 40,
-                color: Colors.white,
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: BrandColors.primary500,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Container(
-          constraints: const BoxConstraints(maxWidth: 220),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                color: Color(0x14000000),
-                blurRadius: 12,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                locationPrefix,
-                style: AppTextStyles.caption.copyWith(
-                  color: AppSemanticColors.primary,
-                  fontWeight: FontWeight.w600,
+            Positioned(
+              bottom: -18,
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 286),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      color: Color(0x14000000),
+                      blurRadius: 12,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  locationName,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.heading6.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                locationName,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.body2.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
@@ -347,8 +369,10 @@ class _MapZoomControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: const <Widget>[
+        _RoundIconButton(icon: Icons.my_location_rounded),
+        SizedBox(height: 12),
         _RoundIconButton(icon: Icons.add_rounded),
-        SizedBox(height: 8),
+        SizedBox(height: 2),
         _RoundIconButton(icon: Icons.remove_rounded),
       ],
     );
