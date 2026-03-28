@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../place_details/presentation/pages/place_details_feature_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../savedlist/presentation/pages/savedlist_feature_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
@@ -82,9 +84,7 @@ class _HomeContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SearchPage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const SearchPage()),
                 );
               },
               child: Container(
@@ -138,10 +138,25 @@ class _HomeContent extends StatelessWidget {
             final place = feed.places[index];
             return PlaceCard(
               place: place,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PlaceDetailsFeaturePage(placeId: place.id),
+                  ),
+                );
+              },
               onToggleFavorite: () {
                 context.read<HomeBloc>().add(
                   HomeFavoriteToggled(placeId: place.id),
                 );
+
+                if (!place.isFavorite) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SavedListFeaturePage(),
+                    ),
+                  );
+                }
               },
             );
           }),
@@ -182,9 +197,7 @@ class _HomeTopHeader extends StatelessWidget {
             _ProfileButton(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const ProfilePage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
                 );
               },
             ),
@@ -213,9 +226,7 @@ class _CalendarActionButton extends StatelessWidget {
 class _ProfileButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _ProfileButton({
-    required this.onTap,
-  });
+  const _ProfileButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {

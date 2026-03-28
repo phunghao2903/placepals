@@ -28,9 +28,9 @@ class AiResultCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: const <BoxShadow>[
               BoxShadow(
-                color: Color(0x0D000000),
-                blurRadius: 10,
-                offset: Offset(0, 4),
+                color: Color(0x14FF6B5A),
+                blurRadius: 18,
+                offset: Offset(0, 8),
               ),
             ],
           ),
@@ -116,7 +116,9 @@ class AiResultCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      item.metaLine,
+                      item.metaLine
+                          .replaceAll('Â·', '-')
+                          .replaceAll('â€¢', '-'),
                       style: AppTextStyles.body1.copyWith(
                         fontSize: 12.5,
                         color: AppColors.textSecondary,

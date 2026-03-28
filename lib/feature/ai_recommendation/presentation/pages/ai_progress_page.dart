@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../bloc/ai_recommendation_bloc.dart';
 import '../widgets/ai_progress_step_tile.dart';
+import '../widgets/ai_screen_header.dart';
 import 'ai_results_page.dart';
 
 class AiProgressPage extends StatefulWidget {
@@ -22,7 +23,7 @@ class _AiProgressPageState extends State<AiProgressPage> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(milliseconds: 900), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 850), (timer) {
       if (!mounted) return;
       setState(() {
         if (_currentStep < 4) {
@@ -51,38 +52,25 @@ class _AiProgressPageState extends State<AiProgressPage> {
     final isDone = _currentStep >= feed.progressSteps.length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF4F3),
+      backgroundColor: const Color(0xFFFFFBFA),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 14, 24, 30),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 30),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        _RoundTopIconButton(
-                          icon: Icons.arrow_back_ios_new_rounded,
-                          onTap: () => Navigator.of(context).pop(),
-                        ),
-                        Expanded(
-                          child: Text(
-                            feed.askTitle,
-                            textAlign: TextAlign.center,
-                            style: AppTextStyles.heading4.copyWith(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 44),
-                      ],
+                    AiScreenHeader(
+                      title: feed.askTitle,
+                      onBack: () => Navigator.of(context).pop(),
+                      reserveTrailingSpace: true,
+                      padding: const EdgeInsets.fromLTRB(2, 6, 2, 8),
                     ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 18),
                     Container(
-                      padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
@@ -90,7 +78,7 @@ class _AiProgressPageState extends State<AiProgressPage> {
                           BoxShadow(
                             color: Color(0x12FF6B5A),
                             blurRadius: 20,
-                            offset: Offset(0, 10),
+                            offset: Offset(0, 8),
                           ),
                         ],
                       ),
@@ -98,54 +86,54 @@ class _AiProgressPageState extends State<AiProgressPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFCE8E5),
-                              borderRadius: BorderRadius.circular(20),
+                            width: 32,
+                            height: 32,
+                            decoration: const BoxDecoration(
+                              color: Color(0x1FFF6B5A),
+                              shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.edit_rounded,
                               color: AppColors.primary,
-                              size: 30,
+                              size: 16,
                             ),
                           ),
-                          const SizedBox(width: 18),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Text(
                               state.prompt,
-                              style: AppTextStyles.heading4.copyWith(
-                                fontSize: 22,
+                              style: AppTextStyles.heading5.copyWith(
+                                fontSize: 18,
                                 height: 1.25,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 44),
                     const _ProgressOrb(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 34),
                     Text(
                       feed.progressTitle,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.heading1.copyWith(
-                        fontSize: 38,
-                        height: 1.05,
-                        fontWeight: FontWeight.w700,
+                      style: AppTextStyles.heading2.copyWith(
+                        fontSize: 30,
+                        height: 1.1,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     Text(
                       feed.progressSubtitle,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.body1.copyWith(
-                        fontSize: 17,
-                        color: const Color(0xFFAAA0A0),
+                        fontSize: 16,
+                        color: const Color(0xFFB0A4A3),
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 44),
                     ...List<Widget>.generate(feed.progressSteps.length, (
                       index,
                     ) {
@@ -166,7 +154,7 @@ class _AiProgressPageState extends State<AiProgressPage> {
                         ),
                       );
                     }),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 42),
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -198,11 +186,11 @@ class _AiProgressPageState extends State<AiProgressPage> {
                         ),
                         child: Text(
                           isDone ? 'Explore' : 'Please wait...',
-                          style: AppTextStyles.heading4.copyWith(
+                          style: AppTextStyles.heading5.copyWith(
                             color: isDone
                                 ? Colors.white
                                 : const Color(0xFF9C9392),
-                            fontSize: 20,
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -213,36 +201,6 @@ class _AiProgressPageState extends State<AiProgressPage> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class _RoundTopIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _RoundTopIconButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Color(0x14000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(icon, color: AppColors.textPrimary),
       ),
     );
   }
@@ -283,37 +241,37 @@ class _ProgressOrbState extends State<_ProgressOrb>
         return Transform.scale(scale: pulse, child: child);
       },
       child: SizedBox(
-        width: 160,
-        height: 160,
+        width: 148,
+        height: 148,
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
             Container(
-              width: 128,
-              height: 128,
+              width: 108,
+              height: 108,
               decoration: const BoxDecoration(
-                color: Color(0xFFF4D9D4),
+                color: Color(0x1FFF6B5A),
                 shape: BoxShape.circle,
               ),
             ),
             Container(
-              width: 92,
-              height: 92,
+              width: 80,
+              height: 80,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: <Color>[Color(0xFFFF9A66), Color(0xFFFF7A5F)],
+                  colors: <Color>[Color(0xFFFF9287), Color(0xFFFF6B5A)],
                 ),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.auto_awesome_rounded,
                 color: Colors.white,
-                size: 36,
+                size: 32,
               ),
             ),
             const Positioned(
               top: 18,
-              right: 28,
+              right: 24,
               child: Icon(
                 Icons.star_rounded,
                 color: AppColors.primary,
@@ -321,8 +279,8 @@ class _ProgressOrbState extends State<_ProgressOrb>
               ),
             ),
             const Positioned(
-              top: 58,
-              right: 6,
+              top: 60,
+              right: 4,
               child: Icon(
                 Icons.star_border_rounded,
                 color: AppColors.primary,
@@ -330,7 +288,7 @@ class _ProgressOrbState extends State<_ProgressOrb>
               ),
             ),
             const Positioned(
-              left: 18,
+              left: 14,
               bottom: 34,
               child: Icon(
                 Icons.star_rounded,

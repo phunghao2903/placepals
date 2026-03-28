@@ -4,60 +4,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../bloc/ai_recommendation_bloc.dart';
 import '../widgets/ai_result_card.dart';
+import '../widgets/ai_screen_header.dart';
+import 'ai_map_page.dart';
 
 class AiResultsPage extends StatelessWidget {
   const AiResultsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<AiRecommendationBloc>().state;
-    final feed = state.feed;
+    final feed = context.read<AiRecommendationBloc>().state.feed;
     if (feed == null) {
       return const SizedBox.shrink();
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F7),
+      backgroundColor: const Color(0xFFFFFBFA),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  _IconCircleButton(
-                    icon: Icons.arrow_back_ios_new_rounded,
-                    onTap: () => Navigator.of(context).pop(),
-                  ),
-                  Expanded(
-                    child: Text(
-                      feed.resultsTitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.heading4.copyWith(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const _IconCircleButton(icon: Icons.tune_rounded),
-                ],
+              AiScreenHeader(
+                title: feed.resultsTitle,
+                onBack: () => Navigator.of(context).pop(),
+                trailing: const AiCircleIconButton(icon: Icons.tune_rounded),
               ),
-              const SizedBox(height: 26),
+              const SizedBox(height: 16),
               Row(
                 children: <Widget>[
                   Expanded(
                     child: Container(
-                      height: 58,
+                      height: 48,
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
-                            color: Color(0x10000000),
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
+                            color: Color(0x12FF6B5A),
+                            blurRadius: 14,
+                            offset: Offset(0, 6),
                           ),
                         ],
                       ),
@@ -104,16 +91,16 @@ class AiResultsPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Container(
-                    height: 58,
+                    height: 48,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: const <BoxShadow>[
                         BoxShadow(
-                          color: Color(0x10000000),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
+                          color: Color(0x12FF6B5A),
+                          blurRadius: 14,
+                          offset: Offset(0, 6),
                         ),
                       ],
                     ),
@@ -135,11 +122,11 @@ class AiResultsPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 26),
+              const SizedBox(height: 18),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7F5),
+                  color: const Color(0xFFFFFBFA),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(color: const Color(0xFFF7C4BE)),
                 ),
@@ -166,7 +153,7 @@ class AiResultsPage extends StatelessWidget {
                             TextSpan(
                               text: 'Based on your request for "',
                               style: AppTextStyles.body1.copyWith(
-                                fontSize: 17,
+                                fontSize: 16,
                                 height: 1.25,
                                 color: AppColors.textPrimary,
                               ),
@@ -174,7 +161,7 @@ class AiResultsPage extends StatelessWidget {
                             TextSpan(
                               text: feed.resultsSummaryQuery,
                               style: AppTextStyles.body1.copyWith(
-                                fontSize: 17,
+                                fontSize: 16,
                                 height: 1.25,
                                 color: AppColors.primary,
                               ),
@@ -182,7 +169,7 @@ class AiResultsPage extends StatelessWidget {
                             TextSpan(
                               text: '", ${feed.resultsSummarySuffix}',
                               style: AppTextStyles.body1.copyWith(
-                                fontSize: 17,
+                                fontSize: 16,
                                 height: 1.25,
                                 color: AppColors.textPrimary,
                               ),
@@ -201,47 +188,44 @@ class AiResultsPage extends StatelessWidget {
                   padding: EdgeInsets.only(
                     bottom: index == feed.results.length - 1 ? 0 : 20,
                   ),
-                  child: AiResultCard(item: item),
+                  child: AiResultCard(
+                    item: item,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<AiRecommendationBloc>(),
+                            child: const AiMapPage(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               }),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _IconCircleButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  const _IconCircleButton({
-    required this.icon,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Color(0x14000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(
-          icon,
-          color: AppColors.textPrimary,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: AiCircleIconButton(
+          icon: Icons.map_outlined,
+          size: 60,
+          iconSize: 28,
+          backgroundColor: const Color(0xFF2D2D2D),
+          iconColor: Colors.white,
+          boxShadow: const <BoxShadow>[],
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => BlocProvider.value(
+                  value: context.read<AiRecommendationBloc>(),
+                  child: const AiMapPage(),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

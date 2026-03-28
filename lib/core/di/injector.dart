@@ -5,7 +5,9 @@ import '../../feature/bottom_appbar/bottom_appbar_injection.dart';
 import '../../feature/create_moment/create_moment_injection.dart';
 import '../../feature/home/home_injection.dart';
 import '../../feature/map/map_injection.dart';
+import '../../feature/place_details/appointment_injection.dart';
 import '../../feature/profile/profile_injection.dart';
+import '../../feature/savedlist/appointment_injection.dart';
 import '../../feature/search/search_injection.dart';
 import '../../feature/sos/sos_injection.dart';
 import '../services/time_provider.dart';
@@ -33,7 +35,9 @@ Future<void> _registerFeatures() async {
   registerCreateMomentDependencies(getIt);
   registerHomeDependencies(getIt);
   registerMapDependencies(getIt);
+  registerPlaceDetailsDependencies(getIt);
   registerProfileDependencies(getIt);
+  registerSavedListDependencies(getIt);
   registerSearchDependencies(getIt);
   registerSosDependencies(getIt);
 }

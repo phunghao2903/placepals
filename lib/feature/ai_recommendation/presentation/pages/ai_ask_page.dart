@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../bloc/ai_recommendation_bloc.dart';
 import '../widgets/ai_ask_suggestion_chip.dart';
+import '../widgets/ai_screen_header.dart';
 import 'ai_progress_page.dart';
 
 class AiAskPage extends StatefulWidget {
@@ -50,67 +51,37 @@ class _AiAskPageState extends State<AiAskPage> {
         final isButtonEnabled = state.prompt.trim().isNotEmpty;
 
         return Scaffold(
-          backgroundColor: const Color(0xFFFFF4F3),
+          backgroundColor: const Color(0xFFFFFBFA),
           body: SafeArea(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 14, 24, 14),
-                  child: Row(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 24,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          feed.askTitle,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.heading4.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: Color(0x14000000),
-                              blurRadius: 10,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.tune_rounded,
-                          size: 24,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ],
+                AiScreenHeader(
+                  title: feed.askTitle,
+                  onBack: () => Navigator.of(context).pop(),
+                  trailing: const AiCircleIconButton(
+                    icon: Icons.tune_rounded,
                   ),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 28),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          height: 255,
-                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 18),
+                          height: 254,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          padding: const EdgeInsets.fromLTRB(20, 18, 18, 18),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(28),
+                            boxShadow: const <BoxShadow>[
+                              BoxShadow(
+                                color: Color(0x12FF6B5A),
+                                blurRadius: 20,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
                           ),
                           child: Column(
                             children: <Widget>[
@@ -130,116 +101,125 @@ class _AiAskPageState extends State<AiAskPage> {
                                     border: InputBorder.none,
                                     hintText: feed.askPrompt,
                                     prefixIcon: Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 12,
-                                        top: 4,
-                                      ),
+                                      padding: const EdgeInsets.only(right: 12),
                                       child: Icon(
                                         Icons.edit_note_rounded,
                                         color: AppColors.primary,
-                                        size: 28,
+                                        size: 26,
                                       ),
                                     ),
                                     prefixIconConstraints:
                                         const BoxConstraints(
-                                      minWidth: 38,
-                                      minHeight: 28,
+                                      minWidth: 34,
+                                      minHeight: 26,
                                     ),
-                                    hintStyle: AppTextStyles.heading4.copyWith(
-                                      fontSize: 24,
-                                      height: 1.25,
-                                      color: const Color(0xFF8F8685),
-                                      fontWeight: FontWeight.w700,
+                                    hintStyle: AppTextStyles.heading5.copyWith(
+                                      fontSize: 18,
+                                      height: 1.2,
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  style: AppTextStyles.heading4.copyWith(
-                                    fontSize: 24,
-                                    height: 1.25,
-                                    fontWeight: FontWeight.w700,
+                                  style: AppTextStyles.heading5.copyWith(
+                                    fontSize: 18,
+                                    height: 1.2,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: Container(
-                                  width: 48,
-                                  height: 48,
+                                  width: 30,
+                                  height: 30,
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFFFCE8E5),
+                                    color: Color(0x1FFF6B5A),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
                                     Icons.mic_none_rounded,
                                     color: AppColors.primary,
+                                    size: 16,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 34),
-                        Text(
-                          'Suggestions',
-                          style: AppTextStyles.heading3.copyWith(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
+                        const SizedBox(height: 18),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'Suggestions',
+                            style: AppTextStyles.heading5.copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 16,
-                          children: feed.suggestions.map((item) {
-                            final isSelected = state.selectedSuggestionIds
-                                .contains(item.id);
-                            return AiAskSuggestionChip(
-                              label: item.label,
-                              isSelected: isSelected,
-                              onTap: () {
-                                context.read<AiRecommendationBloc>().add(
-                                      AiRecommendationSuggestionToggled(
-                                        suggestionId: item.id,
-                                      ),
-                                    );
-                              },
-                            );
-                          }).toList(growable: false),
-                        ),
-                        const SizedBox(height: 290),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 58,
-                          child: ElevatedButton.icon(
-                            onPressed: isButtonEnabled
-                                ? () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute<void>(
-                                        builder: (_) => BlocProvider.value(
-                                          value:
-                                              context.read<AiRecommendationBloc>(),
-                                          child: const AiProgressPage(),
+                        const SizedBox(height: 18),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Wrap(
+                            spacing: 16,
+                            runSpacing: 14,
+                            children: feed.suggestions.map((item) {
+                              final isSelected = state.selectedSuggestionIds
+                                  .contains(item.id);
+                              return AiAskSuggestionChip(
+                                label: item.label,
+                                isSelected: isSelected,
+                                onTap: () {
+                                  context.read<AiRecommendationBloc>().add(
+                                        AiRecommendationSuggestionToggled(
+                                          suggestionId: item.id,
                                         ),
-                                      ),
-                                    );
-                                  }
-                                : null,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              disabledBackgroundColor: const Color(0xFFE5D8D6),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(29),
+                                      );
+                                },
+                              );
+                            }).toList(growable: false),
+                          ),
+                        ),
+                        const SizedBox(height: 270),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton.icon(
+                              onPressed: isButtonEnabled
+                                  ? () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<void>(
+                                          builder: (_) => BlocProvider.value(
+                                            value: context
+                                                .read<AiRecommendationBloc>(),
+                                            child: const AiProgressPage(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                disabledBackgroundColor:
+                                    const Color(0xFFE5D8D6),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                elevation: 0,
                               ),
-                            ),
-                            icon: const Icon(
-                              Icons.auto_awesome_rounded,
-                              size: 24,
-                            ),
-                            label: Text(
-                              'Find Places',
-                              style: AppTextStyles.heading4.copyWith(
-                                color: Colors.white,
-                                fontSize: 22,
+                              icon: const Icon(
+                                Icons.auto_awesome_rounded,
+                                size: 20,
+                              ),
+                              label: Text(
+                                'Find Places',
+                                style: AppTextStyles.heading5.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
