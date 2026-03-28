@@ -2,8 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:placepals/core/core.dart';
-import 'package:placepals/feature/signup_signin/presentation/pages/splash_page.dart';
-import 'package:placepals/feature/bottom_appbar/presentation/pages/bottom_appbar_page.dart';
+import 'package:placepals/feature/signup_signin/presentation/pages/auth_gate_page.dart';
 import 'package:placepals/firebase_options.dart';
 
 Future<void> main() async {
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const SplashPage(),
+      home: const AuthGatePage(),
     );
   }
 }

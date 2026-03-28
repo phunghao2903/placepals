@@ -1,15 +1,15 @@
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/signup_signin_repository.dart';
-import '../datasources/signup_signin_local_datasource.dart';
+import '../datasources/signup_signin_remote_datasource.dart';
 
 class SignupSigninRepositoryImpl implements SignupSigninRepository {
-  final SignupSigninLocalDataSource localDataSource;
+  final SignupSigninRemoteDataSource remoteDataSource;
 
-  const SignupSigninRepositoryImpl(this.localDataSource);
+  const SignupSigninRepositoryImpl(this.remoteDataSource);
 
   @override
   Future<void> forgotPassword({required String email}) {
-    return localDataSource.forgotPassword(email: email);
+    return remoteDataSource.forgotPassword(email: email);
   }
 
   @override
@@ -17,7 +17,7 @@ class SignupSigninRepositoryImpl implements SignupSigninRepository {
     required String email,
     required String password,
   }) async {
-    final user = await localDataSource.login(email: email, password: password);
+    final user = await remoteDataSource.login(email: email, password: password);
     return user.toEntity();
   }
 
@@ -27,7 +27,7 @@ class SignupSigninRepositoryImpl implements SignupSigninRepository {
     required String email,
     required String password,
   }) async {
-    final user = await localDataSource.register(
+    final user = await remoteDataSource.register(
       fullName: fullName,
       email: email,
       password: password,

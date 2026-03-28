@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../../core/firebase/firebase_auth_service.dart';
 import '../../domain/entities/profile_feed.dart';
 import '../bloc/profile_bloc.dart';
 import 'find_friends_page.dart';
@@ -11,6 +12,7 @@ import 'profile_settings_page.dart';
 import '../widgets/profile_action_tile.dart';
 import '../widgets/profile_chip.dart';
 import '../widgets/profile_place_tile.dart';
+import '../../../signup_signin/presentation/pages/splash_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -418,6 +420,8 @@ class _ProfileContent extends StatelessWidget {
                     )
                     .toList(growable: false),
               ),
+            const SizedBox(height: 28),
+            _ProfileLogoutButton(onTap: () => _handleLogout(context)),
           ],
         ],
       ),
@@ -450,6 +454,85 @@ class _ProfileContent extends StatelessWidget {
           SnackBar(content: Text('${action.label} is not implemented yet.')),
         );
         break;
+    }
+  }
+
+  Future<void> _handleLogout(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: Text(
+            'Sign out?',
+            style: AppTextStyles.heading4.copyWith(
+              color: AppColors.textPrimary,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to sign out of your PlacePals account?',
+            style: AppTextStyles.body2.copyWith(
+              color: AppColors.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(
+                'Cancel',
+                style: AppTextStyles.body2.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                'Sign Out',
+                style: AppTextStyles.body2.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      await getIt<FirebaseAuthService>().signOut();
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute<void>(
+          builder: (_) => const SplashPage(showWhatsNewOnComplete: false),
+        ),
+        (route) => false,
+      );
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to sign out right now. Please try again.'),
+        ),
+      );
     }
   }
 
@@ -1002,6 +1085,100 @@ class _CircleIconButton extends StatelessWidget {
               border: Border.all(color: _ProfileContent.profileCardStroke),
             ),
             child: Icon(icon, size: 18, color: AppColors.textPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileLogoutButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _ProfileLogoutButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        child: Ink(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(18, 18, 16, 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFF0E6E4)),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Color(0x12000000),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+                spreadRadius: -4,
+              ),
+              BoxShadow(
+                color: Color(0x12000000),
+                blurRadius: 18,
+                offset: Offset(0, 12),
+                spreadRadius: -8,
+              ),
+            ],
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF1EF),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.logout_rounded,
+                  color: AppColors.primary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Sign out',
+                      style: AppTextStyles.heading6.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'End your current session and return to the welcome screen.',
+                      style: AppTextStyles.body2.copyWith(
+                        color: AppColors.textSecondary,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceSoft,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
           ),
         ),
       ),
