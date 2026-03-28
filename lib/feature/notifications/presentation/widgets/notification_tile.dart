@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
-import '../../domain/entities/notifications_feed.dart';
+import '../../domain/entities/notification_item.dart';
 
 class NotificationTile extends StatelessWidget {
   final NotificationItem item;
   final VoidCallback onTap;
+  final VoidCallback onMarkAsRead;
 
   const NotificationTile({
     super.key,
     required this.item,
     required this.onTap,
+    required this.onMarkAsRead,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isSos = item.type == 'help_sos';
+    final bool isSos = item.type == NotificationItemType.sosAlert;
+    final bool isUnread = !item.isRead;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         onTap: onTap,
+        onLongPress: isUnread ? onMarkAsRead : null,
         child: Ink(
           padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
           decoration: BoxDecoration(
@@ -46,7 +50,7 @@ class NotificationTile extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: <Widget>[
                   _NotificationAvatar(item: item),
-                  if (item.isUnread)
+                  if (isUnread)
                     Positioned(
                       right: -2,
                       top: -2,
@@ -115,41 +119,77 @@ class NotificationTile extends StatelessWidget {
 class _NotificationAvatar extends StatelessWidget {
   final NotificationItem item;
 
-  const _NotificationAvatar({
-    required this.item,
+  const _NotificationAvatar({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    switch (item.type) {
+      case NotificationItemType.sosAlert:
+        return const _IconAvatar(
+          size: 44,
+          backgroundColor: AppSemanticColors.primary,
+          icon: Icons.warning_amber_rounded,
+          iconSize: 24,
+          iconColor: Colors.white,
+        );
+      case NotificationItemType.locationVerified:
+        return const _IconAvatar(
+          size: 46,
+          backgroundColor: Color(0xFFFFF2F0),
+          icon: Icons.location_on_rounded,
+          iconSize: 24,
+          iconColor: AppSemanticColors.primary,
+        );
+      case NotificationItemType.palRequest:
+      case NotificationItemType.placeSpotlight:
+      case NotificationItemType.taggedYou:
+        return Container(
+          width: 46,
+          height: 46,
+          decoration: const BoxDecoration(
+            color: NeutralColors.neutral100,
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(2),
+          child: ClipOval(
+            child: Image.asset(
+              item.imagePath!,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+    }
+  }
+}
+
+class _IconAvatar extends StatelessWidget {
+  final double size;
+  final Color backgroundColor;
+  final IconData icon;
+  final double iconSize;
+  final Color iconColor;
+
+  const _IconAvatar({
+    required this.size,
+    required this.backgroundColor,
+    required this.icon,
+    required this.iconSize,
+    required this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (item.type == 'help_sos') {
-      return Container(
-        width: 44,
-        height: 44,
-        decoration: const BoxDecoration(
-          color: AppSemanticColors.primary,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.warning_amber_rounded,
-          size: 24,
-          color: Colors.white,
-        ),
-      );
-    }
-
     return Container(
-      width: 46,
-      height: 46,
-      decoration: const BoxDecoration(
-        color: NeutralColors.neutral100,
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: backgroundColor,
         shape: BoxShape.circle,
       ),
-      padding: const EdgeInsets.all(2),
-      child: ClipOval(
-        child: Image.asset(
-          item.leadingAssetPath,
-          fit: BoxFit.cover,
-        ),
+      child: Icon(
+        icon,
+        size: iconSize,
+        color: iconColor,
       ),
     );
   }

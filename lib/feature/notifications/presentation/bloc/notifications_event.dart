@@ -8,22 +8,28 @@ class NotificationsStarted extends NotificationsEvent {
   const NotificationsStarted();
 }
 
-class NotificationsItemOpened extends NotificationsEvent {
+class NotificationsFilterSelected extends NotificationsEvent {
+  final String filterId;
+
+  const NotificationsFilterSelected({required this.filterId});
+}
+
+class NotificationsMarkAllReadRequested extends NotificationsEvent {
+  const NotificationsMarkAllReadRequested();
+}
+
+class NotificationsItemMarkedAsRead extends NotificationsEvent {
   final String notificationId;
 
-  const NotificationsItemOpened({
-    required this.notificationId,
-  });
+  const NotificationsItemMarkedAsRead({required this.notificationId});
 }
 
-class NotificationsMarkAllReadPressed extends NotificationsEvent {
-  const NotificationsMarkAllReadPressed();
+class NotificationsItemTapped extends NotificationsEvent {
+  final String notificationId;
+
+  const NotificationsItemTapped({required this.notificationId});
 }
 
-class NotificationsTabSelected extends NotificationsEvent {
-  final NotificationsFilterTab tab;
-
-  const NotificationsTabSelected({
-    required this.tab,
-  });
+class NotificationsNavigationHandled extends NotificationsEvent {
+  const NotificationsNavigationHandled();
 }

@@ -6,9 +6,11 @@ class MapMarkerModel {
   final bool showMarker;
   final double markerLeftRatio;
   final double markerTopRatio;
+  final bool canSelectPreview;
   final double? avatarLeftRatio;
   final double? avatarTopRatio;
   final int? avatarTintHex;
+  final String? avatarImagePath;
 
   const MapMarkerModel({
     required this.id,
@@ -16,9 +18,11 @@ class MapMarkerModel {
     this.showMarker = true,
     required this.markerLeftRatio,
     required this.markerTopRatio,
+    this.canSelectPreview = false,
     this.avatarLeftRatio,
     this.avatarTopRatio,
     this.avatarTintHex,
+    this.avatarImagePath,
   });
 
   MapMarker toEntity() {
@@ -28,9 +32,11 @@ class MapMarkerModel {
       showMarker: showMarker,
       markerLeftRatio: markerLeftRatio,
       markerTopRatio: markerTopRatio,
+      canSelectPreview: canSelectPreview,
       avatarLeftRatio: avatarLeftRatio,
       avatarTopRatio: avatarTopRatio,
       avatarTintHex: avatarTintHex,
+      avatarImagePath: avatarImagePath,
     );
   }
 }

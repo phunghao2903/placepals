@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "286137181612",
+    "project_id": "placepals-a5221",
+    "storage_bucket": "placepals-a5221.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286137181612:android:9debeb501bd8beb71cc609",
+        "android_client_info": {
+          "package_name": "app.phunghao.placepals"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVnlnt2-Y8oIcTiSQzNgSfG1eZPmo-DeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

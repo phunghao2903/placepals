@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/notification_filter.dart';
+import '../../domain/entities/notification_item.dart';
 import '../../domain/entities/notifications_feed.dart';
 import '../../domain/usecases/get_notifications_feed_usecase.dart';
 
@@ -9,13 +11,14 @@ part 'notifications_state.dart';
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   final GetNotificationsFeedUseCase getNotificationsFeedUseCase;
 
-  NotificationsBloc({
-    required this.getNotificationsFeedUseCase,
-  }) : super(const NotificationsState()) {
+  NotificationsBloc({required this.getNotificationsFeedUseCase})
+    : super(const NotificationsState()) {
     on<NotificationsStarted>(_onStarted);
-    on<NotificationsItemOpened>(_onItemOpened);
-    on<NotificationsMarkAllReadPressed>(_onMarkAllReadPressed);
-    on<NotificationsTabSelected>(_onTabSelected);
+    on<NotificationsFilterSelected>(_onFilterSelected);
+    on<NotificationsMarkAllReadRequested>(_onMarkAllReadRequested);
+    on<NotificationsItemMarkedAsRead>(_onItemMarkedAsRead);
+    on<NotificationsItemTapped>(_onItemTapped);
+    on<NotificationsNavigationHandled>(_onNavigationHandled);
   }
 
   Future<void> _onStarted(
@@ -30,10 +33,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         state.copyWith(
           status: NotificationsStatus.success,
           feed: feed,
-          selectedTab: NotificationsFilterTab.all,
-          openedNotificationId: null,
-          openedNotificationTick: 0,
+          filters: feed.filters,
+          activeFilterId: _selectedFilterId(feed.filters),
+          visibleItems: _applyFilter(
+            feed.items,
+            _selectedFilterType(feed.filters),
+          ),
           errorMessage: null,
+          pendingNavigationTarget: null,
+          pendingNotificationId: null,
         ),
       );
     } catch (_) {
@@ -46,62 +54,150 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     }
   }
 
-  void _onItemOpened(
-    NotificationsItemOpened event,
+  void _onFilterSelected(
+    NotificationsFilterSelected event,
     Emitter<NotificationsState> emit,
   ) {
-    final NotificationsFeed? currentFeed = state.feed;
-    if (currentFeed == null) return;
+    final feed = state.feed;
+    if (feed == null) return;
 
-    final updatedItems = currentFeed.items
-        .map(
-          (item) => item.id == event.notificationId
-              ? item.copyWith(isUnread: false)
-              : item,
-        )
+    final filters = state.filters
+        .map((item) => item.copyWith(isSelected: item.id == event.filterId))
         .toList(growable: false);
 
     emit(
       state.copyWith(
-        feed: NotificationsFeed(
-          title: currentFeed.title,
-          markAllReadLabel: currentFeed.markAllReadLabel,
-          items: updatedItems,
-        ),
-        openedNotificationId: event.notificationId,
-        openedNotificationTick: state.openedNotificationTick + 1,
+        filters: filters,
+        activeFilterId: event.filterId,
+        visibleItems: _applyFilter(feed.items, _selectedFilterType(filters)),
       ),
     );
   }
 
-  void _onMarkAllReadPressed(
-    NotificationsMarkAllReadPressed event,
+  void _onMarkAllReadRequested(
+    NotificationsMarkAllReadRequested event,
     Emitter<NotificationsState> emit,
   ) {
-    final NotificationsFeed? currentFeed = state.feed;
-    if (currentFeed == null) return;
+    final feed = state.feed;
+    if (feed == null) return;
+
+    final updatedItems = feed.items
+        .map((item) => item.copyWith(isRead: true))
+        .toList(growable: false);
+    final updatedFeed = feed.copyWith(items: updatedItems);
 
     emit(
       state.copyWith(
-        feed: NotificationsFeed(
-          title: currentFeed.title,
-          markAllReadLabel: currentFeed.markAllReadLabel,
-          items: currentFeed.items
-              .map((item) => item.copyWith(isUnread: false))
-              .toList(growable: false),
+        feed: updatedFeed,
+        visibleItems: _applyFilter(
+          updatedItems,
+          _selectedFilterType(state.filters),
         ),
       ),
     );
   }
 
-  void _onTabSelected(
-    NotificationsTabSelected event,
+  void _onItemMarkedAsRead(
+    NotificationsItemMarkedAsRead event,
+    Emitter<NotificationsState> emit,
+  ) {
+    final feed = state.feed;
+    if (feed == null) return;
+
+    final updatedFeed = _updateItemReadState(
+      feed: feed,
+      notificationId: event.notificationId,
+      isRead: true,
+    );
+
+    emit(
+      state.copyWith(
+        feed: updatedFeed,
+        visibleItems: _applyFilter(
+          updatedFeed.items,
+          _selectedFilterType(state.filters),
+        ),
+      ),
+    );
+  }
+
+  void _onItemTapped(
+    NotificationsItemTapped event,
+    Emitter<NotificationsState> emit,
+  ) {
+    final feed = state.feed;
+    if (feed == null) return;
+
+    final tappedItem = feed.items.firstWhere(
+      (item) => item.id == event.notificationId,
+    );
+    final updatedFeed = _updateItemReadState(
+      feed: feed,
+      notificationId: event.notificationId,
+      isRead: true,
+    );
+
+    emit(
+      state.copyWith(
+        feed: updatedFeed,
+        visibleItems: _applyFilter(
+          updatedFeed.items,
+          _selectedFilterType(state.filters),
+        ),
+        pendingNavigationTarget: tappedItem.navigationTarget,
+        pendingNotificationId: tappedItem.id,
+      ),
+    );
+  }
+
+  void _onNavigationHandled(
+    NotificationsNavigationHandled event,
     Emitter<NotificationsState> emit,
   ) {
     emit(
       state.copyWith(
-        selectedTab: event.tab,
+        pendingNavigationTarget: null,
+        pendingNotificationId: null,
       ),
     );
+  }
+
+  NotificationsFeed _updateItemReadState({
+    required NotificationsFeed feed,
+    required String notificationId,
+    required bool isRead,
+  }) {
+    final updatedItems = feed.items
+        .map(
+          (item) =>
+              item.id == notificationId ? item.copyWith(isRead: isRead) : item,
+        )
+        .toList(growable: false);
+
+    return feed.copyWith(items: updatedItems);
+  }
+
+  String _selectedFilterId(List<NotificationFilter> filters) {
+    return filters.firstWhere((item) => item.isSelected).id;
+  }
+
+  NotificationFilterType _selectedFilterType(List<NotificationFilter> filters) {
+    return filters.firstWhere((item) => item.isSelected).type;
+  }
+
+  List<NotificationItem> _applyFilter(
+    List<NotificationItem> items,
+    NotificationFilterType filterType,
+  ) {
+    switch (filterType) {
+      case NotificationFilterType.all:
+        return items;
+      case NotificationFilterType.unread:
+        return items.where((item) => !item.isRead).toList(growable: false);
+      case NotificationFilterType.sosAlerts:
+        return items
+            .where((item) => item.type == NotificationItemType.sosAlert)
+            .toList(growable: false);
+    }
   }
 }

@@ -43,9 +43,7 @@ class MapSearchBar extends StatelessWidget {
               controller: controller,
               onChanged: onChanged,
               cursorColor: AppColors.primary,
-              style: AppTextStyles.body2.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 isCollapsed: true,
                 border: InputBorder.none,

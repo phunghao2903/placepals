@@ -83,9 +83,7 @@ class _HomeContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SearchPage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const SearchPage()),
                 );
               },
               child: Container(
@@ -186,14 +184,12 @@ class _HomeTopHeader extends StatelessWidget {
         const SizedBox(width: 12),
         Row(
           children: <Widget>[
-            _CalendarActionButton(),
+            const _CalendarActionButton(),
             const SizedBox(width: 11),
             _ProfileButton(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const ProfilePage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
                 );
               },
             ),
@@ -230,9 +226,7 @@ class _CalendarActionButton extends StatelessWidget {
 class _ProfileButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _ProfileButton({
-    required this.onTap,
-  });
+  const _ProfileButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -261,9 +255,7 @@ class _ProfileButton extends StatelessWidget {
 class _NotificationActionButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _NotificationActionButton({
-    required this.onTap,
-  });
+  const _NotificationActionButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {

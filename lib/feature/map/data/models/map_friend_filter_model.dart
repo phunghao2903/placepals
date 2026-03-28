@@ -12,10 +12,6 @@ class MapFriendFilterModel {
   });
 
   MapFriendFilter toEntity() {
-    return MapFriendFilter(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return MapFriendFilter(id: id, label: label, isSelected: isSelected);
   }
 }

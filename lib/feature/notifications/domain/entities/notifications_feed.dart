@@ -1,55 +1,26 @@
+import 'notification_filter.dart';
+import 'notification_item.dart';
+
 class NotificationsFeed {
   final String title;
-  final String markAllReadLabel;
+  final List<NotificationFilter> filters;
   final List<NotificationItem> items;
 
   const NotificationsFeed({
     required this.title,
-    required this.markAllReadLabel,
+    required this.filters,
     required this.items,
   });
-}
 
-class NotificationItem {
-  final String id;
-  final String title;
-  final String message;
-  final String timeLabel;
-  final String sectionLabel;
-  final String type;
-  final String leadingAssetPath;
-  final bool isUnread;
-
-  const NotificationItem({
-    required this.id,
-    required this.title,
-    required this.message,
-    required this.timeLabel,
-    required this.sectionLabel,
-    required this.type,
-    required this.leadingAssetPath,
-    required this.isUnread,
-  });
-
-  NotificationItem copyWith({
-    String? id,
+  NotificationsFeed copyWith({
     String? title,
-    String? message,
-    String? timeLabel,
-    String? sectionLabel,
-    String? type,
-    String? leadingAssetPath,
-    bool? isUnread,
+    List<NotificationFilter>? filters,
+    List<NotificationItem>? items,
   }) {
-    return NotificationItem(
-      id: id ?? this.id,
+    return NotificationsFeed(
       title: title ?? this.title,
-      message: message ?? this.message,
-      timeLabel: timeLabel ?? this.timeLabel,
-      sectionLabel: sectionLabel ?? this.sectionLabel,
-      type: type ?? this.type,
-      leadingAssetPath: leadingAssetPath ?? this.leadingAssetPath,
-      isUnread: isUnread ?? this.isUnread,
+      filters: filters ?? this.filters,
+      items: items ?? this.items,
     );
   }
 }
