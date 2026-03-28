@@ -5,6 +5,7 @@ import '../../../../core/core.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
+import '../../../sos/presentation/pages/sos_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
 import '../bloc/home_bloc.dart';
@@ -160,23 +161,41 @@ class _HomeTopHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            const Icon(
-              Icons.location_on_rounded,
-              size: 20,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              city,
-              style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
-            ),
-          ],
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              const Icon(
+                Icons.location_on_rounded,
+                size: 20,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  city,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.body2.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 12),
         Row(
           children: <Widget>[
             const _CalendarActionButton(),
+            const SizedBox(width: 11),
+            _SosShortcutButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SosPage(),
+                  ),
+                );
+              },
+            ),
             const SizedBox(width: 11),
             _ProfileButton(
               onTap: () {
@@ -198,6 +217,38 @@ class _HomeTopHeader extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _SosShortcutButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _SosShortcutButton({
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            color: BrandColors.primary50,
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Image.asset(
+            'assets/icons/sos.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
     );
   }
 }
