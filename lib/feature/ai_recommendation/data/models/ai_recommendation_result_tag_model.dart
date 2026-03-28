@@ -12,10 +12,6 @@ class AiRecommendationResultTagModel {
   });
 
   AiRecommendationResultTag toEntity() {
-    return AiRecommendationResultTag(
-      id: id,
-      label: label,
-      iconKey: iconKey,
-    );
+    return AiRecommendationResultTag(id: id, label: label, iconKey: iconKey);
   }
 }

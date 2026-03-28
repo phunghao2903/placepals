@@ -16,8 +16,6 @@ void registerSosDependencies(GetIt getIt) {
       () => GetSosFeedUseCase(getIt<SosRepository>()),
     )
     ..registerFactory<SosBloc>(
-      () => SosBloc(
-        getSosFeedUseCase: getIt<GetSosFeedUseCase>(),
-      ),
+      () => SosBloc(getSosFeedUseCase: getIt<GetSosFeedUseCase>()),
     );
 }

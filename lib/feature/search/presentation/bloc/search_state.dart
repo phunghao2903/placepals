@@ -1,11 +1,6 @@
 part of 'search_bloc.dart';
 
-enum SearchStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum SearchStatus { initial, loading, success, failure }
 
 class SearchState {
   final SearchStatus status;

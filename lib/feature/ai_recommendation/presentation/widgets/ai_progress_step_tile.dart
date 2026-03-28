@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 
-enum AiProgressStepVisualState {
-  done,
-  loading,
-  pending,
-}
+enum AiProgressStepVisualState { done, loading, pending }
 
 class AiProgressStepTile extends StatelessWidget {
   final String label;
@@ -46,9 +42,7 @@ class AiProgressStepTile extends StatelessWidget {
 class _StepIndicator extends StatelessWidget {
   final AiProgressStepVisualState visualState;
 
-  const _StepIndicator({
-    required this.visualState,
-  });
+  const _StepIndicator({required this.visualState});
 
   @override
   Widget build(BuildContext context) {

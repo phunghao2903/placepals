@@ -10,6 +10,9 @@ import '../../feature/profile/profile_injection.dart';
 import '../../feature/search/search_injection.dart';
 import '../../feature/signup_signin/signup_signin_injection.dart';
 import '../../feature/sos/sos_injection.dart';
+import '../firebase/firebase_auth_service.dart';
+import '../firebase/push_notification_service.dart';
+import '../firebase/welcome_push_coordinator.dart';
 import '../services/time_provider.dart';
 import '../utils/app_logger.dart';
 
@@ -26,6 +29,26 @@ void _registerCore() {
   }
   if (!getIt.isRegistered<TimeProvider>()) {
     getIt.registerLazySingleton<TimeProvider>(SystemTimeProvider.new);
+  }
+  if (!getIt.isRegistered<FirebaseAuthService>()) {
+    getIt.registerLazySingleton<FirebaseAuthService>(FirebaseAuthService.new);
+  }
+  if (!getIt.isRegistered<PushNotificationService>()) {
+    getIt.registerLazySingleton<PushNotificationService>(
+      () => PushNotificationService(
+        authService: getIt<FirebaseAuthService>(),
+        logger: getIt<AppLogger>(),
+      ),
+    );
+  }
+  if (!getIt.isRegistered<WelcomePushCoordinator>()) {
+    getIt.registerLazySingleton<WelcomePushCoordinator>(
+      () => WelcomePushCoordinator(
+        authService: getIt<FirebaseAuthService>(),
+        pushNotificationService: getIt<PushNotificationService>(),
+        logger: getIt<AppLogger>(),
+      ),
+    );
   }
 }
 

@@ -121,10 +121,10 @@ class _AiAskPageState extends State<AiAskPage> {
                                   expands: true,
                                   onChanged: (value) {
                                     context.read<AiRecommendationBloc>().add(
-                                          AiRecommendationPromptChanged(
-                                            prompt: value,
-                                          ),
-                                        );
+                                      AiRecommendationPromptChanged(
+                                        prompt: value,
+                                      ),
+                                    );
                                   },
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
@@ -140,8 +140,7 @@ class _AiAskPageState extends State<AiAskPage> {
                                         size: 28,
                                       ),
                                     ),
-                                    prefixIconConstraints:
-                                        const BoxConstraints(
+                                    prefixIconConstraints: const BoxConstraints(
                                       minWidth: 38,
                                       minHeight: 28,
                                     ),
@@ -189,21 +188,23 @@ class _AiAskPageState extends State<AiAskPage> {
                         Wrap(
                           spacing: 12,
                           runSpacing: 16,
-                          children: feed.suggestions.map((item) {
-                            final isSelected = state.selectedSuggestionIds
-                                .contains(item.id);
-                            return AiAskSuggestionChip(
-                              label: item.label,
-                              isSelected: isSelected,
-                              onTap: () {
-                                context.read<AiRecommendationBloc>().add(
+                          children: feed.suggestions
+                              .map((item) {
+                                final isSelected = state.selectedSuggestionIds
+                                    .contains(item.id);
+                                return AiAskSuggestionChip(
+                                  label: item.label,
+                                  isSelected: isSelected,
+                                  onTap: () {
+                                    context.read<AiRecommendationBloc>().add(
                                       AiRecommendationSuggestionToggled(
                                         suggestionId: item.id,
                                       ),
                                     );
-                              },
-                            );
-                          }).toList(growable: false),
+                                  },
+                                );
+                              })
+                              .toList(growable: false),
                         ),
                         const SizedBox(height: 290),
                         SizedBox(
@@ -215,8 +216,8 @@ class _AiAskPageState extends State<AiAskPage> {
                                     Navigator.of(context).push(
                                       MaterialPageRoute<void>(
                                         builder: (_) => BlocProvider.value(
-                                          value:
-                                              context.read<AiRecommendationBloc>(),
+                                          value: context
+                                              .read<AiRecommendationBloc>(),
                                           child: const AiProgressPage(),
                                         ),
                                       ),

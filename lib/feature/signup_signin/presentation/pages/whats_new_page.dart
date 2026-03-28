@@ -60,7 +60,9 @@ class WhatsNewPage extends StatelessWidget {
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.18),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.18,
+                                    ),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
@@ -75,7 +77,9 @@ class WhatsNewPage extends StatelessWidget {
                                   children: <Widget>[
                                     _MiniBadge(
                                       icon: Icons.people_alt_outlined,
-                                      color: AppColors.primary.withValues(alpha: 0.88),
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.88,
+                                      ),
                                     ),
                                     const SizedBox(width: 10),
                                     _MiniBadge(

@@ -94,8 +94,8 @@ class _SearchViewState extends State<_SearchView> {
                       hintText: feed.searchHint,
                       onChanged: (value) {
                         context.read<SearchBloc>().add(
-                              SearchQueryChanged(query: value),
-                            );
+                          SearchQueryChanged(query: value),
+                        );
                       },
                       onBack: () => Navigator.of(context).pop(),
                     ),
@@ -113,8 +113,8 @@ class _SearchViewState extends State<_SearchView> {
                               isSelected: item.isSelected,
                               onTap: () {
                                 context.read<SearchBloc>().add(
-                                      SearchFilterSelected(filterId: item.id),
-                                    );
+                                  SearchFilterSelected(filterId: item.id),
+                                );
                               },
                             ),
                           ),
@@ -133,10 +133,8 @@ class _SearchViewState extends State<_SearchView> {
                           query: state.query,
                           onToggleFavorite: () {
                             context.read<SearchBloc>().add(
-                                  SearchFavoriteToggled(
-                                    destinationId: item.id,
-                                  ),
-                                );
+                              SearchFavoriteToggled(destinationId: item.id),
+                            );
                           },
                         ),
                       );

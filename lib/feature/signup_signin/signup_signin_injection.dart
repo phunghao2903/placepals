@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../../core/firebase/firebase_auth_service.dart';
+import '../../core/firebase/welcome_push_coordinator.dart';
 import 'data/datasources/signup_signin_remote_datasource.dart';
 import 'data/repositories/signup_signin_repository_impl.dart';
 import 'domain/repositories/signup_signin_repository.dart';
@@ -35,6 +36,7 @@ void registerSignupSigninDependencies(GetIt getIt) {
         loginUseCase: getIt<LoginUseCase>(),
         registerUseCase: getIt<RegisterUseCase>(),
         forgotPasswordUseCase: getIt<ForgotPasswordUseCase>(),
+        welcomePushCoordinator: getIt<WelcomePushCoordinator>(),
       ),
     );
 }

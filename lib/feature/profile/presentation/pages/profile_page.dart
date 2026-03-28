@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
 import '../../../../core/firebase/firebase_auth_service.dart';
+import '../../../../core/firebase/push_notification_service.dart';
 import '../../domain/entities/profile_feed.dart';
 import '../bloc/profile_bloc.dart';
 import '../widgets/profile_action_tile.dart';
@@ -414,6 +415,10 @@ class _ProfileContent extends StatelessWidget {
     }
 
     try {
+      try {
+        await getIt<PushNotificationService>()
+            .detachCurrentTokenFromCurrentUser();
+      } catch (_) {}
       await getIt<FirebaseAuthService>().signOut();
       if (!context.mounted) {
         return;

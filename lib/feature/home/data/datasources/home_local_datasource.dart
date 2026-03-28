@@ -14,7 +14,11 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
       categories: <PlaceCategoryModel>[
         PlaceCategoryModel(id: 'all', label: 'All', isSelected: true),
         PlaceCategoryModel(id: 'coffee', label: 'Coffee', isSelected: false),
-        PlaceCategoryModel(id: 'outdoors', label: 'Outdoors', isSelected: false),
+        PlaceCategoryModel(
+          id: 'outdoors',
+          label: 'Outdoors',
+          isSelected: false,
+        ),
         PlaceCategoryModel(id: 'bar', label: 'Bar', isSelected: false),
       ],
       places: <PlaceItemModel>[

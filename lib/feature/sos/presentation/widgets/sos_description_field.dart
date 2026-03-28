@@ -30,9 +30,7 @@ class SosDescriptionField extends StatelessWidget {
         maxLines: null,
         expands: true,
         textAlignVertical: TextAlignVertical.top,
-        style: AppTextStyles.body2.copyWith(
-          color: AppColors.textPrimary,
-        ),
+        style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,

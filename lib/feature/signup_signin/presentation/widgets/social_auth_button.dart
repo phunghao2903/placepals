@@ -35,7 +35,9 @@ class SocialAuthButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: BorderRadius.circular(18),
-              border: borderSide != null ? Border.fromBorderSide(borderSide!) : null,
+              border: borderSide != null
+                  ? Border.fromBorderSide(borderSide!)
+                  : null,
               boxShadow:
                   boxShadow ??
                   <BoxShadow>[

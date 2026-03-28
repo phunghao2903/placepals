@@ -54,6 +54,18 @@ class FirebaseAuthService {
     return _auth.signOut();
   }
 
+  Future<void> markCurrentUserLogin() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    await _firestore.collection('users').doc(user.uid).set(<String, dynamic>{
+      'lastLoginAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
   Future<void> saveUserProfile({
     required String uid,
     required String fullName,

@@ -10,9 +10,6 @@ class AiRecommendationProgressStepModel {
   });
 
   AiRecommendationProgressStep toEntity() {
-    return AiRecommendationProgressStep(
-      id: id,
-      label: label,
-    );
+    return AiRecommendationProgressStep(id: id, label: label);
   }
 }

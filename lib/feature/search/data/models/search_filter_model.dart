@@ -12,10 +12,6 @@ class SearchFilterModel {
   });
 
   SearchFilter toEntity() {
-    return SearchFilter(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return SearchFilter(id: id, label: label, isSelected: isSelected);
   }
 }

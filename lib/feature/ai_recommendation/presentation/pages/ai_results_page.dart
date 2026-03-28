@@ -216,10 +216,7 @@ class _IconCircleButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
 
-  const _IconCircleButton({
-    required this.icon,
-    this.onTap,
-  });
+  const _IconCircleButton({required this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -239,10 +236,7 @@ class _IconCircleButton extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(
-          icon,
-          color: AppColors.textPrimary,
-        ),
+        child: Icon(icon, color: AppColors.textPrimary),
       ),
     );
   }

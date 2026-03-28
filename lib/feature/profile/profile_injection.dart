@@ -18,8 +18,6 @@ void registerProfileDependencies(GetIt getIt) {
       () => GetProfileFeedUseCase(getIt<ProfileRepository>()),
     )
     ..registerFactory<ProfileBloc>(
-      () => ProfileBloc(
-        getProfileFeedUseCase: getIt<GetProfileFeedUseCase>(),
-      ),
+      () => ProfileBloc(getProfileFeedUseCase: getIt<GetProfileFeedUseCase>()),
     );
 }
