@@ -4,18 +4,9 @@ import '../../../../core/core.dart';
 import 'auth_primary_button.dart';
 
 class AuthSuccessDialog extends StatelessWidget {
-  final String title;
-  final String message;
-  final String highlightMessage;
   final VoidCallback onContinue;
 
-  const AuthSuccessDialog({
-    super.key,
-    required this.title,
-    required this.message,
-    required this.highlightMessage,
-    required this.onContinue,
-  });
+  const AuthSuccessDialog({super.key, required this.onContinue});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +33,7 @@ class AuthSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              title,
+              'Account Created! ??',
               textAlign: TextAlign.center,
               style: AppTextStyles.heading4.copyWith(
                 color: AppColors.textPrimary,
@@ -50,7 +41,7 @@ class AuthSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              message,
+              'Welcome to PlacePals! Your account has been successfully created.',
               textAlign: TextAlign.center,
               style: AppTextStyles.body2.copyWith(
                 color: AppColors.textSecondary,
@@ -66,7 +57,7 @@ class AuthSuccessDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Icon(
                     Icons.favorite_rounded,
@@ -74,14 +65,10 @@ class AuthSuccessDialog extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      highlightMessage,
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      style: AppTextStyles.body2.copyWith(
-                        color: const Color(0xFFE86152),
-                      ),
+                  Text(
+                    'Redirecting to login...',
+                    style: AppTextStyles.body2.copyWith(
+                      color: const Color(0xFFE86152),
                     ),
                   ),
                 ],

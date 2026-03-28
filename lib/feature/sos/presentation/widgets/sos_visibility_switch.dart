@@ -16,11 +16,12 @@ class SosVisibilitySwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(4),
+      width: 238,
+      height: 44,
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: NeutralColors.neutral100,
-        borderRadius: BorderRadius.circular(999),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
         children: items
@@ -33,17 +34,14 @@ class SosVisibilitySwitch extends StatelessWidget {
                   child: Material(
                     color: item.isSelected
                         ? AppSemanticColors.primary
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(999),
+                        : AppSemanticColors.secondary,
+                    borderRadius: BorderRadius.circular(24),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(24),
                       onTap: () => onSelected(item.id),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 9,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -54,8 +52,6 @@ class SosVisibilitySwitch extends StatelessWidget {
                                 color: item.isSelected
                                     ? Colors.white
                                     : AppSemanticColors.primary,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),

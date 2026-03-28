@@ -1,8 +1,7 @@
 import 'package:get_it/get_it.dart';
 
-import '../../core/firebase/firebase_auth_service.dart';
 import 'data/datasources/notifications_local_datasource.dart';
-import 'data/datasources/signup_signin_remote_datasource.dart';
+import 'data/datasources/signup_signin_local_datasource.dart';
 import 'data/repositories/notifications_repository_impl.dart';
 import 'data/repositories/signup_signin_repository_impl.dart';
 import 'domain/repositories/notifications_repository.dart';
@@ -15,19 +14,15 @@ import 'presentation/bloc/notifications_bloc.dart';
 import 'presentation/bloc/signup_signin_bloc.dart';
 
 void registerSignupSigninDependencies(GetIt getIt) {
-  if (!getIt.isRegistered<FirebaseAuthService>()) {
-    getIt.registerLazySingleton<FirebaseAuthService>(FirebaseAuthService.new);
-  }
-
   getIt
-    ..registerLazySingleton<SignupSigninRemoteDataSource>(
-      () => SignupSigninRemoteDataSourceImpl(getIt<FirebaseAuthService>()),
+    ..registerLazySingleton<SignupSigninLocalDataSource>(
+      SignupSigninLocalDataSourceImpl.new,
     )
     ..registerLazySingleton<NotificationsLocalDataSource>(
       NotificationsLocalDataSourceImpl.new,
     )
     ..registerLazySingleton<SignupSigninRepository>(
-      () => SignupSigninRepositoryImpl(getIt<SignupSigninRemoteDataSource>()),
+      () => SignupSigninRepositoryImpl(getIt<SignupSigninLocalDataSource>()),
     )
     ..registerLazySingleton<NotificationsRepository>(
       () => NotificationsRepositoryImpl(getIt<NotificationsLocalDataSource>()),

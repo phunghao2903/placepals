@@ -163,8 +163,8 @@ class _WelcomePageState extends State<WelcomePage>
                   SizedBox(
                     width: 325,
                     child: AuthPrimaryButton(
-                      label: 'Create Account',
-                      leadingIcon: Icons.person_add_alt_1_rounded,
+                      label: 'Save Changes',
+                      leadingIcon: Icons.check_rounded,
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
@@ -185,7 +185,7 @@ class _WelcomePageState extends State<WelcomePage>
                       );
                     },
                     child: Text(
-                      'Sign In',
+                      'Cancel',
                       style: AppTextStyles.heading3.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -260,48 +260,55 @@ class _WelcomeStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: _AnimatedStatItem(
-            animation: CurvedAnimation(
-              parent: animation,
-              curve: const Interval(0.0, 0.78, curve: Curves.easeOutCubic),
+    return SizedBox(
+      width: 325.39,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: 60.16,
+            child: _AnimatedStatItem(
+              animation: CurvedAnimation(
+                parent: animation,
+                curve: const Interval(0.0, 0.78, curve: Curves.easeOutCubic),
+              ),
+              beginValue: 0,
+              endValue: 10,
+              label: 'Users',
+              formatter: _formatCounterK,
             ),
-            beginValue: 0,
-            endValue: 10,
-            label: 'Users',
-            formatter: _formatCounterK,
           ),
-        ),
-        const _StatDivider(),
-        Expanded(
-          child: _AnimatedStatItem(
-            animation: CurvedAnimation(
-              parent: animation,
-              curve: const Interval(0.24, 0.9, curve: Curves.easeOutCubic),
+          const _StatDivider(),
+          SizedBox(
+            width: 60.16,
+            child: _AnimatedStatItem(
+              animation: CurvedAnimation(
+                parent: animation,
+                curve: const Interval(0.24, 0.9, curve: Curves.easeOutCubic),
+              ),
+              beginValue: 0,
+              endValue: 50,
+              label: 'Places',
+              formatter: _formatCounterK,
             ),
-            beginValue: 0,
-            endValue: 50,
-            label: 'Places',
-            formatter: _formatCounterK,
           ),
-        ),
-        const _StatDivider(),
-        Expanded(
-          child: _AnimatedStatItem(
-            animation: CurvedAnimation(
-              parent: animation,
-              curve: const Interval(0.46, 1.0, curve: Curves.easeOutCubic),
+          const _StatDivider(),
+          SizedBox(
+            width: 50.1,
+            child: _AnimatedStatItem(
+              animation: CurvedAnimation(
+                parent: animation,
+                curve: const Interval(0.46, 1.0, curve: Curves.easeOutCubic),
+              ),
+              beginValue: 3.8,
+              endValue: 4.8,
+              label: 'Rating',
+              showStar: true,
+              formatter: _formatCounterRating,
             ),
-            beginValue: 3.8,
-            endValue: 4.8,
-            label: 'Rating',
-            showStar: true,
-            formatter: _formatCounterRating,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -314,7 +321,7 @@ class _StatDivider extends StatelessWidget {
     return Container(
       width: 1,
       height: 40,
-      margin: const EdgeInsets.symmetric(horizontal: 18),
+      margin: const EdgeInsets.symmetric(horizontal: 31.5),
       color: const Color(0xFFF4F1F0),
     );
   }
@@ -344,16 +351,8 @@ class _AnimatedStatItem extends StatelessWidget {
       builder: (BuildContext context, _) {
         final double t = animation.value.clamp(0, 1);
         final double value = lerpDouble(beginValue, endValue, t) ?? endValue;
-        final double slide = lerpDouble(
-          18,
-          0,
-          Curves.easeOutCubic.transform(t),
-        )!;
-        final double scale = lerpDouble(
-          0.78,
-          1.0,
-          Curves.easeOutCubic.transform(t),
-        )!;
+        final double slide = lerpDouble(18, 0, Curves.easeOutCubic.transform(t))!;
+        final double scale = lerpDouble(0.78, 1.0, Curves.easeOutBack.transform(t))!;
         final double opacity = lerpDouble(0.18, 1.0, t)!;
 
         return Transform.translate(
@@ -376,28 +375,25 @@ class _AnimatedStatItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   if (showStar)
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Icon(
-                            Icons.star_rounded,
-                            size: 12,
-                            color: AppColors.warning,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Icon(
+                          Icons.star_rounded,
+                          size: 12,
+                          color: AppColors.warning,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          label,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                            height: 1.1,
                           ),
-                          const SizedBox(width: 2),
-                          Text(
-                            label,
-                            style: AppTextStyles.caption.copyWith(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                              height: 1.1,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   else
                     Text(
@@ -516,3 +512,5 @@ class _WelcomeFeatureCard extends StatelessWidget {
     );
   }
 }
+
+
