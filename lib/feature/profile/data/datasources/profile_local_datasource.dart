@@ -14,7 +14,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
       user: ProfileUserModel(
         name: 'Sarah Johnson',
         username: '@sarahjohnson',
-        bio: 'Coffee lover | Travel enthusiast | Sharing hidden gems',
+        bio: 'Coffee lover ☕ | Travel enthusiast\nSharing hidden gems ✨',
         joinedLabel: 'Joined January 2024',
         avatarPath: 'assets/images/profile.jpg',
         summaryStats: <ProfileSummaryStatModel>[

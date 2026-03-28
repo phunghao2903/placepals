@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../../domain/entities/profile_feed.dart';
 import '../bloc/profile_bloc.dart';
+import 'profile_settings_page.dart';
 import '../widgets/profile_action_tile.dart';
 import '../widgets/profile_chip.dart';
 import '../widgets/profile_place_tile.dart';
@@ -26,7 +27,7 @@ class _ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: _ProfileContent.profileCanvas,
       body: SafeArea(
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
@@ -56,12 +57,12 @@ class _ProfileView extends StatelessWidget {
 }
 
 class _ProfileContent extends StatelessWidget {
-  static const Color _profileCardStroke = Color(0xFFF3F4F6);
-  static const Color _profileShadow = Color(0x1A000000);
-  static const Color _profileOrange = Color(0xFFFF6B5A);
-  static const Color _profileOrangeEnd = Color(0xFFFF6900);
-  static const Color _profileSoftOrange = Color(0xFFFFD1CC);
-  static const Color _softWhite = Color(0xCCFFFFFF);
+  static const Color profileCanvas = Color(0xFFFFFAF8);
+  static const Color profileCardStroke = Color(0xFFF5EAE7);
+  static const Color profileShadow = Color(0x14111827);
+  static const Color profileOrange = Color(0xFFFF6B5A);
+  static const Color profileOrangeEnd = Color(0xFFFF6900);
+  static const Color profileSoftOrange = Color(0xFFFFE4DE);
 
   final ProfileFeed feed;
 
@@ -73,47 +74,49 @@ class _ProfileContent extends StatelessWidget {
     final isGrid = feed.viewMode == ProfileViewMode.grid;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(15, 16, 15, 28),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _ProfileHeader(title: feed.title),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           _ProfileHero(user: feed.user),
-          const SizedBox(height: 20),
-          SizedBox(
-            height: 108,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: feed.quickActions.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 15),
-              itemBuilder: (context, index) {
-                final action = feed.quickActions[index];
-                return ProfileActionTile(
-                  label: action.label,
-                  iconKey: action.iconKey,
-                );
-              },
-            ),
+          const SizedBox(height: 16),
+          Row(
+            children: feed.quickActions
+                .map(
+                  (action) => Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right: action == feed.quickActions.last ? 0 : 10,
+                      ),
+                      child: Center(
+                        child: ProfileActionTile(
+                          label: action.label,
+                          iconKey: action.iconKey,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(growable: false),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
             decoration: BoxDecoration(
-              color: _profileOrange,
-              borderRadius: BorderRadius.circular(16),
+              gradient: const LinearGradient(
+                colors: <Color>[Color(0xFFFF7F71), Color(0xFFFF6959)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: const <BoxShadow>[
                 BoxShadow(
-                  color: _profileShadow,
-                  blurRadius: 6,
-                  offset: Offset(0, 4),
-                  spreadRadius: -4,
-                ),
-                BoxShadow(
-                  color: _profileShadow,
-                  blurRadius: 15,
-                  offset: Offset(0, 10),
-                  spreadRadius: -3,
+                  color: profileShadow,
+                  blurRadius: 18,
+                  offset: Offset(0, 14),
+                  spreadRadius: -12,
                 ),
               ],
             ),
@@ -123,15 +126,16 @@ class _ProfileContent extends StatelessWidget {
                   title: 'This Month',
                   titleColor: Colors.white,
                   trailingColor: Colors.white,
+                  icon: Icons.keyboard_arrow_up_rounded,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
                 Row(
                   children: feed.insights
                       .map(
                         (insight) => Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(
-                              right: insight == feed.insights.last ? 0 : 16,
+                              right: insight == feed.insights.last ? 0 : 10,
                             ),
                             child: _InsightCard(insight: insight),
                           ),
@@ -142,29 +146,43 @@ class _ProfileContent extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 22),
-          SizedBox(
-            height: 50,
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: profileCardStroke),
+              boxShadow: const <BoxShadow>[
+                BoxShadow(
+                  color: profileShadow,
+                  blurRadius: 14,
+                  offset: Offset(0, 10),
+                  spreadRadius: -12,
+                ),
+              ],
+            ),
             child: Row(
               children: feed.tabs
                   .map(
                     (tab) => Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
-                          right: tab == feed.tabs.last ? 0 : 10,
+                          right: tab == feed.tabs.last ? 0 : 4,
                         ),
                         child: ProfileChip(
                           label: tab.label,
                           isSelected: tab.isSelected,
-                          height: 40,
+                          height: 36,
                           radius: 14,
-                          selectedBackgroundColor: _profileOrange,
-                          unselectedBackgroundColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          selectedBackgroundColor: profileOrange,
+                          unselectedBackgroundColor: Colors.white,
                           selectedForegroundColor: Colors.white,
                           unselectedForegroundColor: AppColors.textPrimary,
-                          unselectedBorderColor: Colors.transparent,
+                          unselectedBorderColor: Colors.white,
                           selectedFontWeight: FontWeight.w700,
-                          unselectedFontWeight: FontWeight.w700,
+                          unselectedFontWeight: FontWeight.w600,
                           onTap: () {
                             context.read<ProfileBloc>().add(
                               ProfileTabSelected(tabId: tab.id),
@@ -177,15 +195,15 @@ class _ProfileContent extends StatelessWidget {
                   .toList(growable: false),
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 14),
           Row(
             children: <Widget>[
               const Icon(
-                Icons.location_on_outlined,
-                size: 16,
+                Icons.place_outlined,
+                size: 14,
                 color: AppColors.textSecondary,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Text(
                 'Filter by City',
                 style: AppTextStyles.caption.copyWith(
@@ -195,28 +213,31 @@ class _ProfileContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Row(
             children: <Widget>[
               Expanded(
                 child: SizedBox(
-                  height: 38.2,
+                  height: 36,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: feed.cityFilters.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
                     itemBuilder: (context, index) {
                       final filter = feed.cityFilters[index];
                       return ProfileChip(
                         label: '${filter.label} (${filter.count})',
                         isSelected: filter.isSelected,
-                        height: 38.2,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        height: 36,
                         radius: 999,
-                        selectedBackgroundColor: _profileOrange,
+                        selectedBackgroundColor: profileOrange,
                         unselectedBackgroundColor: Colors.white,
                         selectedForegroundColor: Colors.white,
                         unselectedForegroundColor: AppColors.textPrimary,
-                        unselectedBorderColor: const Color(0xFFE8E0DF),
+                        unselectedBorderColor: profileCardStroke,
+                        selectedFontWeight: FontWeight.w600,
+                        unselectedFontWeight: FontWeight.w500,
                         onTap: () {
                           context.read<ProfileBloc>().add(
                             ProfileCityFilterSelected(filterId: filter.id),
@@ -227,47 +248,49 @@ class _ProfileContent extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Container(
                 width: 36,
                 height: 36,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE8E0DF)),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: profileCardStroke),
                 ),
                 child: const Icon(
-                  Icons.expand_more_rounded,
+                  Icons.more_horiz_rounded,
                   size: 18,
                   color: AppColors.textSecondary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Row(
             children: <Widget>[
               Expanded(
                 child: SizedBox(
-                  height: 44,
+                  height: 34,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: feed.sortOptions.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    separatorBuilder: (_, _) => const SizedBox(width: 6),
                     itemBuilder: (context, index) {
                       final sort = feed.sortOptions[index];
                       return ProfileChip(
                         label: sort.label,
                         isSelected: sort.isSelected,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        height: 44,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        height: 34,
                         radius: 10,
-                        selectedBackgroundColor: _profileSoftOrange,
-                        unselectedBackgroundColor: _softWhite,
+                        selectedBackgroundColor: profileSoftOrange,
+                        unselectedBackgroundColor: Colors.transparent,
                         selectedForegroundColor: AppColors.textPrimary,
                         unselectedForegroundColor: AppColors.textPrimary,
                         unselectedBorderColor: Colors.transparent,
                         selectedFontWeight: FontWeight.w600,
+                        unselectedFontWeight: FontWeight.w500,
                         onTap: () {
                           context.read<ProfileBloc>().add(
                             ProfileSortSelected(sortId: sort.id),
@@ -278,13 +301,13 @@ class _ProfileContent extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Container(
-                height: 36,
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(18),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: profileCardStroke),
                 ),
                 child: Row(
                   children: <Widget>[
@@ -316,7 +339,7 @@ class _ProfileContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           if (isGrid)
             GridView.builder(
               shrinkWrap: true,
@@ -326,7 +349,7 @@ class _ProfileContent extends StatelessWidget {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.98,
+                childAspectRatio: 0.72,
               ),
               itemBuilder: (context, index) {
                 return ProfilePlaceTile(
@@ -412,13 +435,28 @@ class _ProfileHeader extends StatelessWidget {
           icon: Icons.arrow_back_ios_new_rounded,
           onTap: () => Navigator.of(context).maybePop(),
         ),
-        const Spacer(),
-        Text(
-          title,
-          style: AppTextStyles.heading3.copyWith(color: AppColors.textPrimary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.heading6.copyWith(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ),
-        const Spacer(),
-        _CircleIconButton(icon: Icons.settings_outlined, onTap: () {}),
+        const SizedBox(width: 12),
+        _CircleIconButton(
+          icon: Icons.settings_outlined,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ProfileSettingsPage(),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -433,21 +471,15 @@ class _ProfileHero extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _ProfileContent._profileCardStroke),
+        border: Border.all(color: _ProfileContent.profileCardStroke),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: _ProfileContent._profileShadow,
-            blurRadius: 10,
-            offset: Offset(0, 8),
-            spreadRadius: -6,
-          ),
-          BoxShadow(
-            color: _ProfileContent._profileShadow,
-            blurRadius: 25,
-            offset: Offset(0, 20),
-            spreadRadius: -5,
+            color: _ProfileContent.profileShadow,
+            blurRadius: 24,
+            offset: Offset(0, 18),
+            spreadRadius: -18,
           ),
         ],
       ),
@@ -457,14 +489,16 @@ class _ProfileHero extends StatelessWidget {
             clipBehavior: Clip.none,
             children: <Widget>[
               Container(
-                height: 128,
+                height: 96,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                   gradient: const LinearGradient(
                     colors: <Color>[
-                      Color(0x00FF6B5A),
-                      _ProfileContent._profileOrange,
-                      _ProfileContent._profileOrangeEnd,
+                      Color(0xFFFFE3D6),
+                      _ProfileContent.profileOrange,
+                      _ProfileContent.profileOrangeEnd,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -473,22 +507,48 @@ class _ProfileHero extends StatelessWidget {
                 child: Stack(
                   children: <Widget>[
                     Positioned(
-                      left: 24,
-                      top: 28,
-                      child: Text(
-                        'PlacePals',
-                        style: AppTextStyles.heading5.copyWith(
-                          color: SemanticTextColors.onBrand,
-                          fontSize: 22,
+                      left: -20,
+                      top: 14,
+                      child: Container(
+                        width: 120,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.10),
+                          borderRadius: BorderRadius.circular(60),
                         ),
                       ),
                     ),
                     Positioned(
-                      right: 16,
-                      bottom: 16,
+                      right: -10,
+                      bottom: -6,
                       child: Container(
-                        width: 36,
-                        height: 36,
+                        width: 160,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(70),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 18,
+                      top: 16,
+                      child: Text(
+                        'PlacePals',
+                        style: AppTextStyles.heading6.copyWith(
+                          color: SemanticTextColors.onBrand,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 14,
+                      bottom: 14,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.9),
                           shape: BoxShape.circle,
@@ -496,7 +556,7 @@ class _ProfileHero extends StatelessWidget {
                         child: const Icon(
                           Icons.camera_alt_outlined,
                           color: AppColors.primary,
-                          size: 18,
+                          size: 16,
                         ),
                       ),
                     ),
@@ -504,33 +564,58 @@ class _ProfileHero extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 24,
-                bottom: -44,
-                child: Container(
-                  width: 112,
-                  height: 112,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    boxShadow: const <BoxShadow>[
-                      BoxShadow(
-                        color: _ProfileContent._profileShadow,
-                        blurRadius: 12,
-                        offset: Offset(0, 6),
+                left: 16,
+                bottom: -28,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Container(
+                      width: 76,
+                      height: 76,
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                        boxShadow: const <BoxShadow>[
+                          BoxShadow(
+                            color: _ProfileContent.profileShadow,
+                            blurRadius: 18,
+                            offset: Offset(0, 10),
+                            spreadRadius: -10,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(user.avatarPath, fit: BoxFit.cover),
-                  ),
+                      child: ClipOval(
+                        child: Image.asset(user.avatarPath, fit: BoxFit.cover),
+                      ),
+                    ),
+                    Positioned(
+                      right: -2,
+                      bottom: -2,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: _ProfileContent.profileOrange,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(
+                          Icons.add_a_photo_rounded,
+                          size: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 44, 24, 24),
+            padding: const EdgeInsets.fromLTRB(16, 38, 16, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -538,29 +623,32 @@ class _ProfileHero extends StatelessWidget {
                   user.name,
                   style: AppTextStyles.heading6.copyWith(
                     color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   user.username,
-                  style: AppTextStyles.body2.copyWith(
+                  style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
+                    fontSize: 12,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Text(
                   user.bio,
                   style: AppTextStyles.body2.copyWith(
                     color: AppColors.textPrimary,
+                    fontSize: 12,
                     height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
                 Row(
                   children: <Widget>[
                     const Icon(
-                      Icons.calendar_month_outlined,
-                      size: 16,
+                      Icons.calendar_today_outlined,
+                      size: 13,
                       color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 8),
@@ -568,7 +656,7 @@ class _ProfileHero extends StatelessWidget {
                       user.joinedLabel,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.textSecondary,
-                        fontSize: 14,
+                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -584,13 +672,15 @@ class _ProfileHero extends StatelessWidget {
                                 stat.value,
                                 style: AppTextStyles.heading6.copyWith(
                                   color: AppColors.textPrimary,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 4),
                               Text(
                                 stat.label,
                                 style: AppTextStyles.caption.copyWith(
                                   color: AppColors.textSecondary,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
@@ -612,20 +702,28 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final Color titleColor;
   final Color trailingColor;
+  final IconData icon;
 
   const _SectionHeader({
     required this.title,
     this.titleColor = AppColors.textPrimary,
     this.trailingColor = AppColors.textSecondary,
+    this.icon = Icons.chevron_right_rounded,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Text(title, style: AppTextStyles.heading3.copyWith(color: titleColor)),
+        Text(
+          title,
+          style: AppTextStyles.heading6.copyWith(
+            color: titleColor,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         const Spacer(),
-        Icon(Icons.chevron_right_rounded, size: 20, color: trailingColor),
+        Icon(icon, size: 18, color: trailingColor),
       ],
     );
   }
@@ -642,25 +740,59 @@ class _InsightCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text(
-          insight.label,
-          style: AppTextStyles.caption.copyWith(color: Colors.white),
+        Row(
+          children: <Widget>[
+            Icon(
+              _iconForInsight(insight.id),
+              size: 10,
+              color: Colors.white.withValues(alpha: 0.92),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                insight.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.caption.copyWith(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 12),
         Text(
           insight.value,
           style: AppTextStyles.heading5.copyWith(
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           insight.delta,
-          style: AppTextStyles.caption.copyWith(color: Colors.white),
+          style: AppTextStyles.caption.copyWith(
+            color: Colors.white.withValues(alpha: 0.92),
+            fontSize: 10,
+          ),
         ),
       ],
     );
+  }
+
+  IconData _iconForInsight(String id) {
+    switch (id) {
+      case 'views':
+        return Icons.visibility_outlined;
+      case 'likes':
+        return Icons.favorite_border_rounded;
+      case 'followers':
+        return Icons.person_add_alt_1_rounded;
+      default:
+        return Icons.circle_outlined;
+    }
   }
 }
 
@@ -678,20 +810,22 @@ class _ViewToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: isSelected ? AppSemanticColors.primary : Colors.transparent,
-      shape: const CircleBorder(),
+      color: isSelected ? AppSemanticColors.primary : const Color(0xFFF6EFED),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        customBorder: const CircleBorder(),
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: SizedBox(
-          width: 28,
-          height: 28,
-          child: Icon(
-            icon,
-            size: 16,
-            color: isSelected
-                ? SemanticTextColors.onBrand
-                : AppColors.textSecondary,
+          width: 30,
+          height: 30,
+          child: Center(
+            child: Icon(
+              icon,
+              size: 15,
+              color: isSelected
+                  ? SemanticTextColors.onBrand
+                  : AppColors.textSecondary,
+            ),
           ),
         ),
       ),
@@ -708,15 +842,22 @@ class _CircleIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surfaceSoft,
+      color: Colors.white,
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Icon(icon, size: 20, color: AppColors.textPrimary),
+          width: 36,
+          height: 36,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: _ProfileContent.profileCardStroke),
+            ),
+            child: Icon(icon, size: 18, color: AppColors.textPrimary),
+          ),
         ),
       ),
     );

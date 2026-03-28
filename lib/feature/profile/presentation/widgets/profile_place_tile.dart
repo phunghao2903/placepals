@@ -21,24 +21,25 @@ class ProfilePlaceTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFF5EAE7)),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-            spreadRadius: -2,
+            color: Color(0x14111827),
+            blurRadius: 16,
+            offset: Offset(0, 12),
+            spreadRadius: -10,
           ),
           BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 6,
-            offset: Offset(0, 4),
-            spreadRadius: -1,
+            color: Color(0x12111827),
+            blurRadius: 20,
+            offset: Offset(0, 18),
+            spreadRadius: -18,
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -51,69 +52,71 @@ class ProfilePlaceTile extends StatelessWidget {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: <Color>[
-                      Color(0x99000000),
-                      Color(0x00000000),
+                      Color(0xBF161616),
+                      Color(0x40161616),
                       Color(0x00000000),
                     ],
-                    stops: <double>[0, 0.58, 1],
+                    stops: <double>[0, 0.42, 1],
                   ),
                 ),
               ),
             ),
             Positioned(
-              top: 13,
+              top: 12,
               left: 12,
               child: _InfoPill(
                 label: place.city,
-                backgroundColor: const Color(0x80000000),
+                backgroundColor: const Color(0xE6FF6B5A),
               ),
             ),
             Positioned(
-              top: 13,
+              top: 12,
               right: 12,
               child: _InfoPill(
                 label: place.rating.toStringAsFixed(1),
-                backgroundColor: const Color(0x80000000),
+                backgroundColor: const Color(0xE6FFFFFF),
                 leading: const Icon(
                   Icons.star_rounded,
                   size: 14,
-                  color: Colors.white,
+                  color: AppColors.warning,
                 ),
               ),
             ),
             if (place.isSaved)
               Positioned(
-                top: 43,
-                right: 13,
+                bottom: 12,
+                right: 12,
                 child: Container(
-                  width: 38,
+                  width: 32,
                   height: 32,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: const Color(0xE6FF6B5A),
-                    borderRadius: BorderRadius.circular(999),
+                    shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.bookmark_rounded,
-                    size: 18,
+                    size: 16,
                     color: Colors.white,
                   ),
                 ),
               ),
             Positioned(
               left: 12,
-              right: 12,
+              right: 50,
               bottom: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    place.title,
-                    maxLines: 1,
+                    place.title.replaceAll('The ', ''),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.body2.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
+                      height: 1.2,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -121,7 +124,7 @@ class ProfilePlaceTile extends StatelessWidget {
                     children: <Widget>[
                       const Icon(
                         Icons.visibility_outlined,
-                        size: 14,
+                        size: 13,
                         color: Colors.white,
                       ),
                       const SizedBox(width: 4),
@@ -129,12 +132,13 @@ class ProfilePlaceTile extends StatelessWidget {
                         '${place.views}',
                         style: AppTextStyles.caption.copyWith(
                           color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 11,
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 12),
                       const Icon(
                         Icons.favorite_outline_rounded,
-                        size: 14,
+                        size: 13,
                         color: Colors.white,
                       ),
                       const SizedBox(width: 4),
@@ -142,6 +146,7 @@ class ProfilePlaceTile extends StatelessWidget {
                         '${place.likes}',
                         style: AppTextStyles.caption.copyWith(
                           color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -168,6 +173,7 @@ class _ProfilePlaceListTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFF5EAE7)),
       ),
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -259,6 +265,8 @@ class _InfoPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool darkBackground = backgroundColor.computeLuminance() < 0.6;
+
     return Container(
       height: 24,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -273,10 +281,9 @@ class _InfoPill extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.caption.copyWith(
-              color: backgroundColor.computeLuminance() < 0.4
-                  ? Colors.white
-                  : AppColors.textPrimary,
+              color: darkBackground ? Colors.white : AppColors.textPrimary,
               fontWeight: FontWeight.w600,
+              fontSize: 11,
             ),
           ),
         ],
