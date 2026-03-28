@@ -4,6 +4,7 @@ import '../../../../core/core.dart';
 import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
 import 'change_password_page.dart';
 import 'edit_profile_page.dart';
+import 'profile_privacy_page.dart';
 
 const Color _profileSettingsCanvas = Color(0xFFFFFAF8);
 const Color _profileSettingsStroke = Color(0xFFF3E8E5);
@@ -183,7 +184,13 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                 iconColor: const Color(0xFF4A7CFF),
                 title: 'Data & Privacy',
                 subtitle: 'Download or delete your data',
-                onTap: _showNotImplemented,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ProfilePrivacyPage(),
+                    ),
+                  );
+                },
               ),
             ],
           ),

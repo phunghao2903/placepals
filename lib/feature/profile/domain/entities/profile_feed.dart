@@ -203,4 +203,26 @@ class ProfilePlaceItem {
     required this.imagePath,
     required this.isSaved,
   });
+
+  ProfilePlaceItem copyWith({
+    String? id,
+    String? title,
+    String? city,
+    double? rating,
+    int? views,
+    int? likes,
+    String? imagePath,
+    bool? isSaved,
+  }) {
+    return ProfilePlaceItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      city: city ?? this.city,
+      rating: rating ?? this.rating,
+      views: views ?? this.views,
+      likes: likes ?? this.likes,
+      imagePath: imagePath ?? this.imagePath,
+      isSaved: isSaved ?? this.isSaved,
+    );
+  }
 }

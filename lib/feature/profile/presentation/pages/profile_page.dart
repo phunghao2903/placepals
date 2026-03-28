@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../../domain/entities/profile_feed.dart';
 import '../bloc/profile_bloc.dart';
+import 'find_friends_page.dart';
+import 'profile_achievements_page.dart';
+import 'profile_privacy_page.dart';
 import 'profile_settings_page.dart';
 import '../widgets/profile_action_tile.dart';
 import '../widgets/profile_chip.dart';
@@ -72,6 +75,13 @@ class _ProfileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final visiblePlaces = _resolvePlaces(feed);
     final isGrid = feed.viewMode == ProfileViewMode.grid;
+    final selectedTab = _selectedTab(feed);
+    final isInsightsTab = selectedTab.id == 'insights';
+    final isSavedTab = selectedTab.id == 'saved';
+    final selectedCity = _selectedCity(feed);
+    final groupedCitySections = _resolveCitySections(feed);
+    final showsCitySections =
+        selectedTab.id == 'places' && selectedCity.id == 'all';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
@@ -94,6 +104,8 @@ class _ProfileContent extends StatelessWidget {
                         child: ProfileActionTile(
                           label: action.label,
                           iconKey: action.iconKey,
+                          onTap: () =>
+                              _handleQuickActionTap(context, action),
                         ),
                       ),
                     ),
@@ -196,199 +208,294 @@ class _ProfileContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          Row(
-            children: <Widget>[
-              const Icon(
-                Icons.place_outlined,
-                size: 14,
-                color: AppColors.textSecondary,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Filter by City',
-                style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(
-                  height: 36,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: feed.cityFilters.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final filter = feed.cityFilters[index];
-                      return ProfileChip(
-                        label: '${filter.label} (${filter.count})',
-                        isSelected: filter.isSelected,
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        height: 36,
-                        radius: 999,
-                        selectedBackgroundColor: profileOrange,
-                        unselectedBackgroundColor: Colors.white,
-                        selectedForegroundColor: Colors.white,
-                        unselectedForegroundColor: AppColors.textPrimary,
-                        unselectedBorderColor: profileCardStroke,
-                        selectedFontWeight: FontWeight.w600,
-                        unselectedFontWeight: FontWeight.w500,
-                        onTap: () {
-                          context.read<ProfileBloc>().add(
-                            ProfileCityFilterSelected(filterId: filter.id),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                width: 36,
-                height: 36,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: profileCardStroke),
-                ),
-                child: const Icon(
-                  Icons.more_horiz_rounded,
-                  size: 18,
+          if (isInsightsTab) ...<Widget>[
+            _InsightsDashboard(places: _resolveInsightsPlaces(feed)),
+          ] else if (isSavedTab) ...<Widget>[
+            _SavedPlacesSection(places: _resolveSavedPlaces(feed)),
+          ] else ...<Widget>[
+            Row(
+              children: <Widget>[
+                const Icon(
+                  Icons.place_outlined,
+                  size: 14,
                   color: AppColors.textSecondary,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(
-                  height: 34,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: feed.sortOptions.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 6),
-                    itemBuilder: (context, index) {
-                      final sort = feed.sortOptions[index];
-                      return ProfileChip(
-                        label: sort.label,
-                        isSelected: sort.isSelected,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        height: 34,
-                        radius: 10,
-                        selectedBackgroundColor: profileSoftOrange,
-                        unselectedBackgroundColor: Colors.transparent,
-                        selectedForegroundColor: AppColors.textPrimary,
-                        unselectedForegroundColor: AppColors.textPrimary,
-                        unselectedBorderColor: Colors.transparent,
-                        selectedFontWeight: FontWeight.w600,
-                        unselectedFontWeight: FontWeight.w500,
-                        onTap: () {
-                          context.read<ProfileBloc>().add(
-                            ProfileSortSelected(sortId: sort.id),
-                          );
-                        },
-                      );
-                    },
+                const SizedBox(width: 6),
+                Text(
+                  'Filter by City',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: profileCardStroke),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    _ViewToggleButton(
-                      icon: Icons.grid_view_rounded,
-                      isSelected: isGrid,
-                      onTap: () {
-                        context.read<ProfileBloc>().add(
-                          const ProfileViewModeChanged(
-                            viewMode: ProfileViewMode.grid,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 4),
-                    _ViewToggleButton(
-                      icon: Icons.view_agenda_rounded,
-                      isSelected: !isGrid,
-                      onTap: () {
-                        context.read<ProfileBloc>().add(
-                          const ProfileViewModeChanged(
-                            viewMode: ProfileViewMode.list,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          if (isGrid)
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: visiblePlaces.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 0.72,
-              ),
-              itemBuilder: (context, index) {
-                return ProfilePlaceTile(
-                  place: visiblePlaces[index],
-                  compact: false,
-                );
-              },
-            )
-          else
-            Column(
-              children: visiblePlaces
-                  .map(
-                    (place) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: place == visiblePlaces.last ? 0 : 12,
-                      ),
-                      child: ProfilePlaceTile(place: place, compact: true),
-                    ),
-                  )
-                  .toList(growable: false),
+              ],
             ),
+            const SizedBox(height: 10),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(
+                    height: 36,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: feed.cityFilters.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        final filter = feed.cityFilters[index];
+                        return ProfileChip(
+                          label: '${filter.label} (${filter.count})',
+                          isSelected: filter.isSelected,
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          height: 36,
+                          radius: 999,
+                          selectedBackgroundColor: profileOrange,
+                          unselectedBackgroundColor: Colors.white,
+                          selectedForegroundColor: Colors.white,
+                          unselectedForegroundColor: AppColors.textPrimary,
+                          unselectedBorderColor: profileCardStroke,
+                          selectedFontWeight: FontWeight.w600,
+                          unselectedFontWeight: FontWeight.w500,
+                          onTap: () {
+                            context.read<ProfileBloc>().add(
+                              ProfileCityFilterSelected(filterId: filter.id),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Material(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: () => _showCitySelectorSheet(context),
+                    child: Container(
+                      width: 40,
+                      height: 36,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: profileCardStroke),
+                      ),
+                      child: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 20,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(
+                    height: 34,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: feed.sortOptions.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 6),
+                      itemBuilder: (context, index) {
+                        final sort = feed.sortOptions[index];
+                        return ProfileChip(
+                          label: sort.label,
+                          isSelected: sort.isSelected,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          height: 34,
+                          radius: 10,
+                          selectedBackgroundColor: profileSoftOrange,
+                          unselectedBackgroundColor: Colors.transparent,
+                          selectedForegroundColor: AppColors.textPrimary,
+                          unselectedForegroundColor: AppColors.textPrimary,
+                          unselectedBorderColor: Colors.transparent,
+                          selectedFontWeight: FontWeight.w600,
+                          unselectedFontWeight: FontWeight.w500,
+                          onTap: () {
+                            context.read<ProfileBloc>().add(
+                              ProfileSortSelected(sortId: sort.id),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: profileCardStroke),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      _ViewToggleButton(
+                        icon: Icons.grid_view_rounded,
+                        isSelected: isGrid,
+                        onTap: () {
+                          context.read<ProfileBloc>().add(
+                            const ProfileViewModeChanged(
+                              viewMode: ProfileViewMode.grid,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 4),
+                      _ViewToggleButton(
+                        icon: Icons.view_agenda_rounded,
+                        isSelected: !isGrid,
+                        onTap: () {
+                          context.read<ProfileBloc>().add(
+                            const ProfileViewModeChanged(
+                              viewMode: ProfileViewMode.list,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            if (showsCitySections)
+              Column(
+                children: groupedCitySections
+                    .map(
+                      (section) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom:
+                              section == groupedCitySections.last ? 0 : 18,
+                        ),
+                        child: _CitySectionPreview(
+                          section: section,
+                          onViewAll: () {
+                            context.read<ProfileBloc>().add(
+                              ProfileCityFilterSelected(
+                                filterId: section.filter.id,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+              )
+            else if (isGrid)
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: visiblePlaces.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 14,
+                  crossAxisSpacing: 14,
+                  childAspectRatio: 0.98,
+                ),
+                itemBuilder: (context, index) {
+                  return ProfilePlaceTile(
+                    place: visiblePlaces[index],
+                    compact: false,
+                  );
+                },
+              )
+            else
+              Column(
+                children: visiblePlaces
+                    .map(
+                      (place) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: place == visiblePlaces.last ? 0 : 12,
+                        ),
+                        child: ProfilePlaceTile(place: place, compact: true),
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+          ],
         ],
       ),
     );
   }
 
+  void _handleQuickActionTap(BuildContext context, ProfileQuickAction action) {
+    switch (action.id) {
+      case 'friends':
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const FindFriendsPage()),
+        );
+        break;
+      case 'achievements':
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const ProfileAchievementsPage(),
+          ),
+        );
+        break;
+      case 'privacy':
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const ProfilePrivacyPage(),
+          ),
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${action.label} is not implemented yet.')),
+        );
+        break;
+    }
+  }
+
   List<ProfilePlaceItem> _resolvePlaces(ProfileFeed feed) {
-    final selectedTab = feed.tabs.firstWhere(
+    return _resolvePlacesForFilter(feed: feed);
+  }
+
+  List<ProfilePlaceItem> _resolveInsightsPlaces(ProfileFeed feed) {
+    return feed.places.take(4).toList(growable: false);
+  }
+
+  List<ProfilePlaceItem> _resolveSavedPlaces(ProfileFeed feed) {
+    return feed.places
+        .where((place) => place.isSaved)
+        .toList(growable: false);
+  }
+
+  ProfileTabOption _selectedTab(ProfileFeed feed) {
+    return feed.tabs.firstWhere(
       (tab) => tab.isSelected,
       orElse: () => feed.tabs.first,
     );
-    final selectedCity = feed.cityFilters.firstWhere(
+  }
+
+  ProfileFilterOption _selectedCity(ProfileFeed feed) {
+    return feed.cityFilters.firstWhere(
       (filter) => filter.isSelected,
       orElse: () => feed.cityFilters.first,
     );
+  }
+
+  List<ProfilePlaceItem> _resolvePlacesForFilter({
+    required ProfileFeed feed,
+    String? overrideCityId,
+  }) {
+    final selectedTab = _selectedTab(feed);
     final selectedSort = feed.sortOptions.firstWhere(
       (sort) => sort.isSelected,
       orElse: () => feed.sortOptions.first,
     );
+    final selectedCity = overrideCityId == null
+        ? _selectedCity(feed)
+        : feed.cityFilters.firstWhere(
+            (filter) => filter.id == overrideCityId,
+            orElse: () => feed.cityFilters.first,
+          );
 
     Iterable<ProfilePlaceItem> result = feed.places;
 
@@ -398,7 +505,9 @@ class _ProfileContent extends StatelessWidget {
 
     if (selectedCity.id != 'all') {
       final cityLabel = selectedCity.label.toLowerCase();
-      result = result.where((place) => place.city.toLowerCase() == cityLabel);
+      result = result.where(
+        (place) => place.city.toLowerCase() == cityLabel,
+      );
     }
 
     final list = result.toList(growable: false);
@@ -419,6 +528,49 @@ class _ProfileContent extends StatelessWidget {
     }
 
     return list;
+  }
+
+  List<_CitySectionData> _resolveCitySections(ProfileFeed feed) {
+    return feed.cityFilters
+        .where((filter) => filter.id != 'all')
+        .map(
+          (filter) => _CitySectionData(
+            filter: filter,
+            places: _resolvePlacesForFilter(
+              feed: feed,
+              overrideCityId: filter.id,
+            ),
+          ),
+        )
+        .where((section) => section.places.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  Future<void> _showCitySelectorSheet(BuildContext context) {
+    final selectedCity = _selectedCity(feed);
+
+    return showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: _CitySelectorSheet(
+              options: feed.cityFilters,
+              selectedFilterId: selectedCity.id,
+              onSelected: (filterId) {
+                context.read<ProfileBloc>().add(
+                  ProfileCityFilterSelected(filterId: filterId),
+                );
+                Navigator.of(sheetContext).pop();
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -631,7 +783,6 @@ class _ProfileHero extends StatelessWidget {
                   user.username,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textSecondary,
-                    fontSize: 12,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -639,7 +790,6 @@ class _ProfileHero extends StatelessWidget {
                   user.bio,
                   style: AppTextStyles.body2.copyWith(
                     color: AppColors.textPrimary,
-                    fontSize: 12,
                     height: 1.45,
                   ),
                 ),
@@ -656,7 +806,6 @@ class _ProfileHero extends StatelessWidget {
                       user.joinedLabel,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.textSecondary,
-                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -680,7 +829,6 @@ class _ProfileHero extends StatelessWidget {
                                 stat.label,
                                 style: AppTextStyles.caption.copyWith(
                                   color: AppColors.textSecondary,
-                                  fontSize: 10,
                                 ),
                               ),
                             ],
@@ -755,7 +903,6 @@ class _InsightCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.caption.copyWith(
                   color: Colors.white,
-                  fontSize: 10,
                 ),
               ),
             ),
@@ -764,9 +911,8 @@ class _InsightCard extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           insight.value,
-          style: AppTextStyles.heading5.copyWith(
+          style: AppTextStyles.heading4.copyWith(
             color: Colors.white,
-            fontSize: 26,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -775,7 +921,6 @@ class _InsightCard extends StatelessWidget {
           insight.delta,
           style: AppTextStyles.caption.copyWith(
             color: Colors.white.withValues(alpha: 0.92),
-            fontSize: 10,
           ),
         ),
       ],
@@ -857,6 +1002,987 @@ class _CircleIconButton extends StatelessWidget {
               border: Border.all(color: _ProfileContent.profileCardStroke),
             ),
             child: Icon(icon, size: 18, color: AppColors.textPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InsightsDashboard extends StatelessWidget {
+  final List<ProfilePlaceItem> places;
+
+  const _InsightsDashboard({required this.places});
+
+  @override
+  Widget build(BuildContext context) {
+    final rankedPlaces = places.take(3).toList(growable: false);
+    final averageRating = places.isEmpty
+        ? 0.0
+        : places
+                .map((place) => place.rating)
+                .reduce((value, element) => value + element) /
+            places.length;
+    final totalEngagement = places.fold<int>(
+      0,
+      (sum, place) => sum + place.views,
+    );
+    final ratingProgress = (averageRating / 5).clamp(0.0, 1.0).toDouble();
+    final engagementProgress =
+        (totalEngagement / 1500).clamp(0.0, 1.0).toDouble();
+
+    return Column(
+      children: <Widget>[
+        _InsightsSurface(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const _InsightsSectionTitle(
+                icon: Icons.trending_up_rounded,
+                title: 'Top Performing Places',
+              ),
+              const SizedBox(height: 12),
+              Column(
+                children: rankedPlaces
+                    .asMap()
+                    .entries
+                    .map(
+                      (entry) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: entry.key == rankedPlaces.length - 1 ? 0 : 12,
+                        ),
+                        child: _TopPerformerRow(
+                          rank: entry.key + 1,
+                          place: entry.value,
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        _InsightsSurface(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const _InsightsSectionTitle(
+                icon: Icons.insert_chart_outlined_rounded,
+                title: 'Engagement Overview',
+              ),
+              const SizedBox(height: 12),
+              _EngagementMetricBar(
+                label: 'Average Rating',
+                valueLabel: averageRating.toStringAsFixed(2),
+                progress: ratingProgress,
+                gradient: const <Color>[
+                  BrandColors.primary200,
+                  BrandColors.primary500,
+                ],
+              ),
+              const SizedBox(height: 12),
+              _EngagementMetricBar(
+                label: 'Total Engagement',
+                valueLabel: _formatWithCommas(totalEngagement),
+                progress: engagementProgress,
+                gradient: const <Color>[
+                  BrandColors.primary600,
+                  BrandColors.primary700,
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InsightsSurface extends StatelessWidget {
+  final Widget child;
+
+  const _InsightsSurface({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(21, 21, 21, 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFF3E8E5)),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+class _InsightsSectionTitle extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _InsightsSectionTitle({
+    required this.icon,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Icon(icon, size: 18, color: AppColors.primary),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.heading6.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SavedPlacesSection extends StatelessWidget {
+  final List<ProfilePlaceItem> places;
+
+  const _SavedPlacesSection({required this.places});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            const Icon(
+              Icons.bookmark_border_rounded,
+              size: 14,
+              color: BrandColors.primary500,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Saved Places',
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              '${places.length} places',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (places.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 28),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: _ProfileContent.profileCardStroke),
+            ),
+            child: Text(
+              'No saved places yet.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          )
+        else
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: places.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 14,
+              childAspectRatio: 0.98,
+            ),
+            itemBuilder: (context, index) {
+              return _SavedPlaceTile(place: places[index]);
+            },
+          ),
+      ],
+    );
+  }
+}
+
+class _SavedPlaceTile extends StatelessWidget {
+  final ProfilePlaceItem place;
+
+  const _SavedPlaceTile({required this.place});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _ProfileContent.profileCardStroke),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: _ProfileContent.profileShadow,
+            blurRadius: 16,
+            offset: Offset(0, 12),
+            spreadRadius: -12,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: Image.asset(place.imagePath, fit: BoxFit.cover),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: <Color>[
+                      Color(0xC2161616),
+                      Color(0x5A161616),
+                      Color(0x00000000),
+                    ],
+                    stops: <double>[0, 0.35, 1],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              left: 10,
+              child: _SavedBookmarkBadge(
+                onTap: () => _showUnsaveDialog(context),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: _SavedRatingBadge(rating: place.rating),
+            ),
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 12,
+                        color: Colors.white.withValues(alpha: 0.82),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          place.city,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.white.withValues(alpha: 0.82),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    _savedTitle(place),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.body2.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showUnsaveDialog(BuildContext context) async {
+    final shouldUnsave = await showDialog<bool>(
+      context: context,
+      builder: (_) => _UnsavePlaceDialog(
+        placeTitle: _savedTitle(place),
+      ),
+    );
+
+    if (shouldUnsave == true && context.mounted) {
+      context.read<ProfileBloc>().add(
+        ProfilePlaceSaveToggled(placeId: place.id, isSaved: false),
+      );
+    }
+  }
+
+  String _savedTitle(ProfilePlaceItem place) {
+    switch (place.id) {
+      case 'bean_bloom':
+        return 'Mountain View';
+      case 'garden_terrace':
+        return 'Ocean Breeze';
+      default:
+        return place.title;
+    }
+  }
+}
+
+class _SavedBookmarkBadge extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _SavedBookmarkBadge({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Color(0x29000000),
+                blurRadius: 12,
+                offset: Offset(0, 4),
+                spreadRadius: -8,
+              ),
+            ],
+          ),
+          child: const Icon(
+            Icons.bookmark_rounded,
+            size: 16,
+            color: BrandColors.primary500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SavedRatingBadge extends StatelessWidget {
+  final double rating;
+
+  const _SavedRatingBadge({required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 24,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: SemanticSurfaceColors.overlayDark70,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Icon(
+            Icons.star_rounded,
+            size: 12,
+            color: AppColors.warning,
+          ),
+          const SizedBox(width: 2),
+          Text(
+            rating.toStringAsFixed(1),
+            style: AppTextStyles.caption.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UnsavePlaceDialog extends StatelessWidget {
+  final String placeTitle;
+
+  const _UnsavePlaceDialog({required this.placeTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 56),
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: _ProfileContent.profileCardStroke),
+          boxShadow: const <BoxShadow>[
+            BoxShadow(
+              color: _ProfileContent.profileShadow,
+              blurRadius: 26,
+              offset: Offset(0, 18),
+              spreadRadius: -16,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              width: 36,
+              height: 36,
+              decoration: const BoxDecoration(
+                color: BrandColors.primary50,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.bookmark_border_rounded,
+                size: 18,
+                color: BrandColors.primary500,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Unsave Place?',
+              style: AppTextStyles.heading6.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Do you want to remove "$placeTitle" from your saved places?',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: AppTextStyles.body2.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: BrandColors.primary500,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Unsave',
+                      style: AppTextStyles.body2.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TopPerformerRow extends StatelessWidget {
+  final int rank;
+  final ProfilePlaceItem place;
+
+  const _TopPerformerRow({
+    required this.rank,
+    required this.place,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 32,
+          height: 32,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: BrandColors.primary200,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '$rank',
+            style: AppTextStyles.caption.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.asset(
+            place.imagePath,
+            width: 48,
+            height: 48,
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                place.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.heading7.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${place.views} views \u2022 ${place.likes} likes',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EngagementMetricBar extends StatelessWidget {
+  final String label;
+  final String valueLabel;
+  final double progress;
+  final List<Color> gradient;
+
+  const _EngagementMetricBar({
+    required this.label,
+    required this.valueLabel,
+    required this.progress,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Text(
+              label,
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              valueLabel,
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Container(
+                height: 8,
+                width: double.infinity,
+                color: NeutralColors.neutral100,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    width: constraints.maxWidth * progress,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: gradient),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+String _formatWithCommas(int value) {
+  final digits = value.toString();
+  final buffer = StringBuffer();
+
+  for (int index = 0; index < digits.length; index++) {
+    final reversedIndex = digits.length - index;
+    buffer.write(digits[index]);
+    if (reversedIndex > 1 && reversedIndex % 3 == 1) {
+      buffer.write(',');
+    }
+  }
+
+  return buffer.toString();
+}
+
+class _CitySectionData {
+  final ProfileFilterOption filter;
+  final List<ProfilePlaceItem> places;
+
+  const _CitySectionData({
+    required this.filter,
+    required this.places,
+  });
+}
+
+class _CitySectionPreview extends StatelessWidget {
+  final _CitySectionData section;
+  final VoidCallback onViewAll;
+
+  const _CitySectionPreview({
+    required this.section,
+    required this.onViewAll,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final previewPlaces = section.places.take(2).toList(growable: false);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            const Icon(
+              Icons.location_on_outlined,
+              size: 14,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    section.filter.label,
+                    style: AppTextStyles.body2.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${section.places.length} places',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: onViewAll,
+              style: TextButton.styleFrom(
+                foregroundColor: _ProfileContent.profileOrange,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                minimumSize: const Size(0, 28),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'View all',
+                style: AppTextStyles.caption.copyWith(
+                  color: _ProfileContent.profileOrange,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: previewPlaces.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 14,
+            childAspectRatio: 0.98,
+          ),
+          itemBuilder: (context, index) {
+            return ProfilePlaceTile(
+              place: previewPlaces[index],
+              compact: false,
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _CitySelectorSheet extends StatelessWidget {
+  final List<ProfileFilterOption> options;
+  final String selectedFilterId;
+  final ValueChanged<String> onSelected;
+
+  const _CitySelectorSheet({
+    required this.options,
+    required this.selectedFilterId,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: _ProfileContent.profileCardStroke),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: _ProfileContent.profileShadow,
+            blurRadius: 28,
+            offset: Offset(0, 16),
+            spreadRadius: -16,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 12, 6),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Select City',
+                        style: AppTextStyles.heading6.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Filter places by location',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 14),
+            child: Column(
+              children: options
+                  .map(
+                    (option) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: option == options.last ? 0 : 10,
+                      ),
+                      child: _CitySelectorOptionTile(
+                        option: option,
+                        isSelected: option.id == selectedFilterId,
+                        onTap: () => onSelected(option.id),
+                      ),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CitySelectorOptionTile extends StatelessWidget {
+  final ProfileFilterOption option;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CitySelectorOptionTile({
+    required this.option,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? _ProfileContent.profileOrange
+                : const Color(0xFFFFFBFA),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected
+                  ? Colors.transparent
+                  : _ProfileContent.profileCardStroke,
+            ),
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Colors.white.withValues(alpha: 0.18)
+                      : const Color(0xFFFFF1ED),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.location_on_outlined,
+                  size: 14,
+                  color: isSelected
+                      ? Colors.white
+                      : _ProfileContent.profileOrange,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      option.label,
+                      style: AppTextStyles.body2.copyWith(
+                        color: isSelected
+                            ? Colors.white
+                            : AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${option.count} places',
+                      style: AppTextStyles.caption.copyWith(
+                        color: isSelected
+                            ? Colors.white.withValues(alpha: 0.86)
+                            : AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isSelected
+                        ? Colors.white
+                        : _ProfileContent.profileCardStroke,
+                    width: 2,
+                  ),
+                ),
+                child: isSelected
+                    ? const Center(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: SizedBox(width: 6, height: 6),
+                        ),
+                      )
+                    : null,
+              ),
+            ],
           ),
         ),
       ),

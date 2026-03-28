@@ -17,6 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileCityFilterSelected>(_onCityFilterSelected);
     on<ProfileSortSelected>(_onSortSelected);
     on<ProfileViewModeChanged>(_onViewModeChanged);
+    on<ProfilePlaceSaveToggled>(_onPlaceSaveToggled);
   }
 
   Future<void> _onStarted(
@@ -110,6 +111,28 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(
       state.copyWith(
         feed: currentFeed.copyWith(viewMode: event.viewMode),
+      ),
+    );
+  }
+
+  void _onPlaceSaveToggled(
+    ProfilePlaceSaveToggled event,
+    Emitter<ProfileState> emit,
+  ) {
+    final currentFeed = state.feed;
+    if (currentFeed == null) return;
+
+    final updatedPlaces = currentFeed.places
+        .map(
+          (place) => place.id == event.placeId
+              ? place.copyWith(isSaved: event.isSaved)
+              : place,
+        )
+        .toList(growable: false);
+
+    emit(
+      state.copyWith(
+        feed: currentFeed.copyWith(places: updatedPlaces),
       ),
     );
   }
