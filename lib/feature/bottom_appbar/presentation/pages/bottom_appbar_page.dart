@@ -43,6 +43,7 @@ class _BottomAppBarPageState extends State<BottomAppBarPage> {
             children: <Widget>[
               Scaffold(
                 extendBody: true,
+                resizeToAvoidBottomInset: false,
                 backgroundColor: AppColors.background,
                 body: IndexedStack(index: state.currentIndex, children: _pages),
                 floatingActionButton: _CenterAddButton(
