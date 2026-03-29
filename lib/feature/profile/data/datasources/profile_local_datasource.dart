@@ -17,6 +17,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
         bio: 'Coffee lover | Travel enthusiast\nSharing hidden gems',
         joinedLabel: 'Joined January 2024',
         avatarPath: 'assets/images/profile.jpg',
+        coverImagePath: null,
         summaryStats: <ProfileSummaryStatModel>[
           ProfileSummaryStatModel(value: '24', label: 'Places'),
           ProfileSummaryStatModel(value: '1.2K', label: 'Likes'),

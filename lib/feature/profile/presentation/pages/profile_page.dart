@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../domain/entities/current_user_profile.dart';
 import '../../domain/entities/profile_feed.dart';
+import '../../domain/repositories/current_user_profile_repository.dart';
 import '../bloc/profile_bloc.dart';
 import 'find_friends_page.dart';
 import 'profile_achievements_page.dart';
@@ -50,12 +52,90 @@ class _ProfileView extends StatelessWidget {
                 if (feed == null) {
                   return const SizedBox.shrink();
                 }
-                return _ProfileContent(feed: feed);
+                return StreamBuilder<CurrentUserProfile>(
+                  stream: getIt<CurrentUserProfileRepository>()
+                      .watchCurrentUserProfile(),
+                  builder: (context, snapshot) {
+                    final mergedFeed = snapshot.hasData
+                        ? feed.copyWith(
+                            user: _mergeProfileUser(feed.user, snapshot.data!),
+                          )
+                        : feed;
+                    return _ProfileContent(feed: mergedFeed);
+                  },
+                );
             }
           },
         ),
       ),
     );
+  }
+}
+
+ProfileUser _mergeProfileUser(ProfileUser user, CurrentUserProfile profile) {
+  final fallbackJoinedLabel = user.joinedLabel;
+  return user.copyWith(
+    name: profile.displayName,
+    username: '@${profile.username}',
+    bio: profile.bio.isEmpty
+        ? 'Tell people a little about yourself.'
+        : profile.bio,
+    joinedLabel: _formatJoinedLabel(profile.createdAt) ?? fallbackJoinedLabel,
+    avatarPath: profile.avatarUrl ?? user.avatarPath,
+    coverImagePath: profile.coverUrl,
+  );
+}
+
+String? _formatJoinedLabel(DateTime? value) {
+  if (value == null) {
+    return null;
+  }
+
+  const monthNames = <String>[
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  final monthName = monthNames[value.month - 1];
+  return 'Joined $monthName ${value.year}';
+}
+
+bool _isRemoteImage(String path) =>
+    path.startsWith('http://') || path.startsWith('https://');
+
+class _ResolvedProfileImage extends StatelessWidget {
+  final String path;
+  final BoxFit fit;
+  final Widget? fallback;
+
+  const _ResolvedProfileImage({
+    required this.path,
+    required this.fit,
+    this.fallback,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isRemoteImage(path)) {
+      return Image.network(
+        path,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) =>
+            fallback ?? Image.asset('assets/images/profile.jpg', fit: fit),
+      );
+    }
+
+    return Image.asset(path, fit: fit);
   }
 }
 
@@ -104,8 +184,7 @@ class _ProfileContent extends StatelessWidget {
                         child: ProfileActionTile(
                           label: action.label,
                           iconKey: action.iconKey,
-                          onTap: () =>
-                              _handleQuickActionTap(context, action),
+                          onTap: () => _handleQuickActionTap(context, action),
                         ),
                       ),
                     ),
@@ -370,8 +449,7 @@ class _ProfileContent extends StatelessWidget {
                     .map(
                       (section) => Padding(
                         padding: EdgeInsets.only(
-                          bottom:
-                              section == groupedCitySections.last ? 0 : 18,
+                          bottom: section == groupedCitySections.last ? 0 : 18,
                         ),
                         child: _CitySectionPreview(
                           section: section,
@@ -440,9 +518,7 @@ class _ProfileContent extends StatelessWidget {
         break;
       case 'privacy':
         Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const ProfilePrivacyPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const ProfilePrivacyPage()),
         );
         break;
       default:
@@ -462,9 +538,7 @@ class _ProfileContent extends StatelessWidget {
   }
 
   List<ProfilePlaceItem> _resolveSavedPlaces(ProfileFeed feed) {
-    return feed.places
-        .where((place) => place.isSaved)
-        .toList(growable: false);
+    return feed.places.where((place) => place.isSaved).toList(growable: false);
   }
 
   ProfileTabOption _selectedTab(ProfileFeed feed) {
@@ -505,9 +579,7 @@ class _ProfileContent extends StatelessWidget {
 
     if (selectedCity.id != 'all') {
       final cityLabel = selectedCity.label.toLowerCase();
-      result = result.where(
-        (place) => place.city.toLowerCase() == cityLabel,
-      );
+      result = result.where((place) => place.city.toLowerCase() == cityLabel);
     }
 
     final list = result.toList(growable: false);
@@ -640,79 +712,103 @@ class _ProfileHero extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
-              Container(
-                height: 96,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                  gradient: const LinearGradient(
-                    colors: <Color>[
-                      Color(0xFFFFE3D6),
-                      _ProfileContent.profileOrange,
-                      _ProfileContent.profileOrangeEnd,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
                 ),
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      left: -20,
-                      top: 14,
-                      child: Container(
-                        width: 120,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.10),
-                          borderRadius: BorderRadius.circular(60),
+                child: SizedBox(
+                  height: 96,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      if (user.coverImagePath != null)
+                        _ResolvedProfileImage(
+                          path: user.coverImagePath!,
+                          fit: BoxFit.cover,
+                          fallback: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: <Color>[
+                                  Color(0xFFFFE3D6),
+                                  _ProfileContent.profileOrange,
+                                  _ProfileContent.profileOrangeEnd,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: <Color>[
+                                Color(0xFFFFE3D6),
+                                _ProfileContent.profileOrange,
+                                _ProfileContent.profileOrangeEnd,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        left: -20,
+                        top: 14,
+                        child: Container(
+                          width: 120,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(60),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: -10,
-                      bottom: -6,
-                      child: Container(
-                        width: 160,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(70),
+                      Positioned(
+                        right: -10,
+                        bottom: -6,
+                        child: Container(
+                          width: 160,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(70),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: 18,
-                      top: 16,
-                      child: Text(
-                        'PlacePals',
-                        style: AppTextStyles.heading6.copyWith(
-                          color: SemanticTextColors.onBrand,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
+                      Positioned(
+                        left: 18,
+                        top: 16,
+                        child: Text(
+                          'PlacePals',
+                          style: AppTextStyles.heading6.copyWith(
+                            color: SemanticTextColors.onBrand,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: 14,
-                      bottom: 14,
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.9),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt_outlined,
-                          color: AppColors.primary,
-                          size: 16,
+                      Positioned(
+                        right: 14,
+                        bottom: 14,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_outlined,
+                            color: AppColors.primary,
+                            size: 16,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Positioned(
@@ -739,7 +835,10 @@ class _ProfileHero extends StatelessWidget {
                         ],
                       ),
                       child: ClipOval(
-                        child: Image.asset(user.avatarPath, fit: BoxFit.cover),
+                        child: _ResolvedProfileImage(
+                          path: user.avatarPath,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     Positioned(
@@ -901,9 +1000,7 @@ class _InsightCard extends StatelessWidget {
                 insight.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption.copyWith(
-                  color: Colors.white,
-                ),
+                style: AppTextStyles.caption.copyWith(color: Colors.white),
               ),
             ),
           ],
@@ -1020,16 +1117,17 @@ class _InsightsDashboard extends StatelessWidget {
     final averageRating = places.isEmpty
         ? 0.0
         : places
-                .map((place) => place.rating)
-                .reduce((value, element) => value + element) /
-            places.length;
+                  .map((place) => place.rating)
+                  .reduce((value, element) => value + element) /
+              places.length;
     final totalEngagement = places.fold<int>(
       0,
       (sum, place) => sum + place.views,
     );
     final ratingProgress = (averageRating / 5).clamp(0.0, 1.0).toDouble();
-    final engagementProgress =
-        (totalEngagement / 1500).clamp(0.0, 1.0).toDouble();
+    final engagementProgress = (totalEngagement / 1500)
+        .clamp(0.0, 1.0)
+        .toDouble();
 
     return Column(
       children: <Widget>[
@@ -1135,10 +1233,7 @@ class _InsightsSectionTitle extends StatelessWidget {
   final IconData icon;
   final String title;
 
-  const _InsightsSectionTitle({
-    required this.icon,
-    required this.title,
-  });
+  const _InsightsSectionTitle({required this.icon, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -1335,9 +1430,7 @@ class _SavedPlaceTile extends StatelessWidget {
   Future<void> _showUnsaveDialog(BuildContext context) async {
     final shouldUnsave = await showDialog<bool>(
       context: context,
-      builder: (_) => _UnsavePlaceDialog(
-        placeTitle: _savedTitle(place),
-      ),
+      builder: (_) => _UnsavePlaceDialog(placeTitle: _savedTitle(place)),
     );
 
     if (shouldUnsave == true && context.mounted) {
@@ -1414,11 +1507,7 @@ class _SavedRatingBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const Icon(
-            Icons.star_rounded,
-            size: 12,
-            color: AppColors.warning,
-          ),
+          const Icon(Icons.star_rounded, size: 12, color: AppColors.warning),
           const SizedBox(width: 2),
           Text(
             rating.toStringAsFixed(1),
@@ -1548,10 +1637,7 @@ class _TopPerformerRow extends StatelessWidget {
   final int rank;
   final ProfilePlaceItem place;
 
-  const _TopPerformerRow({
-    required this.rank,
-    required this.place,
-  });
+  const _TopPerformerRow({required this.rank, required this.place});
 
   @override
   Widget build(BuildContext context) {
@@ -1699,20 +1785,14 @@ class _CitySectionData {
   final ProfileFilterOption filter;
   final List<ProfilePlaceItem> places;
 
-  const _CitySectionData({
-    required this.filter,
-    required this.places,
-  });
+  const _CitySectionData({required this.filter, required this.places});
 }
 
 class _CitySectionPreview extends StatelessWidget {
   final _CitySectionData section;
   final VoidCallback onViewAll;
 
-  const _CitySectionPreview({
-    required this.section,
-    required this.onViewAll,
-  });
+  const _CitySectionPreview({required this.section, required this.onViewAll});
 
   @override
   Widget build(BuildContext context) {

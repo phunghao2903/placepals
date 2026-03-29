@@ -74,6 +74,12 @@ class FirebaseAuthService {
     return _firestore.collection('users').doc(uid).set(<String, dynamic>{
       'fullName': fullName.trim(),
       'email': email.trim().toLowerCase(),
+      'username': null,
+      'usernameLowercase': null,
+      'bio': null,
+      'phoneNumber': null,
+      'avatarUrl': null,
+      'coverUrl': null,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
