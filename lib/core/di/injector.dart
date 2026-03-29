@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import '../../feature/ai_recommendation/ai_recommendation_injection.dart';
 import '../../feature/bottom_appbar/bottom_appbar_injection.dart';
 import '../../feature/create_moment/create_moment_injection.dart';
+import '../../feature/help_sos/help_sos_injection.dart';
 import '../../feature/home/home_injection.dart';
 import '../../feature/map/map_injection.dart';
 import '../../feature/place_details/appointment_injection.dart';
@@ -58,6 +59,7 @@ Future<void> _registerFeatures() async {
   registerAiRecommendationDependencies(getIt);
   registerBottomAppBarDependencies(getIt);
   registerCreateMomentDependencies(getIt);
+  registerHelpSosDependencies(getIt);
   registerHomeDependencies(getIt);
   registerMapDependencies(getIt);
   registerPlaceDetailsDependencies(getIt);

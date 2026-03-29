@@ -46,7 +46,7 @@ class NotificationTabBar extends StatelessWidget {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
                         curve: Curves.easeOut,
-                        width: filter.label == 'Sos Alerts' ? 80 : 28,
+                        width: filter.label == 'SOS Alerts' ? 72 : 28,
                         height: 3,
                         decoration: BoxDecoration(
                           color: isSelected

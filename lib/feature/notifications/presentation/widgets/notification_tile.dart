@@ -17,71 +17,95 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUnread = !item.isRead;
-    final titleColor = AppColors.textPrimary.withValues(
-      alpha: isUnread ? 1 : 0.82,
-    );
-    final bodyColor = AppColors.primary.withValues(alpha: isUnread ? 0.9 : 0.8);
+    final bool isSos = item.type == NotificationItemType.sosAlert;
+    final bool isUnread = !item.isRead;
 
     return Material(
-      color: isUnread ? const Color(0xFFFFF0EE) : Colors.white,
+      color: Colors.transparent,
       child: InkWell(
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         onLongPress: isUnread ? onMarkAsRead : null,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 94),
+        child: Ink(
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
           decoration: BoxDecoration(
-            color: isUnread ? const Color(0xFFFFF0EE) : Colors.white,
-            border: Border(
-              left: BorderSide(
-                color: isUnread ? AppColors.primary : Colors.white,
-                width: 4,
-              ),
-            ),
+            color: isSos ? const Color(0xFFFFF2F0) : Colors.transparent,
+            borderRadius: BorderRadius.circular(18),
           ),
-          padding: const EdgeInsets.fromLTRB(16, 10, 15, 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _NotificationAvatar(item: item),
-              const SizedBox(width: 10),
+              if (isSos)
+                Container(
+                  width: 4,
+                  height: 72,
+                  margin: const EdgeInsets.only(right: 12, top: 2),
+                  decoration: BoxDecoration(
+                    color: AppSemanticColors.primary,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              if (!isSos) const SizedBox(width: 2),
+              Stack(
+                clipBehavior: Clip.none,
+                children: <Widget>[
+                  _NotificationAvatar(item: item),
+                  if (isUnread)
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: BrandColors.primary400,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      item.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.heading3.copyWith(
-                        color: titleColor,
-                        height: 1.0,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            item.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.heading6.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w700,
+                              height: 1.25,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          item.timeLabel,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppSemanticColors.primary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       item.message,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.body1.copyWith(
-                        color: bodyColor,
-                        height: 1.0,
+                      style: AppTextStyles.body2.copyWith(
+                        color: AppSemanticColors.primary,
+                        height: 1.35,
                       ),
                     ),
                   ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  item.timeLabel,
-                  style: AppTextStyles.body2.copyWith(
-                    color: AppColors.primary.withValues(
-                      alpha: isUnread ? 1 : 0.8,
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -99,60 +123,39 @@ class _NotificationAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isUnread = !item.isRead;
-
-    return SizedBox(
-      width: 60,
-      height: 60,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: <Widget>[
-          Positioned.fill(child: _buildAvatarBody()),
-          if (isUnread)
-            Positioned(
-              right: 0,
-              top: -1,
-              child: Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAvatarBody() {
     switch (item.type) {
       case NotificationItemType.sosAlert:
-        return _IconAvatar(
-          backgroundColor: AppColors.primary,
+        return const _IconAvatar(
+          size: 44,
+          backgroundColor: AppSemanticColors.primary,
           icon: Icons.warning_amber_rounded,
+          iconSize: 24,
           iconColor: Colors.white,
         );
       case NotificationItemType.locationVerified:
         return const _IconAvatar(
-          backgroundColor: Color(0xFFFFF0EE),
+          size: 46,
+          backgroundColor: Color(0xFFFFF2F0),
           icon: Icons.location_on_rounded,
-          iconColor: AppColors.primary,
+          iconSize: 24,
+          iconColor: AppSemanticColors.primary,
         );
       case NotificationItemType.palRequest:
       case NotificationItemType.placeSpotlight:
       case NotificationItemType.taggedYou:
         return Container(
-          decoration: BoxDecoration(
+          width: 46,
+          height: 46,
+          decoration: const BoxDecoration(
+            color: NeutralColors.neutral100,
             shape: BoxShape.circle,
-            border: Border.all(
-              color: item.isRead ? AppColors.primary : Colors.white,
-            ),
           ),
+          padding: const EdgeInsets.all(2),
           child: ClipOval(
-            child: Image.asset(item.imagePath!, fit: BoxFit.cover),
+            child: Image.asset(
+              item.imagePath!,
+              fit: BoxFit.cover,
+            ),
           ),
         );
     }
@@ -160,21 +163,34 @@ class _NotificationAvatar extends StatelessWidget {
 }
 
 class _IconAvatar extends StatelessWidget {
+  final double size;
   final Color backgroundColor;
   final IconData icon;
+  final double iconSize;
   final Color iconColor;
 
   const _IconAvatar({
+    required this.size,
     required this.backgroundColor,
     required this.icon,
+    required this.iconSize,
     required this.iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle),
-      child: Icon(icon, size: 34, color: iconColor),
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        size: iconSize,
+        color: iconColor,
+      ),
     );
   }
 }

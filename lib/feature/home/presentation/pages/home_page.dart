@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
-import '../../../place_details/presentation/pages/place_details_feature_page.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
+import '../../../place_details/presentation/pages/place_details_feature_page.dart';
 import '../../../profile/domain/entities/current_user_profile.dart';
 import '../../../profile/domain/repositories/current_user_profile_repository.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
@@ -180,20 +180,28 @@ class _HomeTopHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            const Icon(
-              Icons.location_on_rounded,
-              size: 20,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              city,
-              style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
-            ),
-          ],
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              const Icon(
+                Icons.location_on_rounded,
+                size: 20,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  city,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.body2.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 12),
         Row(
           children: <Widget>[
             _CalendarActionButton(

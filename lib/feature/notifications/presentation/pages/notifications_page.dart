@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../help_sos/presentation/pages/help_sos_page.dart';
 import '../../../map/presentation/pages/map_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
-import '../../../sos/presentation/pages/sos_page.dart';
 import '../../domain/entities/notification_item.dart';
 import '../bloc/notifications_bloc.dart';
 import '../widgets/notification_tab_bar.dart';
@@ -56,7 +56,7 @@ class _NotificationsView extends StatelessWidget {
                 );
               case NotificationNavigationTarget.sos:
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (_) => const SosPage()),
+                  MaterialPageRoute<void>(builder: (_) => const HelpSosPage()),
                 );
             }
           },
@@ -98,62 +98,66 @@ class _NotificationsContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
           child: Row(
             children: <Widget>[
               IconButton(
                 onPressed: () => Navigator.of(context).maybePop(),
                 icon: const Icon(
                   Icons.arrow_back_ios_new_rounded,
-                  size: 26,
-                  color: Color(0xFF101010),
+                  size: 20,
+                  color: AppColors.textPrimary,
                 ),
               ),
               Expanded(
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.heading4.copyWith(
+                  style: AppTextStyles.heading5.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF101010),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
-              PopupMenuButton<_NotificationMenuAction>(
-                tooltip: 'Notification actions',
-                onSelected: (action) {
-                  if (action == _NotificationMenuAction.markAllRead) {
-                    context.read<NotificationsBloc>().add(
-                      const NotificationsMarkAllReadRequested(),
-                    );
-                  }
-                },
-                padding: EdgeInsets.zero,
-                icon: const Icon(
-                  Icons.tune_rounded,
-                  size: 28,
-                  color: Color(0xFF101010),
-                ),
-                itemBuilder: (context) =>
-                    <PopupMenuEntry<_NotificationMenuAction>>[
-                      PopupMenuItem<_NotificationMenuAction>(
-                        value: _NotificationMenuAction.markAllRead,
-                        enabled: state.hasUnread,
-                        child: Text(
-                          'Mark all as read',
-                          style: AppTextStyles.body2.copyWith(
-                            color: state.hasUnread
-                                ? AppColors.textPrimary
-                                : AppColors.textSecondary,
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: PopupMenuButton<_NotificationMenuAction>(
+                  tooltip: 'Notification actions',
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(
+                    Icons.more_horiz_rounded,
+                    size: 24,
+                    color: AppColors.textPrimary,
+                  ),
+                  onSelected: (action) {
+                    if (action == _NotificationMenuAction.markAllRead) {
+                      context.read<NotificationsBloc>().add(
+                        const NotificationsMarkAllReadRequested(),
+                      );
+                    }
+                  },
+                  itemBuilder: (context) =>
+                      <PopupMenuEntry<_NotificationMenuAction>>[
+                        PopupMenuItem<_NotificationMenuAction>(
+                          value: _NotificationMenuAction.markAllRead,
+                          enabled: state.hasUnread,
+                          child: Text(
+                            'Mark all as read',
+                            style: AppTextStyles.body2.copyWith(
+                              color: state.hasUnread
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 14),
         NotificationTabBar(
           filters: state.filters,
           onSelected: (filterId) {
@@ -162,14 +166,14 @@ class _NotificationsContent extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: 22),
+        const SizedBox(height: 20),
         Expanded(
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 180),
             child: groupedSections.isEmpty
                 ? NotificationsEmptyState(
                     key: ValueKey<String>('empty-${state.activeFilterId}'),
-                    title: 'You’re all caught up',
+                    title: "You're all caught up",
                     subtitle: state.activeFilterId == 'unread'
                         ? 'Unread notifications will appear here when something new happens.'
                         : 'There are no notifications in this section right now.',
@@ -178,50 +182,49 @@ class _NotificationsContent extends StatelessWidget {
                     key: ValueKey<String>(
                       'list-${state.activeFilterId}-${state.visibleItems.length}',
                     ),
-                    padding: const EdgeInsets.only(bottom: 24),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     itemCount: groupedSections.length,
                     itemBuilder: (context, index) {
                       final section = groupedSections[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              15,
-                              index == 0 ? 0 : 8,
-                              15,
-                              16,
-                            ),
-                            child: Text(
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == groupedSections.length - 1 ? 0 : 24,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
                               section.title,
-                              style: AppTextStyles.heading4.copyWith(
-                                color: Colors.black,
+                              style: AppTextStyles.heading6.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                          ),
-                          ...section.items.map(
-                            (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: NotificationTile(
-                                item: item,
-                                onTap: () {
-                                  context.read<NotificationsBloc>().add(
-                                    NotificationsItemTapped(
-                                      notificationId: item.id,
-                                    ),
-                                  );
-                                },
-                                onMarkAsRead: () {
-                                  context.read<NotificationsBloc>().add(
-                                    NotificationsItemMarkedAsRead(
-                                      notificationId: item.id,
-                                    ),
-                                  );
-                                },
+                            const SizedBox(height: 14),
+                            ...section.items.map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: NotificationTile(
+                                  item: item,
+                                  onTap: () {
+                                    context.read<NotificationsBloc>().add(
+                                      NotificationsItemTapped(
+                                        notificationId: item.id,
+                                      ),
+                                    );
+                                  },
+                                  onMarkAsRead: () {
+                                    context.read<NotificationsBloc>().add(
+                                      NotificationsItemMarkedAsRead(
+                                        notificationId: item.id,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -236,9 +239,7 @@ class _NotificationsContent extends StatelessWidget {
         <String, List<NotificationItem>>{};
 
     for (final item in items) {
-      grouped
-          .putIfAbsent(item.sectionLabel, () => <NotificationItem>[])
-          .add(item);
+      grouped.putIfAbsent(item.sectionLabel, () => <NotificationItem>[]).add(item);
     }
 
     return grouped.entries

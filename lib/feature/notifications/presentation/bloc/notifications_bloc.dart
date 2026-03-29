@@ -40,6 +40,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             _selectedFilterType(feed.filters),
           ),
           errorMessage: null,
+          pendingNavigationTarget: null,
+          pendingNotificationId: null,
         ),
       );
     } catch (_) {

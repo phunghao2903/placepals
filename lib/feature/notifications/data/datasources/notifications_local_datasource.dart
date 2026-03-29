@@ -30,7 +30,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
         ),
         NotificationFilterModel(
           id: 'sos-alerts',
-          label: 'Sos Alerts',
+          label: 'SOS Alerts',
           type: NotificationFilterType.sosAlerts,
           isSelected: false,
         ),
@@ -39,7 +39,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
         NotificationItemModel(
           id: 'new-pal-request-sarah',
           title: 'New Pal request from Sarah',
-          message: 'Sarah wants to connect with you. She’s visiting your city!',
+          message: "Sarah wants to connect with you.\nShe's visiting your city!",
           timeLabel: '2m',
           sectionLabel: 'Today',
           type: NotificationItemType.palRequest,
@@ -51,7 +51,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
           id: 'emergency-sos-alert',
           title: 'Emergency SOS Alert',
           message:
-              'An SOS alert was triggered by a Pal Within 500m of your location.',
+              'An SOS alert was triggered by a Pal\nwithin 500m of your location.',
           timeLabel: '1h',
           sectionLabel: 'Today',
           type: NotificationItemType.sosAlert,
@@ -60,9 +60,9 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
         ),
         NotificationItemModel(
           id: 'blue-cafe-spotlight',
-          title: 'Check out ‘The Blue Café’',
+          title: "Check out 'The Blue Cafe'",
           message:
-              '3 Pal have visited this spot today. Check it out on the map',
+              '3 Pals have visited this spot today.\nCheck it out on the map!',
           timeLabel: '4h',
           sectionLabel: 'Today',
           type: NotificationItemType.placeSpotlight,
@@ -73,8 +73,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
         NotificationItemModel(
           id: 'location-verified',
           title: 'Location Verified',
-          message:
-              'Your check-in at central Park has been verified by the communication',
+          message: 'Your latest place check-in has been approved.',
           timeLabel: '1d',
           sectionLabel: 'Yesterday',
           type: NotificationItemType.locationVerified,
@@ -83,8 +82,8 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
         ),
         NotificationItemModel(
           id: 'rose-tagged-you',
-          title: 'Rose Tagged you',
-          message: '“Great time exploring the hidden alleys todays!”',
+          title: 'Rose tagged you',
+          message: 'Great time exploring the hidden alleys today!',
           timeLabel: '1d',
           sectionLabel: 'Yesterday',
           type: NotificationItemType.taggedYou,
