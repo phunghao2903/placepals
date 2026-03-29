@@ -1,11 +1,6 @@
 part of 'sos_bloc.dart';
 
-enum SosStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum SosStatus { initial, loading, success, failure }
 
 class SosState {
   final SosStatus status;

@@ -62,9 +62,7 @@ class _AiRecommendationContent extends StatelessWidget {
 
   final AiRecommendationFeed feed;
 
-  const _AiRecommendationContent({
-    required this.feed,
-  });
+  const _AiRecommendationContent({required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +78,7 @@ class _AiRecommendationContent extends StatelessWidget {
               onTap: () => Navigator.of(context).maybePop(),
               child: const Padding(
                 padding: EdgeInsets.all(4),
-                child: Icon(
-                  Icons.close_rounded,
-                  size: 22,
-                  color: _closeColor,
-                ),
+                child: Icon(Icons.close_rounded, size: 22, color: _closeColor),
               ),
             ),
           ),
@@ -179,16 +173,12 @@ class _AiHeroCard extends StatelessWidget {
           Positioned(
             left: 115,
             bottom: 0,
-            child: _HeroMiniTile(
-              icon: Icons.groups_2_rounded,
-            ),
+            child: _HeroMiniTile(icon: Icons.groups_2_rounded),
           ),
           Positioned(
             right: 115,
             bottom: 0,
-            child: _HeroMiniTile(
-              icon: Icons.location_on_outlined,
-            ),
+            child: _HeroMiniTile(icon: Icons.location_on_outlined),
           ),
         ],
       ),
@@ -199,9 +189,7 @@ class _AiHeroCard extends StatelessWidget {
 class _HeroMiniTile extends StatelessWidget {
   final IconData icon;
 
-  const _HeroMiniTile({
-    required this.icon,
-  });
+  const _HeroMiniTile({required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -212,11 +200,7 @@ class _HeroMiniTile extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Icon(
-        icon,
-        size: 24,
-        color: AppColors.primary,
-      ),
+      child: Icon(icon, size: 24, color: AppColors.primary),
     );
   }
 }

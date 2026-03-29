@@ -53,12 +53,8 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
   void initState() {
     super.initState();
     _fullNameController = TextEditingController();
-    _emailController = TextEditingController(
-      text: widget.startInSignUp ? '' : 'demo@placepals.com',
-    );
-    _passwordController = TextEditingController(
-      text: widget.startInSignUp ? '' : 'password123',
-    );
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -656,6 +652,5 @@ class _GoogleMarkPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
 
 

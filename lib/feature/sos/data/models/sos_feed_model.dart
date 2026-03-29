@@ -30,8 +30,9 @@ class SosFeedModel {
       visibilityScopeLabel: visibilityScopeLabel,
       sendHelpLabel: sendHelpLabel,
       emergencyTypes: emergencyTypes.map((item) => item.toEntity()).toList(),
-      visibilityScopes:
-          visibilityScopes.map((item) => item.toEntity()).toList(),
+      visibilityScopes: visibilityScopes
+          .map((item) => item.toEntity())
+          .toList(),
     );
   }
 }
@@ -71,10 +72,6 @@ class SosVisibilityScopeModel {
   });
 
   SosVisibilityScope toEntity() {
-    return SosVisibilityScope(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return SosVisibilityScope(id: id, label: label, isSelected: isSelected);
   }
 }

@@ -34,8 +34,7 @@ class SosFeed {
       subtitle: subtitle ?? this.subtitle,
       descriptionLabel: descriptionLabel ?? this.descriptionLabel,
       descriptionHint: descriptionHint ?? this.descriptionHint,
-      visibilityScopeLabel:
-          visibilityScopeLabel ?? this.visibilityScopeLabel,
+      visibilityScopeLabel: visibilityScopeLabel ?? this.visibilityScopeLabel,
       sendHelpLabel: sendHelpLabel ?? this.sendHelpLabel,
       emergencyTypes: emergencyTypes ?? this.emergencyTypes,
       visibilityScopes: visibilityScopes ?? this.visibilityScopes,
@@ -82,11 +81,7 @@ class SosVisibilityScope {
     required this.isSelected,
   });
 
-  SosVisibilityScope copyWith({
-    String? id,
-    String? label,
-    bool? isSelected,
-  }) {
+  SosVisibilityScope copyWith({String? id, String? label, bool? isSelected}) {
     return SosVisibilityScope(
       id: id ?? this.id,
       label: label ?? this.label,

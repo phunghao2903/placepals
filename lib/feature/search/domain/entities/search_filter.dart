@@ -9,11 +9,7 @@ class SearchFilter {
     required this.isSelected,
   });
 
-  SearchFilter copyWith({
-    String? id,
-    String? label,
-    bool? isSelected,
-  }) {
+  SearchFilter copyWith({String? id, String? label, bool? isSelected}) {
     return SearchFilter(
       id: id ?? this.id,
       label: label ?? this.label,

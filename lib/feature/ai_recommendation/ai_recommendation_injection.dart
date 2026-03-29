@@ -17,14 +17,11 @@ void registerAiRecommendationDependencies(GetIt getIt) {
       ),
     )
     ..registerLazySingleton<GetAiRecommendationFeedUseCase>(
-      () => GetAiRecommendationFeedUseCase(
-        getIt<AiRecommendationRepository>(),
-      ),
+      () => GetAiRecommendationFeedUseCase(getIt<AiRecommendationRepository>()),
     )
     ..registerFactory<AiRecommendationBloc>(
       () => AiRecommendationBloc(
-        getAiRecommendationFeedUseCase:
-            getIt<GetAiRecommendationFeedUseCase>(),
+        getAiRecommendationFeedUseCase: getIt<GetAiRecommendationFeedUseCase>(),
       ),
     );
 }

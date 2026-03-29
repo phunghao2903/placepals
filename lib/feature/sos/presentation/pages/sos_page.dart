@@ -94,18 +94,13 @@ class _SosContent extends StatelessWidget {
   final SosFeed feed;
   final TextEditingController descriptionController;
 
-  const _SosContent({
-    required this.feed,
-    required this.descriptionController,
-  });
+  const _SosContent({required this.feed, required this.descriptionController});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        const Positioned.fill(
-          child: ColoredBox(color: Colors.white),
-        ),
+        const Positioned.fill(child: ColoredBox(color: Colors.white)),
         Positioned.fill(
           top: 116,
           child: Container(
@@ -188,10 +183,8 @@ class _SosContent extends StatelessWidget {
                               isSelected: item.isSelected,
                               onTap: () {
                                 context.read<SosBloc>().add(
-                                      SosEmergencyTypeSelected(
-                                        typeId: item.id,
-                                      ),
-                                    );
+                                  SosEmergencyTypeSelected(typeId: item.id),
+                                );
                               },
                             ),
                           )
@@ -212,8 +205,8 @@ class _SosContent extends StatelessWidget {
                         hintText: feed.descriptionHint,
                         onChanged: (value) {
                           context.read<SosBloc>().add(
-                                SosDescriptionChanged(description: value),
-                              );
+                            SosDescriptionChanged(description: value),
+                          );
                         },
                       ),
                     ),
@@ -231,8 +224,8 @@ class _SosContent extends StatelessWidget {
                         items: feed.visibilityScopes,
                         onSelected: (scopeId) {
                           context.read<SosBloc>().add(
-                                SosVisibilityScopeSelected(scopeId: scopeId),
-                              );
+                            SosVisibilityScopeSelected(scopeId: scopeId),
+                          );
                         },
                       ),
                     ),

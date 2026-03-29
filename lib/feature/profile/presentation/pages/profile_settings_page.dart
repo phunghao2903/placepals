@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
-import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
+import '../../../../core/firebase/firebase_auth_service.dart';
+import '../../../../core/firebase/push_notification_service.dart';
+import '../../../signup_signin/presentation/pages/splash_page.dart';
 import 'change_password_page.dart';
 import 'edit_profile_page.dart';
 import 'profile_privacy_page.dart';
@@ -448,16 +450,39 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
           onCancel: () => Navigator.of(dialogContext).pop(),
           onConfirm: () {
             Navigator.of(dialogContext).pop();
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute<void>(
-                builder: (_) => const SignupSigninPage(),
-              ),
-              (route) => false,
-            );
+            _handleLogout();
           },
         );
       },
     );
+  }
+
+  Future<void> _handleLogout() async {
+    try {
+      try {
+        await getIt<PushNotificationService>()
+            .detachCurrentTokenFromCurrentUser();
+      } catch (_) {}
+      await getIt<FirebaseAuthService>().signOut();
+      if (!mounted) {
+        return;
+      }
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(
+          builder: (_) => const SplashPage(showWhatsNewOnComplete: false),
+        ),
+        (route) => false,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to sign out right now. Please try again.'),
+        ),
+      );
+    }
   }
 }
 

@@ -36,11 +36,7 @@ class BottomNavItem extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ImageIcon(
-                AssetImage(iconAsset),
-                size: 24,
-                color: iconColor,
-              ),
+              ImageIcon(AssetImage(iconAsset), size: 24, color: iconColor),
               const SizedBox(height: 2),
               Text(
                 label,

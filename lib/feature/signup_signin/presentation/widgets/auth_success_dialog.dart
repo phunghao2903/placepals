@@ -33,7 +33,7 @@ class AuthSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Account Created! ??',
+              'Account Created!',
               textAlign: TextAlign.center,
               style: AppTextStyles.heading4.copyWith(
                 color: AppColors.textPrimary,
@@ -41,7 +41,7 @@ class AuthSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Welcome to PlacePals! Your account has been successfully created.',
+              'We sent a verification link to your email. Verify your account, then sign in to continue.',
               textAlign: TextAlign.center,
               style: AppTextStyles.body2.copyWith(
                 color: AppColors.textSecondary,
@@ -66,7 +66,7 @@ class AuthSuccessDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Redirecting to login...',
+                    'Check your inbox before signing in.',
                     style: AppTextStyles.body2.copyWith(
                       color: const Color(0xFFE86152),
                     ),

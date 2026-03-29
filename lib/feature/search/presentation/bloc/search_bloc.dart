@@ -11,9 +11,8 @@ part 'search_state.dart';
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final GetSearchFeedUseCase getSearchFeedUseCase;
 
-  SearchBloc({
-    required this.getSearchFeedUseCase,
-  }) : super(const SearchState()) {
+  SearchBloc({required this.getSearchFeedUseCase})
+    : super(const SearchState()) {
     on<SearchStarted>(_onStarted);
     on<SearchQueryChanged>(_onQueryChanged);
     on<SearchRecentTapped>(_onRecentTapped);
@@ -47,10 +46,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 
-  void _onQueryChanged(
-    SearchQueryChanged event,
-    Emitter<SearchState> emit,
-  ) {
+  void _onQueryChanged(SearchQueryChanged event, Emitter<SearchState> emit) {
     final feed = state.feed;
     if (feed == null) return;
     final destinations = _filterDestinations(
@@ -60,10 +56,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(state.copyWith(query: event.query, visibleDestinations: destinations));
   }
 
-  void _onRecentTapped(
-    SearchRecentTapped event,
-    Emitter<SearchState> emit,
-  ) {
+  void _onRecentTapped(SearchRecentTapped event, Emitter<SearchState> emit) {
     add(SearchQueryChanged(query: event.query));
   }
 
@@ -73,9 +66,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) {
     final feed = state.feed;
     if (feed == null) return;
-    final filters = state.filters.cast<SearchFilter>().map((item) {
-      return item.copyWith(isSelected: item.id == event.filterId);
-    }).toList(growable: false);
+    final filters = state.filters
+        .cast<SearchFilter>()
+        .map((item) {
+          return item.copyWith(isSelected: item.id == event.filterId);
+        })
+        .toList(growable: false);
     emit(state.copyWith(filters: filters));
   }
 
@@ -83,15 +79,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchFavoriteToggled event,
     Emitter<SearchState> emit,
   ) {
-    final updated = state.visibleDestinations.cast<SearchDestination>().map((
-      item,
-    ) {
-      if (item.id != event.destinationId) return item;
-      return item.copyWith(
-        isFavorite: !item.isFavorite,
-        isLiked: !item.isFavorite,
-      );
-    }).toList(growable: false);
+    final updated = state.visibleDestinations
+        .cast<SearchDestination>()
+        .map((item) {
+          if (item.id != event.destinationId) return item;
+          return item.copyWith(
+            isFavorite: !item.isFavorite,
+            isLiked: !item.isFavorite,
+          );
+        })
+        .toList(growable: false);
     emit(state.copyWith(visibleDestinations: updated));
   }
 
@@ -101,9 +98,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }) {
     final normalizedQuery = query.trim().toLowerCase();
     if (normalizedQuery.isEmpty) return destinations;
-    return destinations.where((item) {
-      return item.title.toLowerCase().contains(normalizedQuery) ||
-          item.subtitle.toLowerCase().contains(normalizedQuery);
-    }).toList(growable: false);
+    return destinations
+        .where((item) {
+          return item.title.toLowerCase().contains(normalizedQuery) ||
+              item.subtitle.toLowerCase().contains(normalizedQuery);
+        })
+        .toList(growable: false);
   }
 }

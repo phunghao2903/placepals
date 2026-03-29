@@ -7,7 +7,5 @@ sealed class BottomAppBarEvent {
 class BottomAppBarTabChanged extends BottomAppBarEvent {
   final int index;
 
-  const BottomAppBarTabChanged({
-    required this.index,
-  });
+  const BottomAppBarTabChanged({required this.index});
 }

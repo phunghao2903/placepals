@@ -9,19 +9,14 @@ part 'sos_state.dart';
 class SosBloc extends Bloc<SosEvent, SosState> {
   final GetSosFeedUseCase getSosFeedUseCase;
 
-  SosBloc({
-    required this.getSosFeedUseCase,
-  }) : super(const SosState()) {
+  SosBloc({required this.getSosFeedUseCase}) : super(const SosState()) {
     on<SosStarted>(_onStarted);
     on<SosEmergencyTypeSelected>(_onEmergencyTypeSelected);
     on<SosVisibilityScopeSelected>(_onVisibilityScopeSelected);
     on<SosDescriptionChanged>(_onDescriptionChanged);
   }
 
-  Future<void> _onStarted(
-    SosStarted event,
-    Emitter<SosState> emit,
-  ) async {
+  Future<void> _onStarted(SosStarted event, Emitter<SosState> emit) async {
     emit(state.copyWith(status: SosStatus.loading));
 
     try {
@@ -54,11 +49,7 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         .map((item) => item.copyWith(isSelected: item.id == event.typeId))
         .toList(growable: false);
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(emergencyTypes: updated),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(emergencyTypes: updated)));
   }
 
   void _onVisibilityScopeSelected(
@@ -72,11 +63,7 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         .map((item) => item.copyWith(isSelected: item.id == event.scopeId))
         .toList(growable: false);
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(visibilityScopes: updated),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(visibilityScopes: updated)));
   }
 
   void _onDescriptionChanged(

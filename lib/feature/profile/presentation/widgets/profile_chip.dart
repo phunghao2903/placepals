@@ -66,8 +66,9 @@ class ProfileChip extends StatelessWidget {
               style: AppTextStyles.caption.copyWith(
                 color: foreground,
                 fontSize: 12,
-                fontWeight:
-                    isSelected ? selectedFontWeight : unselectedFontWeight,
+                fontWeight: isSelected
+                    ? selectedFontWeight
+                    : unselectedFontWeight,
               ),
             ),
           ),

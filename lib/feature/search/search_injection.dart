@@ -8,7 +8,9 @@ import 'presentation/bloc/search_bloc.dart';
 
 void registerSearchDependencies(GetIt getIt) {
   getIt
-    ..registerLazySingleton<SearchLocalDataSource>(SearchLocalDataSourceImpl.new)
+    ..registerLazySingleton<SearchLocalDataSource>(
+      SearchLocalDataSourceImpl.new,
+    )
     ..registerLazySingleton<SearchRepository>(
       () => SearchRepositoryImpl(getIt<SearchLocalDataSource>()),
     )

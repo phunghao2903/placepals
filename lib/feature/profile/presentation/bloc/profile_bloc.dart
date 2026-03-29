@@ -9,9 +9,8 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileFeedUseCase getProfileFeedUseCase;
 
-  ProfileBloc({
-    required this.getProfileFeedUseCase,
-  }) : super(const ProfileState()) {
+  ProfileBloc({required this.getProfileFeedUseCase})
+    : super(const ProfileState()) {
     on<ProfileStarted>(_onStarted);
     on<ProfileTabSelected>(_onTabSelected);
     on<ProfileCityFilterSelected>(_onCityFilterSelected);
@@ -45,10 +44,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  void _onTabSelected(
-    ProfileTabSelected event,
-    Emitter<ProfileState> emit,
-  ) {
+  void _onTabSelected(ProfileTabSelected event, Emitter<ProfileState> emit) {
     final currentFeed = state.feed;
     if (currentFeed == null) return;
 
@@ -56,11 +52,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         .map((tab) => tab.copyWith(isSelected: tab.id == event.tabId))
         .toList(growable: false);
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(tabs: updatedTabs),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(tabs: updatedTabs)));
   }
 
   void _onCityFilterSelected(
@@ -77,16 +69,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         .toList(growable: false);
 
     emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(cityFilters: updatedFilters),
-      ),
+      state.copyWith(feed: currentFeed.copyWith(cityFilters: updatedFilters)),
     );
   }
 
-  void _onSortSelected(
-    ProfileSortSelected event,
-    Emitter<ProfileState> emit,
-  ) {
+  void _onSortSelected(ProfileSortSelected event, Emitter<ProfileState> emit) {
     final currentFeed = state.feed;
     if (currentFeed == null) return;
 
@@ -94,11 +81,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         .map((sort) => sort.copyWith(isSelected: sort.id == event.sortId))
         .toList(growable: false);
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(sortOptions: updatedSorts),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(sortOptions: updatedSorts)));
   }
 
   void _onViewModeChanged(
@@ -108,11 +91,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final currentFeed = state.feed;
     if (currentFeed == null) return;
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(viewMode: event.viewMode),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(viewMode: event.viewMode)));
   }
 
   void _onPlaceSaveToggled(

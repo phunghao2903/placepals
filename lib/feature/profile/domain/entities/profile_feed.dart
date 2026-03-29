@@ -1,7 +1,4 @@
-enum ProfileViewMode {
-  grid,
-  list,
-}
+enum ProfileViewMode { grid, list }
 
 class ProfileFeed {
   final String title;
@@ -73,10 +70,7 @@ class ProfileSummaryStat {
   final String value;
   final String label;
 
-  const ProfileSummaryStat({
-    required this.value,
-    required this.label,
-  });
+  const ProfileSummaryStat({required this.value, required this.label});
 }
 
 class ProfileQuickAction {
@@ -118,11 +112,7 @@ class ProfileTabOption {
     required this.isSelected,
   });
 
-  ProfileTabOption copyWith({
-    String? id,
-    String? label,
-    bool? isSelected,
-  }) {
+  ProfileTabOption copyWith({String? id, String? label, bool? isSelected}) {
     return ProfileTabOption(
       id: id ?? this.id,
       label: label ?? this.label,
@@ -170,11 +160,7 @@ class ProfileSortOption {
     required this.isSelected,
   });
 
-  ProfileSortOption copyWith({
-    String? id,
-    String? label,
-    bool? isSelected,
-  }) {
+  ProfileSortOption copyWith({String? id, String? label, bool? isSelected}) {
     return ProfileSortOption(
       id: id ?? this.id,
       label: label ?? this.label,

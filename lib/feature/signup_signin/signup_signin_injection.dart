@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 
+import '../../core/firebase/firebase_auth_service.dart';
+import '../../core/firebase/welcome_push_coordinator.dart';
 import 'data/datasources/notifications_local_datasource.dart';
-import 'data/datasources/signup_signin_local_datasource.dart';
+import 'data/datasources/signup_signin_remote_datasource.dart';
 import 'data/repositories/notifications_repository_impl.dart';
 import 'data/repositories/signup_signin_repository_impl.dart';
 import 'domain/repositories/notifications_repository.dart';
@@ -15,14 +17,14 @@ import 'presentation/bloc/signup_signin_bloc.dart';
 
 void registerSignupSigninDependencies(GetIt getIt) {
   getIt
-    ..registerLazySingleton<SignupSigninLocalDataSource>(
-      SignupSigninLocalDataSourceImpl.new,
-    )
     ..registerLazySingleton<NotificationsLocalDataSource>(
       NotificationsLocalDataSourceImpl.new,
     )
+    ..registerLazySingleton<SignupSigninRemoteDataSource>(
+      () => SignupSigninRemoteDataSourceImpl(getIt<FirebaseAuthService>()),
+    )
     ..registerLazySingleton<SignupSigninRepository>(
-      () => SignupSigninRepositoryImpl(getIt<SignupSigninLocalDataSource>()),
+      () => SignupSigninRepositoryImpl(getIt<SignupSigninRemoteDataSource>()),
     )
     ..registerLazySingleton<NotificationsRepository>(
       () => NotificationsRepositoryImpl(getIt<NotificationsLocalDataSource>()),
@@ -44,6 +46,7 @@ void registerSignupSigninDependencies(GetIt getIt) {
         loginUseCase: getIt<LoginUseCase>(),
         registerUseCase: getIt<RegisterUseCase>(),
         forgotPasswordUseCase: getIt<ForgotPasswordUseCase>(),
+        welcomePushCoordinator: getIt<WelcomePushCoordinator>(),
       ),
     )
     ..registerFactory<NotificationsBloc>(

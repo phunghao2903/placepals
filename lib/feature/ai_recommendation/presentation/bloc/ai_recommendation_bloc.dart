@@ -10,9 +10,8 @@ class AiRecommendationBloc
     extends Bloc<AiRecommendationEvent, AiRecommendationState> {
   final GetAiRecommendationFeedUseCase getAiRecommendationFeedUseCase;
 
-  AiRecommendationBloc({
-    required this.getAiRecommendationFeedUseCase,
-  }) : super(const AiRecommendationState()) {
+  AiRecommendationBloc({required this.getAiRecommendationFeedUseCase})
+    : super(const AiRecommendationState()) {
     on<AiRecommendationStarted>(_onStarted);
     on<AiRecommendationPromptChanged>(_onPromptChanged);
     on<AiRecommendationSuggestionToggled>(_onSuggestionToggled);

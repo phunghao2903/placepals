@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../widgets/auth_logo.dart';
+import 'auth_gate_page.dart';
 import 'whats_new_page.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  final bool showWhatsNewOnComplete;
+
+  const SplashPage({
+    super.key,
+    this.showWhatsNewOnComplete = true,
+  });
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -26,7 +32,11 @@ class _SplashPageState extends State<SplashPage> {
     _timer = Timer(const Duration(milliseconds: 1800), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const WhatsNewPage()),
+        MaterialPageRoute<void>(
+          builder: (_) => widget.showWhatsNewOnComplete
+              ? const WhatsNewPage()
+              : const AuthGatePage(),
+        ),
       );
     });
   }
@@ -308,4 +318,3 @@ class _SplashIllustration extends StatelessWidget {
     );
   }
 }
-
