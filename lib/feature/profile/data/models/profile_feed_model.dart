@@ -44,6 +44,7 @@ class ProfileUserModel {
   final String bio;
   final String joinedLabel;
   final String avatarPath;
+  final String? coverImagePath;
   final List<ProfileSummaryStatModel> summaryStats;
 
   const ProfileUserModel({
@@ -52,6 +53,7 @@ class ProfileUserModel {
     required this.bio,
     required this.joinedLabel,
     required this.avatarPath,
+    required this.coverImagePath,
     required this.summaryStats,
   });
 
@@ -62,6 +64,7 @@ class ProfileUserModel {
       bio: bio,
       joinedLabel: joinedLabel,
       avatarPath: avatarPath,
+      coverImagePath: coverImagePath,
       summaryStats: summaryStats.map((item) => item.toEntity()).toList(),
     );
   }
@@ -71,16 +74,10 @@ class ProfileSummaryStatModel {
   final String value;
   final String label;
 
-  const ProfileSummaryStatModel({
-    required this.value,
-    required this.label,
-  });
+  const ProfileSummaryStatModel({required this.value, required this.label});
 
   ProfileSummaryStat toEntity() {
-    return ProfileSummaryStat(
-      value: value,
-      label: label,
-    );
+    return ProfileSummaryStat(value: value, label: label);
   }
 }
 
@@ -96,11 +93,7 @@ class ProfileQuickActionModel {
   });
 
   ProfileQuickAction toEntity() {
-    return ProfileQuickAction(
-      id: id,
-      label: label,
-      iconKey: iconKey,
-    );
+    return ProfileQuickAction(id: id, label: label, iconKey: iconKey);
   }
 }
 
@@ -142,11 +135,7 @@ class ProfileTabOptionModel {
   });
 
   ProfileTabOption toEntity() {
-    return ProfileTabOption(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return ProfileTabOption(id: id, label: label, isSelected: isSelected);
   }
 }
 
@@ -185,11 +174,7 @@ class ProfileSortOptionModel {
   });
 
   ProfileSortOption toEntity() {
-    return ProfileSortOption(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return ProfileSortOption(id: id, label: label, isSelected: isSelected);
   }
 }
 

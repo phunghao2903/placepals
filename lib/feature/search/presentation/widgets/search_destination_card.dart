@@ -151,10 +151,7 @@ class _HighlightedTitle extends StatelessWidget {
   final String title;
   final String query;
 
-  const _HighlightedTitle({
-    required this.title,
-    required this.query,
-  });
+  const _HighlightedTitle({required this.title, required this.query});
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +175,10 @@ class _HighlightedTitle extends StatelessWidget {
     }
 
     final before = title.substring(0, matchIndex);
-    final match = title.substring(matchIndex, matchIndex + normalizedQuery.length);
+    final match = title.substring(
+      matchIndex,
+      matchIndex + normalizedQuery.length,
+    );
     final after = title.substring(matchIndex + normalizedQuery.length);
 
     return RichText(
@@ -207,10 +207,7 @@ class _AvatarStack extends StatelessWidget {
   final int count;
   final bool showPlus;
 
-  const _AvatarStack({
-    required this.count,
-    required this.showPlus,
-  });
+  const _AvatarStack({required this.count, required this.showPlus});
 
   @override
   Widget build(BuildContext context) {

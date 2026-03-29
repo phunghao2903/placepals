@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../notifications/presentation/pages/notifications_page.dart';
+import '../../../place_details/presentation/pages/place_details_feature_page.dart';
+import '../../../profile/domain/entities/current_user_profile.dart';
+import '../../../profile/domain/repositories/current_user_profile_repository.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../savedlist/presentation/pages/savedlist_feature_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
+import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
 import '../bloc/home_bloc.dart';
@@ -82,9 +88,7 @@ class _HomeContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SearchPage(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => const SearchPage()),
                 );
               },
               child: Container(
@@ -138,10 +142,25 @@ class _HomeContent extends StatelessWidget {
             final place = feed.places[index];
             return PlaceCard(
               place: place,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PlaceDetailsFeaturePage(placeId: place.id),
+                  ),
+                );
+              },
               onToggleFavorite: () {
                 context.read<HomeBloc>().add(
                   HomeFavoriteToggled(placeId: place.id),
                 );
+
+                if (!place.isFavorite) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SavedListFeaturePage(),
+                    ),
+                  );
+                }
               },
             );
           }),
@@ -161,35 +180,57 @@ class _HomeTopHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            const Icon(
-              Icons.location_on_rounded,
-              size: 20,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              city,
-              style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
-            ),
-          ],
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              const Icon(
+                Icons.location_on_rounded,
+                size: 20,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  city,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.body2.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 12),
         Row(
           children: <Widget>[
-            _CalendarActionButton(),
-            const SizedBox(width: 11),
-            _ProfileButton(
+            _CalendarActionButton(
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (_) => const ProfilePage(),
+                    builder: (_) => const SignupSigninPage(),
                   ),
                 );
               },
             ),
             const SizedBox(width: 11),
-            const _NotificationActionButton(),
+            _ProfileButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
+                );
+              },
+            ),
+            const SizedBox(width: 11),
+            _NotificationActionButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const NotificationsPage(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ],
@@ -198,24 +239,9 @@ class _HomeTopHeader extends StatelessWidget {
 }
 
 class _CalendarActionButton extends StatelessWidget {
-  const _CalendarActionButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
-    );
-  }
-}
-
-class _ProfileButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _ProfileButton({
-    required this.onTap,
-  });
+  const _CalendarActionButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -224,32 +250,95 @@ class _ProfileButton extends StatelessWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
-        child: Container(
+        child: SizedBox(
           width: 40,
           height: 40,
-          decoration: const BoxDecoration(
-            color: Color(0xFFC4C4C4),
-            shape: BoxShape.circle,
-          ),
-          padding: const EdgeInsets.all(6),
-          child: ClipOval(
-            child: Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
-          ),
+          child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
         ),
       ),
     );
   }
 }
 
-class _NotificationActionButton extends StatelessWidget {
-  const _NotificationActionButton();
+class _ProfileButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _ProfileButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Image.asset('assets/icons/notification.png', fit: BoxFit.contain),
+    return StreamBuilder<CurrentUserProfile>(
+      stream: getIt<CurrentUserProfileRepository>().watchCurrentUserProfile(),
+      builder: (context, snapshot) {
+        final avatarUrl = snapshot.data?.avatarUrl;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Color(0xFFC4C4C4),
+                shape: BoxShape.circle,
+              ),
+              padding: const EdgeInsets.all(6),
+              child: ClipOval(
+                child: _HomeProfileImage(
+                  imagePath: avatarUrl ?? 'assets/images/profile.jpg',
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeProfileImage extends StatelessWidget {
+  final String imagePath;
+
+  const _HomeProfileImage({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
+      );
+    }
+
+    return Image.asset(imagePath, fit: BoxFit.cover);
+  }
+}
+
+class _NotificationActionButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _NotificationActionButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Image.asset(
+            'assets/icons/notification.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
     );
   }
 }

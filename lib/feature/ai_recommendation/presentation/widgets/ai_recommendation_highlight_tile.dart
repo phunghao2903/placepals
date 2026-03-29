@@ -76,9 +76,7 @@ class AiRecommendationHighlightTile extends StatelessWidget {
 class _HighlightIcon extends StatelessWidget {
   final String iconKey;
 
-  const _HighlightIcon({
-    required this.iconKey,
-  });
+  const _HighlightIcon({required this.iconKey});
 
   @override
   Widget build(BuildContext context) {

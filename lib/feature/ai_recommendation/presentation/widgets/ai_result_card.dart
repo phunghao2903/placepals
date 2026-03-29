@@ -8,11 +8,7 @@ class AiResultCard extends StatelessWidget {
   final AiRecommendationResultItem item;
   final VoidCallback? onTap;
 
-  const AiResultCard({
-    super.key,
-    required this.item,
-    this.onTap,
-  });
+  const AiResultCard({super.key, required this.item, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +24,9 @@ class AiResultCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: const <BoxShadow>[
               BoxShadow(
-                color: Color(0x0D000000),
-                blurRadius: 10,
-                offset: Offset(0, 4),
+                color: Color(0x14FF6B5A),
+                blurRadius: 18,
+                offset: Offset(0, 8),
               ),
             ],
           ),
@@ -116,7 +112,9 @@ class AiResultCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      item.metaLine,
+                      item.metaLine
+                          .replaceAll('Â·', '-')
+                          .replaceAll('â€¢', '-'),
                       style: AppTextStyles.body1.copyWith(
                         fontSize: 12.5,
                         color: AppColors.textSecondary,
@@ -136,9 +134,7 @@ class AiResultCard extends StatelessWidget {
 class _ResultImage extends StatelessWidget {
   final AiRecommendationResultItem item;
 
-  const _ResultImage({
-    required this.item,
-  });
+  const _ResultImage({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -188,9 +184,7 @@ class _ResultImage extends StatelessWidget {
 class _ResultTagChip extends StatelessWidget {
   final AiRecommendationResultTag tag;
 
-  const _ResultTagChip({
-    required this.tag,
-  });
+  const _ResultTagChip({required this.tag});
 
   @override
   Widget build(BuildContext context) {

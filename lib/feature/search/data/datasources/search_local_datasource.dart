@@ -19,16 +19,8 @@ class SearchLocalDataSourceImpl implements SearchLocalDataSource {
           label: 'Top Rated',
           isSelected: false,
         ),
-        SearchFilterModel(
-          id: 'open-now',
-          label: 'Open Now',
-          isSelected: true,
-        ),
-        SearchFilterModel(
-          id: 'price',
-          label: 'Price',
-          isSelected: false,
-        ),
+        SearchFilterModel(id: 'open-now', label: 'Open Now', isSelected: true),
+        SearchFilterModel(id: 'price', label: 'Price', isSelected: false),
       ],
       destinations: <SearchDestinationModel>[
         SearchDestinationModel(

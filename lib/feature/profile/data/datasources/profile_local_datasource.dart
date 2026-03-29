@@ -14,9 +14,10 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
       user: ProfileUserModel(
         name: 'Sarah Johnson',
         username: '@sarahjohnson',
-        bio: 'Coffee lover | Travel enthusiast | Sharing hidden gems',
+        bio: 'Coffee lover | Travel enthusiast\nSharing hidden gems',
         joinedLabel: 'Joined January 2024',
         avatarPath: 'assets/images/profile.jpg',
+        coverImagePath: null,
         summaryStats: <ProfileSummaryStatModel>[
           ProfileSummaryStatModel(value: '24', label: 'Places'),
           ProfileSummaryStatModel(value: '1.2K', label: 'Likes'),
@@ -96,6 +97,12 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
           count: 2,
           isSelected: false,
         ),
+        ProfileFilterOptionModel(
+          id: 'hoi_an',
+          label: 'Hoi An',
+          count: 4,
+          isSelected: false,
+        ),
       ],
       sortOptions: <ProfileSortOptionModel>[
         ProfileSortOptionModel(id: 'recent', label: 'Recent', isSelected: true),
@@ -160,7 +167,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
           views: 234,
           likes: 45,
           imagePath: 'assets/images/bean_bloom.png',
-          isSaved: true,
+          isSaved: false,
         ),
         ProfilePlaceItemModel(
           id: 'garden_terrace_hoi_an',
@@ -170,7 +177,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
           views: 456,
           likes: 89,
           imagePath: 'assets/images/cafe_tan.png',
-          isSaved: true,
+          isSaved: false,
         ),
         ProfilePlaceItemModel(
           id: 'sunset_rooftop_hoi_an',
@@ -190,7 +197,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
           views: 312,
           likes: 67,
           imagePath: 'assets/images/cafe_tan.png',
-          isSaved: true,
+          isSaved: false,
         ),
       ],
     );

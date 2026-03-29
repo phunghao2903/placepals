@@ -103,11 +103,7 @@ class SearchBarInput extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  width: 1,
-                  height: 28,
-                  color: AppColors.primary,
-                ),
+                Container(width: 1, height: 28, color: AppColors.primary),
                 const SizedBox(width: 10),
                 const Icon(
                   Icons.tune_rounded,

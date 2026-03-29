@@ -28,9 +28,7 @@ class SosVisibilitySwitch extends StatelessWidget {
             .map(
               (item) => Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    left: item == items.first ? 0 : 8,
-                  ),
+                  padding: EdgeInsets.only(left: item == items.first ? 0 : 8),
                   child: Material(
                     color: item.isSelected
                         ? AppSemanticColors.primary

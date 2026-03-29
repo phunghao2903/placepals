@@ -41,7 +41,7 @@ class _ProgressOrbState extends State<ProgressOrb>
         width: 160,
         height: 160,
         child: Stack(
-          alignment: .center,
+          alignment: Alignment.center,
           children: [
             Container(
               width: 128,
