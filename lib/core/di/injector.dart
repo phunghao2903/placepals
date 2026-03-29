@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../../feature/ai_recommendation/ai_recommendation_injection.dart';
+import '../../feature/appointment/appointment_injection.dart';
 import '../../feature/bottom_appbar/bottom_appbar_injection.dart';
 import '../../feature/create_moment/create_moment_injection.dart';
 import '../../feature/home/home_injection.dart';
@@ -29,6 +30,7 @@ void _registerCore() {
 
 Future<void> _registerFeatures() async {
   registerAiRecommendationDependencies(getIt);
+  registerAppointmentDependencies(getIt);
   registerBottomAppBarDependencies(getIt);
   registerCreateMomentDependencies(getIt);
   registerHomeDependencies(getIt);
