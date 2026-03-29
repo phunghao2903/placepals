@@ -1,11 +1,6 @@
 part of 'home_bloc.dart';
 
-enum HomeStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum HomeStatus { initial, loading, success, failure }
 
 class HomeState {
   final HomeStatus status;

@@ -11,31 +11,23 @@ class SearchStarted extends SearchEvent {
 class SearchQueryChanged extends SearchEvent {
   final String query;
 
-  const SearchQueryChanged({
-    required this.query,
-  });
+  const SearchQueryChanged({required this.query});
 }
 
 class SearchRecentTapped extends SearchEvent {
   final String query;
 
-  const SearchRecentTapped({
-    required this.query,
-  });
+  const SearchRecentTapped({required this.query});
 }
 
 class SearchFilterSelected extends SearchEvent {
   final String filterId;
 
-  const SearchFilterSelected({
-    required this.filterId,
-  });
+  const SearchFilterSelected({required this.filterId});
 }
 
 class SearchFavoriteToggled extends SearchEvent {
   final String destinationId;
 
-  const SearchFavoriteToggled({
-    required this.destinationId,
-  });
+  const SearchFavoriteToggled({required this.destinationId});
 }

@@ -58,10 +58,7 @@ class _PlaceCardImage extends StatelessWidget {
   final PlaceItem place;
   final VoidCallback? onToggleFavorite;
 
-  const _PlaceCardImage({
-    required this.place,
-    this.onToggleFavorite,
-  });
+  const _PlaceCardImage({required this.place, this.onToggleFavorite});
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +73,7 @@ class _PlaceCardImage extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-              child: Image.asset(
-                place.imagePath,
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(place.imagePath, fit: BoxFit.cover),
             ),
             Positioned(
               top: 12,
@@ -146,9 +140,7 @@ class _PlaceCardImage extends StatelessWidget {
 class _PlaceCardHeader extends StatelessWidget {
   final PlaceItem place;
 
-  const _PlaceCardHeader({
-    required this.place,
-  });
+  const _PlaceCardHeader({required this.place});
 
   @override
   Widget build(BuildContext context) {
@@ -174,9 +166,7 @@ class _PlaceCardHeader extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             place.distance,
-            style: AppTextStyles.body2.copyWith(
-              color: AppColors.primary,
-            ),
+            style: AppTextStyles.body2.copyWith(color: AppColors.primary),
           ),
         ),
       ],
@@ -187,9 +177,7 @@ class _PlaceCardHeader extends StatelessWidget {
 class _PlaceCardMeta extends StatelessWidget {
   final PlaceItem place;
 
-  const _PlaceCardMeta({
-    required this.place,
-  });
+  const _PlaceCardMeta({required this.place});
 
   @override
   Widget build(BuildContext context) {
@@ -198,9 +186,7 @@ class _PlaceCardMeta extends StatelessWidget {
         Text(
           place.isOpen ? 'Open Now' : 'Closed',
           style: AppTextStyles.caption.copyWith(
-            color: place.isOpen
-                ? AppColors.success
-                : AppColors.textSecondary,
+            color: place.isOpen ? AppColors.success : AppColors.textSecondary,
           ),
         ),
         const SizedBox(width: 6),
@@ -228,9 +214,7 @@ class _MetaDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       '•',
-      style: AppTextStyles.caption.copyWith(
-        color: AppColors.textSecondary,
-      ),
+      style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
     );
   }
 }

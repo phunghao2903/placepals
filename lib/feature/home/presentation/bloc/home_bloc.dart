@@ -9,9 +9,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetHomeFeedUseCase getHomeFeedUseCase;
 
-  HomeBloc({
-    required this.getHomeFeedUseCase,
-  }) : super(const HomeState()) {
+  HomeBloc({required this.getHomeFeedUseCase}) : super(const HomeState()) {
     on<HomeStarted>(_onStarted);
     on<HomeCategorySelected>(_onCategorySelected);
     on<HomeFavoriteToggled>(_onFavoriteToggled);
@@ -47,37 +45,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (currentFeed == null) return;
 
     final updatedCategories = currentFeed.categories
-        .map(
-          (c) => c.copyWith(isSelected: c.id == event.categoryId),
-        )
+        .map((c) => c.copyWith(isSelected: c.id == event.categoryId))
         .toList(growable: false);
 
     emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(categories: updatedCategories),
-      ),
+      state.copyWith(feed: currentFeed.copyWith(categories: updatedCategories)),
     );
   }
 
-  void _onFavoriteToggled(
-    HomeFavoriteToggled event,
-    Emitter<HomeState> emit,
-  ) {
+  void _onFavoriteToggled(HomeFavoriteToggled event, Emitter<HomeState> emit) {
     final currentFeed = state.feed;
     if (currentFeed == null) return;
 
     final updatedPlaces = currentFeed.places
         .map(
-          (p) => p.id == event.placeId
-              ? p.copyWith(isFavorite: !p.isFavorite)
-              : p,
+          (p) =>
+              p.id == event.placeId ? p.copyWith(isFavorite: !p.isFavorite) : p,
         )
         .toList(growable: false);
 
-    emit(
-      state.copyWith(
-        feed: currentFeed.copyWith(places: updatedPlaces),
-      ),
-    );
+    emit(state.copyWith(feed: currentFeed.copyWith(places: updatedPlaces)));
   }
 }

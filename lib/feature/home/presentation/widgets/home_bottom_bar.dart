@@ -24,7 +24,11 @@ class HomeBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: const <Widget>[
-          _BottomBarItem(icon: Icons.home_rounded, label: 'Home', isActive: true),
+          _BottomBarItem(
+            icon: Icons.home_rounded,
+            label: 'Home',
+            isActive: true,
+          ),
           _BottomBarItem(icon: Icons.bookmark_border_rounded, label: 'Saved'),
           _CenterActionButton(),
           _BottomBarItem(icon: Icons.sos_rounded, label: 'SOS'),

@@ -17,38 +17,36 @@ class SosDescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+      width: 331,
+      height: 94,
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: NeutralColors.neutral300),
+        color: const Color(0xFFF9FAFB),
+        border: Border.all(color: Colors.white),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        minLines: 3,
-        maxLines: 4,
+        maxLines: null,
+        expands: true,
         textAlignVertical: TextAlignVertical.top,
-        style: AppTextStyles.body2.copyWith(
-          color: AppColors.textPrimary,
-        ),
+        style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,
           hintStyle: AppTextStyles.body2.copyWith(
-            color: NeutralColors.neutral700,
+            color: const Color(0xFFE8E0DF),
           ),
           suffixIconConstraints: const BoxConstraints(
             minWidth: 18,
             minHeight: 18,
           ),
           suffixIcon: const Padding(
-            padding: EdgeInsets.only(top: 34),
+            padding: EdgeInsets.only(top: 50),
             child: Icon(
-              Icons.expand_more_rounded,
+              Icons.edit_note_rounded,
               size: 18,
-              color: AppColors.textSecondary,
+              color: Color(0xFF7A8090),
             ),
           ),
         ),

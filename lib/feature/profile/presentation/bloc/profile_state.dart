@@ -1,11 +1,6 @@
 part of 'profile_bloc.dart';
 
-enum ProfileStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum ProfileStatus { initial, loading, success, failure }
 
 class ProfileState {
   final ProfileStatus status;

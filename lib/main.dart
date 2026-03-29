@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:placepals/core/core.dart';
-import 'package:placepals/feature/signup_signin/presentation/pages/auth_gate_page.dart';
+import 'package:placepals/core/firebase/push_notification_service.dart';
+import 'package:placepals/feature/signup_signin/presentation/pages/splash_page.dart';
 import 'package:placepals/firebase_options.dart';
 
 Future<void> main() async {
@@ -16,6 +18,19 @@ Future<void> main() async {
   }
 
   await configureDependencies();
+  try {
+    await getIt<PushNotificationService>().initialize();
+  } catch (error, stackTrace) {
+    getIt<AppLogger>().error(
+      'Push notification initialization failed.',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
+  assert(() {
+    debugPaintBaselinesEnabled = false;
+    return true;
+  }());
   runApp(const MyApp());
 }
 
@@ -24,11 +39,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(() {
+      debugPaintSizeEnabled = false;
+      debugPaintBaselinesEnabled = false;
+      debugPaintPointersEnabled = false;
+      debugRepaintRainbowEnabled = false;
+      return true;
+    }());
+
     return MaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const AuthGatePage(),
+      home: const SplashPage(),
     );
   }
 }

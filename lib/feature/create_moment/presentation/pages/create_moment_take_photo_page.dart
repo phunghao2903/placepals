@@ -7,18 +7,14 @@ import '../bloc/create_moment_bloc.dart';
 class CreateMomentTakePhotoPage extends StatefulWidget {
   final String previewImagePath;
 
-  const CreateMomentTakePhotoPage({
-    super.key,
-    required this.previewImagePath,
-  });
+  const CreateMomentTakePhotoPage({super.key, required this.previewImagePath});
 
   @override
   State<CreateMomentTakePhotoPage> createState() =>
       _CreateMomentTakePhotoPageState();
 }
 
-class _CreateMomentTakePhotoPageState
-    extends State<CreateMomentTakePhotoPage> {
+class _CreateMomentTakePhotoPageState extends State<CreateMomentTakePhotoPage> {
   static const List<String> _zoomLevels = <String>['1x', '2x', '3x'];
 
   String _selectedZoom = '2x';
@@ -53,9 +49,7 @@ class _CreateMomentTakePhotoPageState
               padding: const EdgeInsets.fromLTRB(22, 22, 22, 24),
               child: Column(
                 children: <Widget>[
-                  _CameraTopBar(
-                    onClose: () => Navigator.of(context).pop(),
-                  ),
+                  _CameraTopBar(onClose: () => Navigator.of(context).pop()),
                   const Spacer(),
                   _ZoomSelector(
                     options: _zoomLevels,
@@ -198,16 +192,12 @@ class _CameraModeRow extends StatelessWidget {
         children: <Widget>[
           Text(
             'Video',
-            style: AppTextStyles.body1.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.body1.copyWith(color: AppColors.textSecondary),
           ),
           const Spacer(),
           Text(
             'Portrait',
-            style: AppTextStyles.body1.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTextStyles.body1.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -273,10 +263,7 @@ class _CameraCircleButton extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
 
-  const _CameraCircleButton({
-    required this.child,
-    required this.onTap,
-  });
+  const _CameraCircleButton({required this.child, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -286,11 +273,7 @@ class _CameraCircleButton extends StatelessWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
-        child: SizedBox(
-          width: 54,
-          height: 54,
-          child: Center(child: child),
-        ),
+        child: SizedBox(width: 54, height: 54, child: Center(child: child)),
       ),
     );
   }

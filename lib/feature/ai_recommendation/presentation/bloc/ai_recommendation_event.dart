@@ -11,17 +11,13 @@ class AiRecommendationStarted extends AiRecommendationEvent {
 class AiRecommendationPromptChanged extends AiRecommendationEvent {
   final String prompt;
 
-  const AiRecommendationPromptChanged({
-    required this.prompt,
-  });
+  const AiRecommendationPromptChanged({required this.prompt});
 }
 
 class AiRecommendationSuggestionToggled extends AiRecommendationEvent {
   final String suggestionId;
 
-  const AiRecommendationSuggestionToggled({
-    required this.suggestionId,
-  });
+  const AiRecommendationSuggestionToggled({required this.suggestionId});
 }
 
 class AiRecommendationTripDestinationChanged extends AiRecommendationEvent {

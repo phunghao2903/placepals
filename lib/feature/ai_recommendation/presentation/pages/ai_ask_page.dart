@@ -92,10 +92,10 @@ class _AiAskPageState extends State<AiAskPage> {
                                   expands: true,
                                   onChanged: (value) {
                                     context.read<AiRecommendationBloc>().add(
-                                          AiRecommendationPromptChanged(
-                                            prompt: value,
-                                          ),
-                                        );
+                                      AiRecommendationPromptChanged(
+                                        prompt: value,
+                                      ),
+                                    );
                                   },
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
@@ -108,10 +108,9 @@ class _AiAskPageState extends State<AiAskPage> {
                                         size: 26,
                                       ),
                                     ),
-                                    prefixIconConstraints:
-                                        const BoxConstraints(
-                                      minWidth: 34,
-                                      minHeight: 26,
+                                    prefixIconConstraints: const BoxConstraints(
+                                      minWidth: 38,
+                                      minHeight: 28,
                                     ),
                                     hintStyle: AppTextStyles.heading5.copyWith(
                                       fontSize: 18,

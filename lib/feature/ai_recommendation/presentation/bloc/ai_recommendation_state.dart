@@ -1,11 +1,6 @@
 part of 'ai_recommendation_bloc.dart';
 
-enum AiRecommendationStatus {
-  initial,
-  loading,
-  success,
-  failure,
-}
+enum AiRecommendationStatus { initial, loading, success, failure }
 
 class AiRecommendationState {
   final AiRecommendationStatus status;

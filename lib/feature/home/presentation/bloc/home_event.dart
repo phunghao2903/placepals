@@ -11,15 +11,11 @@ class HomeStarted extends HomeEvent {
 class HomeCategorySelected extends HomeEvent {
   final String categoryId;
 
-  const HomeCategorySelected({
-    required this.categoryId,
-  });
+  const HomeCategorySelected({required this.categoryId});
 }
 
 class HomeFavoriteToggled extends HomeEvent {
   final String placeId;
 
-  const HomeFavoriteToggled({
-    required this.placeId,
-  });
+  const HomeFavoriteToggled({required this.placeId});
 }

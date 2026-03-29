@@ -8,11 +8,7 @@ class AiResultCard extends StatelessWidget {
   final AiRecommendationResultItem item;
   final VoidCallback? onTap;
 
-  const AiResultCard({
-    super.key,
-    required this.item,
-    this.onTap,
-  });
+  const AiResultCard({super.key, required this.item, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +134,7 @@ class AiResultCard extends StatelessWidget {
 class _ResultImage extends StatelessWidget {
   final AiRecommendationResultItem item;
 
-  const _ResultImage({
-    required this.item,
-  });
+  const _ResultImage({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +184,7 @@ class _ResultImage extends StatelessWidget {
 class _ResultTagChip extends StatelessWidget {
   final AiRecommendationResultTag tag;
 
-  const _ResultTagChip({
-    required this.tag,
-  });
+  const _ResultTagChip({required this.tag});
 
   @override
   Widget build(BuildContext context) {

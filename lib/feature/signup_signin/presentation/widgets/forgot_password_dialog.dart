@@ -31,107 +31,142 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-        child: BlocBuilder<SignupSigninBloc, SignupSigninState>(
-          builder: (context, state) {
-            final isLoading =
-                state.status == SignupSigninStatus.loading &&
-                state.currentRequest == SignupSigninRequest.forgotPassword;
-            final errorText =
-                state.currentRequest == SignupSigninRequest.forgotPassword &&
-                    state.status == SignupSigninStatus.failure
-                ? state.errorMessage
-                : null;
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: SizedBox(
+        width: 341.91,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 50,
+                offset: Offset(0, 25),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+            child: BlocBuilder<SignupSigninBloc, SignupSigninState>(
+              builder: (context, state) {
+                final bool isLoading =
+                    state.status == SignupSigninStatus.loading &&
+                    state.currentRequest == SignupSigninRequest.forgotPassword;
+                final String? errorText =
+                    state.currentRequest == SignupSigninRequest.forgotPassword &&
+                        state.status == SignupSigninStatus.failure
+                    ? state.errorMessage
+                    : null;
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  width: 64,
-                  height: 64,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFF897B),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.lock_reset_rounded,
-                    size: 32,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Reset Password',
-                  style: AppTextStyles.heading4.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Enter your email and we'll send you a link to reset your password",
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.body2.copyWith(
-                    color: AppColors.textPrimary,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                AuthInputField(
-                  label: 'Email Address',
-                  hintText: 'email@example.com',
-                  controller: _emailController,
-                  leadingIcon: Icons.mail_outline_rounded,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.done,
-                  onChanged: (_) {
-                    if (state.currentRequest ==
-                            SignupSigninRequest.forgotPassword &&
-                        state.status == SignupSigninStatus.failure) {
-                      context.read<SignupSigninBloc>().add(
-                        const SignupSigninActionCleared(),
-                      );
-                    }
-                  },
-                  errorText: errorText,
-                ),
-                const SizedBox(height: 20),
-                Row(
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Expanded(
-                      child: TextButton(
-                        onPressed: isLoading
-                            ? null
-                            : () => Navigator.of(context).pop(),
-                        child: Text(
-                          'Cancel',
-                          style: AppTextStyles.heading3.copyWith(
-                            color: AppColors.textPrimary,
+                    Container(
+                      width: 63.98,
+                      height: 63.98,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFF897B),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.lock_outline_rounded,
+                        size: 31.99,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Reset Password',
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.heading4.copyWith(
+                        color: AppColors.textPrimary,
+                        height: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Enter your email and we'll send you a link to reset your password",
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.body2.copyWith(
+                        color: AppColors.textPrimary,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    AuthInputField(
+                      label: 'Email Address',
+                      hintText: 'email@example.com',
+                      controller: _emailController,
+                      leadingIcon: Icons.mail_outline_rounded,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
+                      fieldHeight: 54.16,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      onChanged: (_) {
+                        if (state.currentRequest ==
+                                SignupSigninRequest.forgotPassword &&
+                            state.status == SignupSigninStatus.failure) {
+                          context.read<SignupSigninBloc>().add(
+                            const SignupSigninActionCleared(),
+                          );
+                        }
+                      },
+                      errorText: errorText,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: SizedBox(
+                            height: 47.99,
+                            child: TextButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () => Navigator.of(context).pop(),
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.textPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                              ),
+                              child: Text(
+                                'Cancel',
+                                style: AppTextStyles.heading3.copyWith(
+                                  color: AppColors.textPrimary,
+                                  height: 1,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: AuthPrimaryButton(
-                        label: 'Send Link',
-                        isLoading: isLoading,
-                        onTap: () {
-                          context.read<SignupSigninBloc>().add(
-                            SignupSigninForgotPasswordSubmitted(
-                              email: _emailController.text,
-                            ),
-                          );
-                        },
-                      ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: AuthPrimaryButton(
+                            label: 'Send Link',
+                            isLoading: isLoading,
+                            height: 47.99,
+                            onTap: () {
+                              context.read<SignupSigninBloc>().add(
+                                SignupSigninForgotPasswordSubmitted(
+                                  email: _emailController.text,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

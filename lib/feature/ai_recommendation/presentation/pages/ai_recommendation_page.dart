@@ -59,9 +59,7 @@ class _AiRecommendationView extends StatelessWidget {
 class _AiRecommendationContent extends StatelessWidget {
   final AiRecommendationFeed feed;
 
-  const _AiRecommendationContent({
-    required this.feed,
-  });
+  const _AiRecommendationContent({required this.feed});
 
   @override
   Widget build(BuildContext context) {
@@ -188,14 +186,14 @@ class _AiHeroCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 10,
-            child: Row(
-              children: const <Widget>[
-                _HeroMiniTile(icon: Icons.groups_rounded),
-                SizedBox(width: 12),
-                _HeroMiniTile(icon: Icons.location_on_outlined),
-              ],
-            ),
+            left: 115,
+            bottom: 0,
+            child: _HeroMiniTile(icon: Icons.groups_2_rounded),
+          ),
+          Positioned(
+            right: 115,
+            bottom: 0,
+            child: _HeroMiniTile(icon: Icons.location_on_outlined),
           ),
         ],
       ),
@@ -206,9 +204,7 @@ class _AiHeroCard extends StatelessWidget {
 class _HeroMiniTile extends StatelessWidget {
   final IconData icon;
 
-  const _HeroMiniTile({
-    required this.icon,
-  });
+  const _HeroMiniTile({required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +222,7 @@ class _HeroMiniTile extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(icon, color: AppColors.primary, size: 22),
+      child: Icon(icon, size: 24, color: AppColors.primary),
     );
   }
 }
