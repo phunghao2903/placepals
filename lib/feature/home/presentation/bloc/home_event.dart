@@ -19,3 +19,9 @@ class HomeFavoriteToggled extends HomeEvent {
 
   const HomeFavoriteToggled({required this.placeId});
 }
+
+class HomeCityChanged extends HomeEvent {
+  final String city;
+
+  const HomeCityChanged({required this.city});
+}

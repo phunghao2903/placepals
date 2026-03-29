@@ -13,6 +13,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeStarted>(_onStarted);
     on<HomeCategorySelected>(_onCategorySelected);
     on<HomeFavoriteToggled>(_onFavoriteToggled);
+    on<HomeCityChanged>(_onCityChanged);
   }
 
   Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
@@ -65,5 +66,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         .toList(growable: false);
 
     emit(state.copyWith(feed: currentFeed.copyWith(places: updatedPlaces)));
+  }
+
+  void _onCityChanged(HomeCityChanged event, Emitter<HomeState> emit) {
+    final currentFeed = state.feed;
+    if (currentFeed == null) return;
+
+    emit(state.copyWith(feed: currentFeed.copyWith(city: event.city)));
   }
 }
