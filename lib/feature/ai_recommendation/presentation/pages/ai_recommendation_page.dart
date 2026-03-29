@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core.dart';
 import '../../domain/entities/ai_recommendation_feed.dart';
 import '../bloc/ai_recommendation_bloc.dart';
-import 'ai_ask_page.dart';
 import '../widgets/ai_recommendation_highlight_tile.dart';
+import 'ai_ask_page.dart';
+import 'ai_trip_plan_page.dart';
 
 class AiRecommendationPage extends StatelessWidget {
   const AiRecommendationPage({super.key});
@@ -56,10 +57,6 @@ class _AiRecommendationView extends StatelessWidget {
 }
 
 class _AiRecommendationContent extends StatelessWidget {
-  static const Color _heroBackground = Color(0xFFF9DDD9);
-  static const Color _heroCircle = Color(0xFFF8C9C3);
-  static const Color _closeColor = Color(0xFF9C9493);
-
   final AiRecommendationFeed feed;
 
   const _AiRecommendationContent({required this.feed});
@@ -67,66 +64,82 @@ class _AiRecommendationContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(25, 14, 25, 32),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Align(
             alignment: Alignment.topRight,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => Navigator.of(context).maybePop(),
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(Icons.close_rounded, size: 22, color: _closeColor),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const _AiHeroCard(),
-          const SizedBox(height: 42),
-          Padding(
-            padding: const EdgeInsets.only(left: 14),
-            child: SizedBox(
-              width: 342,
-              child: Text(
-                feed.headline,
-                maxLines: 2,
-                style: AppTextStyles.heading2.copyWith(
-                  fontSize: 30,
-                  height: 1.1,
-                  fontWeight: FontWeight.w700,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: IconButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Color(0xFF9C9493),
+                  size: 24,
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 44),
-          ...List<Widget>.generate(feed.highlights.length, (index) {
-            final item = feed.highlights[index];
-            return Padding(
-              padding: EdgeInsets.only(
-                right: 8,
-                bottom: index == feed.highlights.length - 1 ? 0 : 36,
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: _AiHeroCard(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 30, 24, 0),
+            child: Text(
+              feed.headline,
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.heading2.copyWith(
+                height: 1.15,
+                fontWeight: FontWeight.w600,
               ),
-              child: AiRecommendationHighlightTile(
-                title: item.title,
-                description: item.description,
-                iconKey: item.iconKey,
-                onTap: item.id == 'ai-location'
-                    ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<AiRecommendationBloc>(),
-                              child: const AiAskPage(),
-                            ),
-                          ),
-                        );
-                      }
-                    : null,
-              ),
-            );
-          }),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: feed.highlights.map((item) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: AiRecommendationHighlightTile(
+                    title: item.title,
+                    description: item.description,
+                    iconKey: item.iconKey,
+                    onTap: item.id == 'ai-location'
+                        ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<AiRecommendationBloc>(),
+                                  child: const AiAskPage(),
+                                ),
+                              ),
+                            );
+                          }
+                        : item.id == 'trip-plan'
+                            ? () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context
+                                          .read<AiRecommendationBloc>(),
+                                      child: const AiTripPlanPage(),
+                                    ),
+                                  ),
+                                );
+                              }
+                        : null,
+                  ),
+                );
+              }).toList(growable: false),
+            ),
+          ),
         ],
       ),
     );
@@ -138,34 +151,36 @@ class _AiHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 160,
+    return Container(
+      height: 188,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Color(0x33FF6B5A),
+            Color(0x12FF6B5A),
+          ],
+        ),
+      ),
       child: Stack(
-        clipBehavior: Clip.none,
+        alignment: Alignment.center,
         children: <Widget>[
-          Positioned.fill(
-            top: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: _AiRecommendationContent._heroBackground,
-                borderRadius: BorderRadius.circular(25),
-              ),
+          Container(
+            width: 236,
+            height: 122,
+            decoration: BoxDecoration(
+              color: const Color(0x40FF6B5A),
+              borderRadius: BorderRadius.circular(999),
             ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              width: 98,
-              height: 98,
-              decoration: const BoxDecoration(
-                color: _AiRecommendationContent._heroCircle,
-                shape: BoxShape.circle,
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.map_outlined,
-                  size: 42,
-                  color: AppColors.primary,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 20),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Image.asset(
+                  AppAssets.logo,
+                  filterQuality: FilterQuality.high,
                 ),
               ),
             ),
@@ -199,6 +214,13 @@ class _HeroMiniTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Color(0x0D000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Icon(icon, size: 24, color: AppColors.primary),
     );

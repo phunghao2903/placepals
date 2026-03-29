@@ -5,34 +5,50 @@ import '../../domain/entities/place_item.dart';
 
 class PlaceCard extends StatelessWidget {
   final PlaceItem place;
+  final VoidCallback? onTap;
   final VoidCallback? onToggleFavorite;
 
-  const PlaceCard({super.key, required this.place, this.onToggleFavorite});
+  const PlaceCard({
+    super.key,
+    required this.place,
+    this.onTap,
+    this.onToggleFavorite,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 31),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(25),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _PlaceCardImage(place: place, onToggleFavorite: onToggleFavorite),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 16, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _PlaceCardHeader(place: place),
-                const SizedBox(height: 2),
-                _PlaceCardMeta(place: place),
-              ],
-            ),
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 31),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceMuted,
+            borderRadius: BorderRadius.circular(25),
           ),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _PlaceCardImage(
+                place: place,
+                onToggleFavorite: onToggleFavorite,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 8, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _PlaceCardHeader(place: place),
+                    const SizedBox(height: 2),
+                    _PlaceCardMeta(place: place),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
