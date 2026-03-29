@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/core.dart';
 import '../../../../core/firebase/firebase_auth_service.dart';
 import '../../../../core/firebase/push_notification_service.dart';
+import '../../domain/entities/current_user_profile.dart';
+import '../../domain/repositories/current_user_profile_repository.dart';
 import '../../../signup_signin/presentation/pages/splash_page.dart';
 import 'change_password_page.dart';
 import 'edit_profile_page.dart';
@@ -89,56 +91,63 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   }
 
   Widget _buildAccountSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const _SectionLabel(label: 'Account'),
-        const SizedBox(height: 10),
-        _SettingsCard(
-          child: Column(
-            children: <Widget>[
-              _SettingsTile(
-                icon: Icons.person_outline_rounded,
-                iconBackground: const Color(0xFFFFEBE6),
-                iconColor: const Color(0xFFFF7A66),
-                title: 'Edit Profile',
-                subtitle: 'Update your personal information',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const EditProfilePage(),
-                    ),
-                  );
-                },
+    return StreamBuilder<CurrentUserProfile>(
+      stream: getIt<CurrentUserProfileRepository>().watchCurrentUserProfile(),
+      builder: (context, snapshot) {
+        final email = snapshot.data?.email ?? 'No email available';
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const _SectionLabel(label: 'Account'),
+            const SizedBox(height: 10),
+            _SettingsCard(
+              child: Column(
+                children: <Widget>[
+                  _SettingsTile(
+                    icon: Icons.person_outline_rounded,
+                    iconBackground: const Color(0xFFFFEBE6),
+                    iconColor: const Color(0xFFFF7A66),
+                    title: 'Edit Profile',
+                    subtitle: 'Update your personal information',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const EditProfilePage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const _CardDivider(),
+                  _SettingsTile(
+                    icon: Icons.lock_outline_rounded,
+                    iconBackground: const Color(0xFFFFF2E3),
+                    iconColor: const Color(0xFFFFA31A),
+                    title: 'Change Password',
+                    subtitle: 'Update your password',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const ChangePasswordPage(),
+                        ),
+                      );
+                    },
+                  ),
+                  const _CardDivider(),
+                  _SettingsTile(
+                    icon: Icons.email_outlined,
+                    iconBackground: const Color(0xFFEAF2FF),
+                    iconColor: const Color(0xFF4A7CFF),
+                    title: 'Email Address',
+                    subtitle: email,
+                    onTap: _showNotImplemented,
+                  ),
+                ],
               ),
-              const _CardDivider(),
-              _SettingsTile(
-                icon: Icons.lock_outline_rounded,
-                iconBackground: const Color(0xFFFFF2E3),
-                iconColor: const Color(0xFFFFA31A),
-                title: 'Change Password',
-                subtitle: 'Update your password',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const ChangePasswordPage(),
-                    ),
-                  );
-                },
-              ),
-              const _CardDivider(),
-              _SettingsTile(
-                icon: Icons.email_outlined,
-                iconBackground: const Color(0xFFEAF2FF),
-                iconColor: const Color(0xFF4A7CFF),
-                title: 'Email Address',
-                subtitle: 'sarah@example.com',
-                onTap: _showNotImplemented,
-              ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -397,10 +406,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const _SectionLabel(
-          label: 'Danger Zone',
-          color: Color(0xFFE25B4C),
-        ),
+        const _SectionLabel(label: 'Danger Zone', color: Color(0xFFE25B4C)),
         const SizedBox(height: 10),
         _SettingsCard(
           child: Column(
@@ -771,10 +777,7 @@ class _LogoutDialog extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onConfirm;
 
-  const _LogoutDialog({
-    required this.onCancel,
-    required this.onConfirm,
-  });
+  const _LogoutDialog({required this.onCancel, required this.onConfirm});
 
   @override
   Widget build(BuildContext context) {

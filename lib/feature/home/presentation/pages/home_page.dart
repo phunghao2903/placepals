@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
+import '../../../profile/domain/entities/current_user_profile.dart';
+import '../../../profile/domain/repositories/current_user_profile_repository.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
@@ -240,25 +242,54 @@ class _ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: const BoxDecoration(
-            color: Color(0xFFC4C4C4),
-            shape: BoxShape.circle,
+    return StreamBuilder<CurrentUserProfile>(
+      stream: getIt<CurrentUserProfileRepository>().watchCurrentUserProfile(),
+      builder: (context, snapshot) {
+        final avatarUrl = snapshot.data?.avatarUrl;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Color(0xFFC4C4C4),
+                shape: BoxShape.circle,
+              ),
+              padding: const EdgeInsets.all(6),
+              child: ClipOval(
+                child: _HomeProfileImage(
+                  imagePath: avatarUrl ?? 'assets/images/profile.jpg',
+                ),
+              ),
+            ),
           ),
-          padding: const EdgeInsets.all(6),
-          child: ClipOval(
-            child: Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
-          ),
-        ),
-      ),
+        );
+      },
     );
+  }
+}
+
+class _HomeProfileImage extends StatelessWidget {
+  final String imagePath;
+
+  const _HomeProfileImage({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Image.asset('assets/images/profile.jpg', fit: BoxFit.cover),
+      );
+    }
+
+    return Image.asset(imagePath, fit: BoxFit.cover);
   }
 }
 

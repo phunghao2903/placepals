@@ -54,6 +54,7 @@ class ProfileUser {
   final String bio;
   final String joinedLabel;
   final String avatarPath;
+  final String? coverImagePath;
   final List<ProfileSummaryStat> summaryStats;
 
   const ProfileUser({
@@ -62,8 +63,29 @@ class ProfileUser {
     required this.bio,
     required this.joinedLabel,
     required this.avatarPath,
+    required this.coverImagePath,
     required this.summaryStats,
   });
+
+  ProfileUser copyWith({
+    String? name,
+    String? username,
+    String? bio,
+    String? joinedLabel,
+    String? avatarPath,
+    String? coverImagePath,
+    List<ProfileSummaryStat>? summaryStats,
+  }) {
+    return ProfileUser(
+      name: name ?? this.name,
+      username: username ?? this.username,
+      bio: bio ?? this.bio,
+      joinedLabel: joinedLabel ?? this.joinedLabel,
+      avatarPath: avatarPath ?? this.avatarPath,
+      coverImagePath: coverImagePath ?? this.coverImagePath,
+      summaryStats: summaryStats ?? this.summaryStats,
+    );
+  }
 }
 
 class ProfileSummaryStat {
