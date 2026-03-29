@@ -39,3 +39,13 @@ class ProfileViewModeChanged extends ProfileEvent {
     required this.viewMode,
   });
 }
+
+class ProfilePlaceSaveToggled extends ProfileEvent {
+  final String placeId;
+  final bool isSaved;
+
+  const ProfilePlaceSaveToggled({
+    required this.placeId,
+    required this.isSaved,
+  });
+}

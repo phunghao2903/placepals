@@ -1,40 +1,4 @@
 class SosFeed {
-  final SosIntroContent intro;
-  final SosHelpComposer helpComposer;
-  final SosActiveAlert activeAlert;
-
-  const SosFeed({
-    required this.intro,
-    required this.helpComposer,
-    required this.activeAlert,
-  });
-
-  SosFeed copyWith({
-    SosIntroContent? intro,
-    SosHelpComposer? helpComposer,
-    SosActiveAlert? activeAlert,
-  }) {
-    return SosFeed(
-      intro: intro ?? this.intro,
-      helpComposer: helpComposer ?? this.helpComposer,
-      activeAlert: activeAlert ?? this.activeAlert,
-    );
-  }
-}
-
-class SosIntroContent {
-  final String heroLabel;
-  final String helperText;
-  final String trailingActionLabel;
-
-  const SosIntroContent({
-    required this.heroLabel,
-    required this.helperText,
-    required this.trailingActionLabel,
-  });
-}
-
-class SosHelpComposer {
   final String title;
   final String subtitle;
   final String descriptionLabel;
@@ -44,7 +8,7 @@ class SosHelpComposer {
   final List<SosEmergencyType> emergencyTypes;
   final List<SosVisibilityScope> visibilityScopes;
 
-  const SosHelpComposer({
+  const SosFeed({
     required this.title,
     required this.subtitle,
     required this.descriptionLabel,
@@ -55,7 +19,7 @@ class SosHelpComposer {
     required this.visibilityScopes,
   });
 
-  SosHelpComposer copyWith({
+  SosFeed copyWith({
     String? title,
     String? subtitle,
     String? descriptionLabel,
@@ -65,7 +29,7 @@ class SosHelpComposer {
     List<SosEmergencyType>? emergencyTypes,
     List<SosVisibilityScope>? visibilityScopes,
   }) {
-    return SosHelpComposer(
+    return SosFeed(
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
       descriptionLabel: descriptionLabel ?? this.descriptionLabel,
@@ -77,30 +41,6 @@ class SosHelpComposer {
       visibilityScopes: visibilityScopes ?? this.visibilityScopes,
     );
   }
-}
-
-class SosActiveAlert {
-  final String title;
-  final String city;
-  final String locationPrefix;
-  final String locationName;
-  final String respondersTitle;
-  final String respondersEmptyLabel;
-  final String markSafeLabel;
-  final String holdToCancelLabel;
-  final List<SosResponder> responders;
-
-  const SosActiveAlert({
-    required this.title,
-    required this.city,
-    required this.locationPrefix,
-    required this.locationName,
-    required this.respondersTitle,
-    required this.respondersEmptyLabel,
-    required this.markSafeLabel,
-    required this.holdToCancelLabel,
-    required this.responders,
-  });
 }
 
 class SosEmergencyType {
@@ -153,20 +93,4 @@ class SosVisibilityScope {
       isSelected: isSelected ?? this.isSelected,
     );
   }
-}
-
-class SosResponder {
-  final String id;
-  final String name;
-  final String details;
-  final String etaLabel;
-  final int avatarTintHex;
-
-  const SosResponder({
-    required this.id,
-    required this.name,
-    required this.details,
-    required this.etaLabel,
-    required this.avatarTintHex,
-  });
 }

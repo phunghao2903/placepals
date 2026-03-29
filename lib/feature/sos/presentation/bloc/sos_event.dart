@@ -8,14 +8,6 @@ class SosStarted extends SosEvent {
   const SosStarted();
 }
 
-class SosComposerOpened extends SosEvent {
-  const SosComposerOpened();
-}
-
-class SosBackPressed extends SosEvent {
-  const SosBackPressed();
-}
-
 class SosEmergencyTypeSelected extends SosEvent {
   final String typeId;
 
@@ -38,12 +30,4 @@ class SosDescriptionChanged extends SosEvent {
   const SosDescriptionChanged({
     required this.description,
   });
-}
-
-class SosAlertSubmitted extends SosEvent {
-  const SosAlertSubmitted();
-}
-
-class SosMarkedSafe extends SosEvent {
-  const SosMarkedSafe();
 }
