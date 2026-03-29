@@ -6,6 +6,8 @@ class MapState {
   final MapStatus status;
   final MapFeed? feed;
   final String query;
+  final String locationQuery;
+  final String selectedLocationId;
   final String selectedMarkerId;
   final bool isLayerSheetOpen;
   final bool showCurrentLocation;
@@ -16,6 +18,8 @@ class MapState {
     this.status = MapStatus.initial,
     this.feed,
     this.query = '',
+    this.locationQuery = '',
+    this.selectedLocationId = '',
     this.selectedMarkerId = '',
     this.isLayerSheetOpen = false,
     this.showCurrentLocation = false,
@@ -27,6 +31,8 @@ class MapState {
     MapStatus? status,
     MapFeed? feed,
     String? query,
+    String? locationQuery,
+    String? selectedLocationId,
     String? selectedMarkerId,
     bool? isLayerSheetOpen,
     bool? showCurrentLocation,
@@ -37,6 +43,8 @@ class MapState {
       status: status ?? this.status,
       feed: feed ?? this.feed,
       query: query ?? this.query,
+      locationQuery: locationQuery ?? this.locationQuery,
+      selectedLocationId: selectedLocationId ?? this.selectedLocationId,
       selectedMarkerId: selectedMarkerId ?? this.selectedMarkerId,
       isLayerSheetOpen: isLayerSheetOpen ?? this.isLayerSheetOpen,
       showCurrentLocation: showCurrentLocation ?? this.showCurrentLocation,

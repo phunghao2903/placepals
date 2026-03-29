@@ -5,6 +5,7 @@ import '../models/map_guide_model.dart';
 import '../models/map_marker_model.dart';
 import '../models/map_overlay_setting_model.dart';
 import '../models/map_place_model.dart';
+import '../models/map_search_place_model.dart';
 import '../models/map_style_option_model.dart';
 import '../../domain/entities/map_style_option.dart';
 
@@ -17,6 +18,40 @@ class MapLocalDataSourceImpl implements MapLocalDataSource {
   Future<MapFeedModel> getMapFeed() async {
     return const MapFeedModel(
       searchHint: 'Seach friend or spots...',
+      locationTitle: 'Add Location',
+      locationSearchHint: 'Search for places, cities...',
+      pickOnMapLabel: 'Pick on Map',
+      nearbyPlacesTitle: 'Nearby Places',
+      nearbyPlaces: <MapSearchPlaceModel>[
+        MapSearchPlaceModel(
+          id: 'the-coffee-house',
+          title: 'The Coffee House',
+          subtitle: '123 Main St, Downtown',
+          distance: '0.2 mi',
+          iconKey: 'local_cafe',
+        ),
+        MapSearchPlaceModel(
+          id: 'central-park',
+          title: 'Central Park',
+          subtitle: 'Midtown West',
+          distance: '0.5 mi',
+          iconKey: 'park',
+        ),
+        MapSearchPlaceModel(
+          id: 'bella-italia',
+          title: 'Bella Italia',
+          subtitle: '45 Napoli Ave',
+          distance: '0.8 mi',
+          iconKey: 'restaurant',
+        ),
+        MapSearchPlaceModel(
+          id: 'rooftop-library',
+          title: 'Rooftop Library',
+          subtitle: '21 Nguyen Van Linh',
+          distance: '1.1 mi',
+          iconKey: 'local_library',
+        ),
+      ],
       friendFilters: <MapFriendFilterModel>[
         MapFriendFilterModel(
           id: 'all-friends',
