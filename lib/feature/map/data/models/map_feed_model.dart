@@ -4,10 +4,16 @@ import 'map_friend_filter_model.dart';
 import 'map_marker_model.dart';
 import 'map_overlay_setting_model.dart';
 import 'map_place_model.dart';
+import 'map_search_place_model.dart';
 import 'map_style_option_model.dart';
 
 class MapFeedModel {
   final String searchHint;
+  final String locationTitle;
+  final String locationSearchHint;
+  final String pickOnMapLabel;
+  final String nearbyPlacesTitle;
+  final List<MapSearchPlaceModel> nearbyPlaces;
   final List<MapFriendFilterModel> friendFilters;
   final List<MapCategoryModel> categories;
   final List<MapMarkerModel> markers;
@@ -18,6 +24,11 @@ class MapFeedModel {
 
   const MapFeedModel({
     required this.searchHint,
+    required this.locationTitle,
+    required this.locationSearchHint,
+    required this.pickOnMapLabel,
+    required this.nearbyPlacesTitle,
+    required this.nearbyPlaces,
     required this.friendFilters,
     required this.categories,
     required this.markers,
@@ -30,6 +41,11 @@ class MapFeedModel {
   MapFeed toEntity() {
     return MapFeed(
       searchHint: searchHint,
+      locationTitle: locationTitle,
+      locationSearchHint: locationSearchHint,
+      pickOnMapLabel: pickOnMapLabel,
+      nearbyPlacesTitle: nearbyPlacesTitle,
+      nearbyPlaces: nearbyPlaces.map((item) => item.toEntity()).toList(),
       friendFilters: friendFilters.map((item) => item.toEntity()).toList(),
       categories: categories.map((item) => item.toEntity()).toList(),
       markers: markers.map((item) => item.toEntity()).toList(),

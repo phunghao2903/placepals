@@ -14,6 +14,18 @@ class MapSearchChanged extends MapEvent {
   const MapSearchChanged({required this.query});
 }
 
+class MapLocationQueryChanged extends MapEvent {
+  final String query;
+
+  const MapLocationQueryChanged({required this.query});
+}
+
+class MapLocationSelected extends MapEvent {
+  final MapSearchPlace place;
+
+  const MapLocationSelected({required this.place});
+}
+
 class MapFriendFilterSelected extends MapEvent {
   final String filterId;
 

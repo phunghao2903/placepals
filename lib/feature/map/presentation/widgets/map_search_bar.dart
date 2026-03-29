@@ -6,12 +6,16 @@ class MapSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final ValueChanged<String> onChanged;
+  final VoidCallback? onTap;
+  final bool readOnly;
 
   const MapSearchBar({
     super.key,
     required this.controller,
     required this.hintText,
     required this.onChanged,
+    this.onTap,
+    this.readOnly = false,
   });
 
   @override
@@ -42,6 +46,8 @@ class MapSearchBar extends StatelessWidget {
             child: TextField(
               controller: controller,
               onChanged: onChanged,
+              onTap: onTap,
+              readOnly: readOnly,
               cursorColor: AppColors.primary,
               style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
               decoration: InputDecoration(

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/map_feed.dart';
+import '../../domain/entities/map_search_place.dart';
 import '../../domain/usecases/get_map_feed_usecase.dart';
 
 part 'map_event.dart';
@@ -12,6 +13,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   MapBloc({required this.getMapFeedUseCase}) : super(const MapState()) {
     on<MapStarted>(_onStarted);
     on<MapSearchChanged>(_onSearchChanged);
+    on<MapLocationQueryChanged>(_onLocationQueryChanged);
+    on<MapLocationSelected>(_onLocationSelected);
     on<MapFriendFilterSelected>(_onFriendFilterSelected);
     on<MapCategorySelected>(_onCategorySelected);
     on<MapMarkerSelected>(_onMarkerSelected);
@@ -35,6 +38,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         state.copyWith(
           status: MapStatus.success,
           feed: feed,
+          locationQuery: '',
+          selectedLocationId: '',
           detailNote: '',
           errorMessage: null,
         ),
@@ -53,6 +58,25 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emit(
       state.copyWith(
         query: event.query,
+        selectedMarkerId: '',
+        isLayerSheetOpen: false,
+      ),
+    );
+  }
+
+  void _onLocationQueryChanged(
+    MapLocationQueryChanged event,
+    Emitter<MapState> emit,
+  ) {
+    emit(state.copyWith(locationQuery: event.query));
+  }
+
+  void _onLocationSelected(MapLocationSelected event, Emitter<MapState> emit) {
+    emit(
+      state.copyWith(
+        query: event.place.title,
+        locationQuery: event.place.title,
+        selectedLocationId: event.place.id,
         selectedMarkerId: '',
         isLayerSheetOpen: false,
       ),

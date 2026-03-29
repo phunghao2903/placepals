@@ -14,6 +14,7 @@ import '../widgets/map_layer_sheet.dart';
 import '../widgets/map_place_marker.dart';
 import '../widgets/map_place_preview_card.dart';
 import '../widgets/map_search_bar.dart';
+import 'map_location_page.dart';
 import 'map_place_detail_page.dart';
 
 class MapPage extends StatelessWidget {
@@ -179,6 +180,17 @@ class _MapContent extends StatelessWidget {
                         MapSearchBar(
                           controller: controller,
                           hintText: feed.searchHint,
+                          readOnly: true,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<MapBloc>(),
+                                  child: const MapLocationPage(),
+                                ),
+                              ),
+                            );
+                          },
                           onChanged: (query) {
                             context.read<MapBloc>().add(
                               MapSearchChanged(query: query),
