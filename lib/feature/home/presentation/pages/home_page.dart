@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:placepals/feature/appointment/presentation/pages/appointment_page.dart';
 
 import '../../../../core/core.dart';
 import '../../../location/presentation/pages/location_page.dart';
@@ -237,7 +238,7 @@ class _HomeTopHeader extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (_) => const SignupSigninPage(),
+                    builder: (_) => const AppointmentPage(),
                   ),
                 );
               },
