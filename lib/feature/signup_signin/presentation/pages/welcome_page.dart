@@ -163,8 +163,8 @@ class _WelcomePageState extends State<WelcomePage>
                   SizedBox(
                     width: 325,
                     child: AuthPrimaryButton(
-                      label: 'Save Changes',
-                      leadingIcon: Icons.check_rounded,
+                      label: 'Sign up',
+                      leadingIcon: Icons.person_add_alt_1_rounded,
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
@@ -185,7 +185,7 @@ class _WelcomePageState extends State<WelcomePage>
                       );
                     },
                     child: Text(
-                      'Cancel',
+                      'Sign in',
                       style: AppTextStyles.heading3.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -375,25 +375,28 @@ class _AnimatedStatItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   if (showStar)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const Icon(
-                          Icons.star_rounded,
-                          size: 12,
-                          color: AppColors.warning,
-                        ),
-                        const SizedBox(width: 2),
-                        Text(
-                          label,
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.textSecondary,
-                            fontSize: 12,
-                            height: 1.1,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 12,
+                            color: AppColors.warning,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 2),
+                          Text(
+                            label,
+                            style: AppTextStyles.caption.copyWith(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   else
                     Text(
@@ -512,5 +515,4 @@ class _WelcomeFeatureCard extends StatelessWidget {
     );
   }
 }
-
 
