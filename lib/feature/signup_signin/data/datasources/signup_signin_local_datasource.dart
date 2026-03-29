@@ -21,10 +21,8 @@ class SignupSigninLocalDataSourceImpl implements SignupSigninLocalDataSource {
       id: 'demo-user',
       fullName: 'PlacePals Demo',
       email: 'demo@placepals.com',
+      password: 'password123',
     ),
-  };
-  final Map<String, String> _passwords = <String, String>{
-    'demo@placepals.com': 'password123',
   };
 
   int _counter = 2;
@@ -38,9 +36,8 @@ class SignupSigninLocalDataSourceImpl implements SignupSigninLocalDataSource {
 
     final normalizedEmail = email.trim().toLowerCase();
     final user = _users[normalizedEmail];
-    final savedPassword = _passwords[normalizedEmail];
 
-    if (user == null || savedPassword != password) {
+    if (user == null || user.password != password) {
       throw Exception('Incorrect email or password.');
     }
 
@@ -64,10 +61,10 @@ class SignupSigninLocalDataSourceImpl implements SignupSigninLocalDataSource {
       id: 'user-${_counter++}',
       fullName: fullName.trim(),
       email: normalizedEmail,
+      password: password,
     );
 
     _users[normalizedEmail] = user;
-    _passwords[normalizedEmail] = password;
     return user;
   }
 

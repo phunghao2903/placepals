@@ -18,7 +18,8 @@ abstract class SignupSigninRemoteDataSource {
   Future<void> forgotPassword({required String email});
 }
 
-class SignupSigninRemoteDataSourceImpl implements SignupSigninRemoteDataSource {
+class SignupSigninRemoteDataSourceImpl
+    implements SignupSigninRemoteDataSource {
   final FirebaseAuthService _authService;
 
   const SignupSigninRemoteDataSourceImpl(this._authService);
@@ -60,6 +61,7 @@ class SignupSigninRemoteDataSourceImpl implements SignupSigninRemoteDataSource {
             currentUser.displayName ??
             'PlacePals User',
         email: currentUser.email ?? email.trim().toLowerCase(),
+        password: password,
       );
     } on FirebaseAuthException catch (error) {
       throw Exception(_mapFirebaseAuthException(error));
@@ -99,6 +101,7 @@ class SignupSigninRemoteDataSourceImpl implements SignupSigninRemoteDataSource {
         id: user.uid,
         fullName: normalizedName,
         email: normalizedEmail,
+        password: password,
       );
     } on FirebaseAuthException catch (error) {
       throw Exception(_mapFirebaseAuthException(error));

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../widgets/auth_primary_button.dart';
-import 'welcome_page.dart';
+import 'auth_gate_page.dart';
 
 class WhatsNewPage extends StatelessWidget {
   const WhatsNewPage({super.key});
@@ -166,7 +166,7 @@ class WhatsNewPage extends StatelessWidget {
 
   void _goToWelcome(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const WelcomePage()),
+      MaterialPageRoute<void>(builder: (_) => const AuthGatePage()),
     );
   }
 }

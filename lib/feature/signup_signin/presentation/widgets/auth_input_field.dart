@@ -13,6 +13,9 @@ class AuthInputField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
+  final double fieldHeight;
+  final EdgeInsetsGeometry contentPadding;
+  final double borderRadius;
 
   const AuthInputField({
     super.key,
@@ -26,16 +29,30 @@ class AuthInputField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
+    this.fieldHeight = 58.15,
+    this.contentPadding = const EdgeInsets.symmetric(
+      horizontal: 18,
+      vertical: 16,
+    ),
+    this.borderRadius = 16,
   });
 
   @override
   Widget build(BuildContext context) {
+    final BorderSide borderSide = BorderSide(
+      color: AppColors.border,
+      width: 1.1,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           label,
-          style: AppTextStyles.body2.copyWith(color: AppColors.textPrimary),
+          style: AppTextStyles.body2.copyWith(
+            color: AppColors.textPrimary,
+            height: 1,
+          ),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -44,10 +61,16 @@ class AuthInputField extends StatelessWidget {
           obscureText: obscureText,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
+          style: AppTextStyles.body1.copyWith(
+            color: AppColors.textPrimary,
+            height: 1,
+          ),
           decoration: InputDecoration(
+            constraints: BoxConstraints(minHeight: fieldHeight),
             hintText: hintText,
             hintStyle: AppTextStyles.body1.copyWith(
               color: AppColors.textSecondary,
+              height: 1,
             ),
             errorText: errorText,
             filled: true,
@@ -57,26 +80,36 @@ class AuthInputField extends StatelessWidget {
               size: 20,
               color: AppColors.textSecondary,
             ),
-            suffixIcon: trailing,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 16,
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 52,
+              minHeight: 20,
             ),
+            suffixIcon: trailing,
+            contentPadding: contentPadding,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderRadius: BorderRadius.circular(borderRadius),
+              borderSide: borderSide,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: AppColors.primary),
+              borderRadius: BorderRadius.circular(borderRadius),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.1,
+              ),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderRadius: BorderRadius.circular(borderRadius),
+              borderSide: const BorderSide(
+                color: AppColors.error,
+                width: 1.1,
+              ),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderRadius: BorderRadius.circular(borderRadius),
+              borderSide: const BorderSide(
+                color: AppColors.error,
+                width: 1.1,
+              ),
             ),
           ),
         ),
