@@ -7,6 +7,8 @@ import 'firebase_auth_service.dart';
 import 'push_notification_service.dart';
 
 class WelcomePushCoordinator {
+  static const String _functionsRegion = 'asia-southeast1';
+
   final PushNotificationService _pushNotificationService;
   final FirebaseAuthService _authService;
   final FirebaseFunctions _functions;
@@ -20,7 +22,8 @@ class WelcomePushCoordinator {
   }) : _pushNotificationService =
            pushNotificationService ?? PushNotificationService(),
        _authService = authService ?? FirebaseAuthService(),
-       _functions = functions ?? FirebaseFunctions.instance,
+       _functions =
+           functions ?? FirebaseFunctions.instanceFor(region: _functionsRegion),
        _logger = logger ?? AppLogger();
 
   Future<void> triggerAfterLogin() async {
