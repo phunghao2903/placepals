@@ -12,10 +12,6 @@ class PlaceCategoryModel {
   });
 
   PlaceCategory toEntity() {
-    return PlaceCategory(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return PlaceCategory(id: id, label: label, isSelected: isSelected);
   }
 }

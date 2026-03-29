@@ -437,10 +437,7 @@ class _CreateMomentContent extends StatelessWidget {
   }) {
     if (selectedTags.isEmpty) return fallback;
 
-    final labels = selectedTags
-        .map((tag) => tag.label)
-        .take(2)
-        .join(', ');
+    final labels = selectedTags.map((tag) => tag.label).take(2).join(', ');
     if (selectedTags.length <= 2) return labels;
 
     final remaining = selectedTags.length - 2;

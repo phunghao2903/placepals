@@ -11,31 +11,33 @@ class ProfileStarted extends ProfileEvent {
 class ProfileTabSelected extends ProfileEvent {
   final String tabId;
 
-  const ProfileTabSelected({
-    required this.tabId,
-  });
+  const ProfileTabSelected({required this.tabId});
 }
 
 class ProfileCityFilterSelected extends ProfileEvent {
   final String filterId;
 
-  const ProfileCityFilterSelected({
-    required this.filterId,
-  });
+  const ProfileCityFilterSelected({required this.filterId});
 }
 
 class ProfileSortSelected extends ProfileEvent {
   final String sortId;
 
-  const ProfileSortSelected({
-    required this.sortId,
-  });
+  const ProfileSortSelected({required this.sortId});
 }
 
 class ProfileViewModeChanged extends ProfileEvent {
   final ProfileViewMode viewMode;
 
-  const ProfileViewModeChanged({
-    required this.viewMode,
+  const ProfileViewModeChanged({required this.viewMode});
+}
+
+class ProfilePlaceSaveToggled extends ProfileEvent {
+  final String placeId;
+  final bool isSaved;
+
+  const ProfilePlaceSaveToggled({
+    required this.placeId,
+    required this.isSaved,
   });
 }

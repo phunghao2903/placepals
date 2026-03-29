@@ -20,18 +20,30 @@ class AiAskSuggestionChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(18),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : const Color(0xFFF9CEC8),
-            borderRadius: BorderRadius.circular(22),
+            color: isSelected ? AppColors.primary : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : const Color(0xFFB8C0CC),
+            ),
+            boxShadow: isSelected
+                ? const <BoxShadow>[]
+                : const <BoxShadow>[
+                    BoxShadow(
+                      color: Color(0x12000000),
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
           ),
           child: Text(
             label,
             style: AppTextStyles.body1.copyWith(
               color: isSelected ? Colors.white : AppColors.textPrimary,
-              fontSize: 16,
+              fontSize: 14,
             ),
           ),
         ),

@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
+import '../../../place_details/presentation/pages/place_details_feature_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../savedlist/presentation/pages/savedlist_feature_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
+import '../../../signup_signin/presentation/pages/signup_signin_page.dart';
 import '../../domain/entities/home_feed.dart';
 import '../../domain/entities/place_category.dart';
 import '../bloc/home_bloc.dart';
@@ -137,10 +140,25 @@ class _HomeContent extends StatelessWidget {
             final place = feed.places[index];
             return PlaceCard(
               place: place,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PlaceDetailsFeaturePage(placeId: place.id),
+                  ),
+                );
+              },
               onToggleFavorite: () {
                 context.read<HomeBloc>().add(
                   HomeFavoriteToggled(placeId: place.id),
                 );
+
+                if (!place.isFavorite) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SavedListFeaturePage(),
+                    ),
+                  );
+                }
               },
             );
           }),
@@ -184,7 +202,15 @@ class _HomeTopHeader extends StatelessWidget {
         const SizedBox(width: 12),
         Row(
           children: <Widget>[
-            const _CalendarActionButton(),
+            _CalendarActionButton(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SignupSigninPage(),
+                  ),
+                );
+              },
+            ),
             const SizedBox(width: 11),
             _ProfileButton(
               onTap: () {
@@ -211,14 +237,23 @@ class _HomeTopHeader extends StatelessWidget {
 }
 
 class _CalendarActionButton extends StatelessWidget {
-  const _CalendarActionButton();
+  final VoidCallback onTap;
+
+  const _CalendarActionButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Image.asset('assets/icons/calendar.png', fit: BoxFit.contain),
+        ),
+      ),
     );
   }
 }

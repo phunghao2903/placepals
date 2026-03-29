@@ -71,16 +71,10 @@ class ProfileSummaryStatModel {
   final String value;
   final String label;
 
-  const ProfileSummaryStatModel({
-    required this.value,
-    required this.label,
-  });
+  const ProfileSummaryStatModel({required this.value, required this.label});
 
   ProfileSummaryStat toEntity() {
-    return ProfileSummaryStat(
-      value: value,
-      label: label,
-    );
+    return ProfileSummaryStat(value: value, label: label);
   }
 }
 
@@ -96,11 +90,7 @@ class ProfileQuickActionModel {
   });
 
   ProfileQuickAction toEntity() {
-    return ProfileQuickAction(
-      id: id,
-      label: label,
-      iconKey: iconKey,
-    );
+    return ProfileQuickAction(id: id, label: label, iconKey: iconKey);
   }
 }
 
@@ -142,11 +132,7 @@ class ProfileTabOptionModel {
   });
 
   ProfileTabOption toEntity() {
-    return ProfileTabOption(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return ProfileTabOption(id: id, label: label, isSelected: isSelected);
   }
 }
 
@@ -185,11 +171,7 @@ class ProfileSortOptionModel {
   });
 
   ProfileSortOption toEntity() {
-    return ProfileSortOption(
-      id: id,
-      label: label,
-      isSelected: isSelected,
-    );
+    return ProfileSortOption(id: id, label: label, isSelected: isSelected);
   }
 }
 

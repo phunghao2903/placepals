@@ -6,6 +6,7 @@ import '../../../ai_recommendation/presentation/pages/ai_recommendation_page.dar
 import '../../../create_moment/presentation/pages/create_moment_page.dart';
 import '../../../home/presentation/pages/home_page.dart';
 import '../../../map/presentation/pages/map_page.dart';
+import '../../../savedlist/presentation/pages/savedlist_feature_page.dart';
 import '../../../sos/presentation/pages/sos_page.dart';
 import '../bloc/bottom_appbar_bloc.dart';
 import '../widgets/bottom_nav_item.dart';
@@ -27,7 +28,7 @@ class _BottomAppBarPageState extends State<BottomAppBarPage> {
     _pages = const <Widget>[
       HomePage(),
       MapPage(),
-      _BottomPlaceholderPage(title: 'Saved'),
+      SavedListFeaturePage(),
       SosPage(),
     ];
   }
@@ -43,10 +44,7 @@ class _BottomAppBarPageState extends State<BottomAppBarPage> {
               Scaffold(
                 extendBody: true,
                 backgroundColor: AppColors.background,
-                body: IndexedStack(
-                  index: state.currentIndex,
-                  children: _pages,
-                ),
+                body: IndexedStack(index: state.currentIndex, children: _pages),
                 floatingActionButton: _CenterAddButton(
                   onTap: () {
                     Navigator.of(context).push(
@@ -86,9 +84,7 @@ class _BottomAppBarPageState extends State<BottomAppBarPage> {
 class _AiAssistantButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _AiAssistantButton({
-    required this.onTap,
-  });
+  const _AiAssistantButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +109,7 @@ class _AiAssistantButton extends StatelessWidget {
 class _PlacePalsBottomAppBar extends StatelessWidget {
   final int currentIndex;
 
-  const _PlacePalsBottomAppBar({
-    required this.currentIndex,
-  });
+  const _PlacePalsBottomAppBar({required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -194,9 +188,7 @@ class _PlacePalsBottomAppBar extends StatelessWidget {
 class _CenterAddButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _CenterAddButton({
-    required this.onTap,
-  });
+  const _CenterAddButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -219,31 +211,6 @@ class _CenterAddButton extends StatelessWidget {
                 size: 30,
                 color: SemanticTextColors.onBrand,
               ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BottomPlaceholderPage extends StatelessWidget {
-  final String title;
-
-  const _BottomPlaceholderPage({
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Text(
-            title,
-            style: AppTextStyles.heading4.copyWith(
-              color: AppColors.textPrimary,
             ),
           ),
         ),

@@ -134,9 +134,11 @@ class AppSemanticColors {
 class ComponentColors {
   const ComponentColors._();
 
-  static const Color favoriteDefaultBackground = SemanticSurfaceColors.overlayDark;
+  static const Color favoriteDefaultBackground =
+      SemanticSurfaceColors.overlayDark;
   static const Color favoriteDefaultIcon = SemanticIconColors.onBrand;
-  static const Color favoriteActiveBackground = SemanticSurfaceColors.overlayLight;
+  static const Color favoriteActiveBackground =
+      SemanticSurfaceColors.overlayLight;
   static const Color favoriteActiveIcon = SemanticIconColors.brand;
 
   static const Color buttonPrimaryBackground = BrandColors.primary500;

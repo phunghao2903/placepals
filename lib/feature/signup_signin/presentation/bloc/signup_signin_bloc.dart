@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/firebase/welcome_push_coordinator.dart';
 import '../../../../core/utils/validators.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
@@ -12,11 +15,13 @@ class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
+  final WelcomePushCoordinator welcomePushCoordinator;
 
   SignupSigninBloc({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.forgotPasswordUseCase,
+    required this.welcomePushCoordinator,
   }) : super(const SignupSigninState()) {
     on<SignupSigninModeChanged>(_onModeChanged);
     on<SignupSigninFullNameChanged>(_onFullNameChanged);
@@ -166,6 +171,7 @@ class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
 
     try {
       await loginUseCase(email: state.email.trim(), password: state.password);
+      unawaited(welcomePushCoordinator.triggerAfterLogin());
       emit(
         state.copyWith(
           status: SignupSigninStatus.success,
@@ -326,7 +332,3 @@ class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
     return null;
   }
 }
-
-
-
-

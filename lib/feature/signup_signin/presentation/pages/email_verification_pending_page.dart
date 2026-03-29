@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../../../../core/firebase/firebase_auth_service.dart';
+import '../../../../core/firebase/push_notification_service.dart';
 import '../widgets/auth_logo.dart';
 import '../widgets/auth_primary_button.dart';
 import 'auth_gate_page.dart';
@@ -286,6 +287,10 @@ class _EmailVerificationPendingPageState
     });
 
     try {
+      try {
+        await getIt<PushNotificationService>()
+            .detachCurrentTokenFromCurrentUser();
+      } catch (_) {}
       await _authService.signOut();
     } finally {
       if (mounted) {

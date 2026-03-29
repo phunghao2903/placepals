@@ -10,6 +10,8 @@ class SocialAuthButton extends StatelessWidget {
   final VoidCallback? onTap;
   final BorderSide? borderSide;
   final List<BoxShadow>? boxShadow;
+  final double height;
+  final double borderRadius;
 
   const SocialAuthButton({
     super.key,
@@ -20,6 +22,8 @@ class SocialAuthButton extends StatelessWidget {
     this.onTap,
     this.borderSide,
     this.boxShadow,
+    this.height = 46.19,
+    this.borderRadius = 16,
   });
 
   @override
@@ -28,22 +32,24 @@ class SocialAuthButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(borderRadius),
           onTap: onTap,
           child: Ink(
-            height: 48,
+            height: height,
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(18),
-              border: borderSide != null ? Border.fromBorderSide(borderSide!) : null,
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: borderSide != null
+                  ? Border.fromBorderSide(borderSide!)
+                  : null,
               boxShadow:
                   boxShadow ??
                   <BoxShadow>[
                     if (backgroundColor == Colors.white)
                       const BoxShadow(
-                        color: Color(0x12000000),
-                        blurRadius: 14,
-                        offset: Offset(0, 6),
+                        color: Color(0x14000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
                       ),
                   ],
             ),
@@ -51,12 +57,13 @@ class SocialAuthButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 leading,
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Text(
                   label,
                   style: AppTextStyles.body2.copyWith(
                     color: foregroundColor,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
+                    height: 1,
                   ),
                 ),
               ],
