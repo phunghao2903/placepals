@@ -4,11 +4,13 @@ class CreateMomentPhotoModel {
   final String id;
   final String? imagePath;
   final bool isPlaceholder;
+  final String label;
 
   const CreateMomentPhotoModel({
     required this.id,
     this.imagePath,
     required this.isPlaceholder,
+    this.label = '',
   });
 
   CreateMomentPhoto toEntity() {
@@ -16,6 +18,7 @@ class CreateMomentPhotoModel {
       id: id,
       imagePath: imagePath,
       isPlaceholder: isPlaceholder,
+      label: label,
     );
   }
 }
