@@ -44,6 +44,7 @@ class ProfileUserModel {
   final String bio;
   final String joinedLabel;
   final String avatarPath;
+  final String? coverImagePath;
   final List<ProfileSummaryStatModel> summaryStats;
 
   const ProfileUserModel({
@@ -52,6 +53,7 @@ class ProfileUserModel {
     required this.bio,
     required this.joinedLabel,
     required this.avatarPath,
+    required this.coverImagePath,
     required this.summaryStats,
   });
 
@@ -62,6 +64,7 @@ class ProfileUserModel {
       bio: bio,
       joinedLabel: joinedLabel,
       avatarPath: avatarPath,
+      coverImagePath: coverImagePath,
       summaryStats: summaryStats.map((item) => item.toEntity()).toList(),
     );
   }
