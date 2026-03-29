@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/core.dart';
+import '../../../location/presentation/pages/location_page.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../place_details/presentation/pages/place_details_feature_page.dart';
 import '../../../profile/domain/entities/current_user_profile.dart';
@@ -181,24 +182,52 @@ class _HomeTopHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Expanded(
-          child: Row(
-            children: <Widget>[
-              const Icon(
-                Icons.location_on_rounded,
-                size: 20,
-                color: AppColors.primary,
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  city,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.body2.copyWith(
-                    color: AppColors.textPrimary,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () async {
+                final selectedCity = await Navigator.of(context).push<String>(
+                  MaterialPageRoute<String>(
+                    builder: (_) => LocationPage(currentCity: city),
                   ),
+                );
+
+                if (!context.mounted || selectedCity == null) {
+                  return;
+                }
+
+                context.read<HomeBloc>().add(HomeCityChanged(city: selectedCity));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: <Widget>[
+                    const Icon(
+                      Icons.location_on_rounded,
+                      size: 20,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        city,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.body2.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AppColors.textSecondary,
+                      size: 18,
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
         const SizedBox(width: 12),

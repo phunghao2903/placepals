@@ -5,6 +5,7 @@ import '../../feature/bottom_appbar/bottom_appbar_injection.dart';
 import '../../feature/create_moment/create_moment_injection.dart';
 import '../../feature/help_sos/help_sos_injection.dart';
 import '../../feature/home/home_injection.dart';
+import '../../feature/location/location_injection.dart';
 import '../../feature/map/map_injection.dart';
 import '../../feature/place_details/appointment_injection.dart';
 import '../../feature/notifications/notifications_injection.dart';
@@ -61,6 +62,7 @@ Future<void> _registerFeatures() async {
   registerCreateMomentDependencies(getIt);
   registerHelpSosDependencies(getIt);
   registerHomeDependencies(getIt);
+  registerLocationDependencies(getIt);
   registerMapDependencies(getIt);
   registerPlaceDetailsDependencies(getIt);
   registerNotificationsDependencies(getIt);
