@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../../domain/entities/profile_feed.dart';
-import '../pages/edit_place_page.dart';
+import '../pages/post_detail_page.dart';
 
 class ProfilePlaceTile extends StatefulWidget {
   final ProfilePlaceItem place;
@@ -25,7 +25,10 @@ class _ProfilePlaceTileState extends State<ProfilePlaceTile> {
   @override
   Widget build(BuildContext context) {
     if (widget.compact) {
-      return _ProfilePlaceListTile(place: widget.place, onEdit: _openEditor);
+      return _ProfilePlaceListTile(
+        place: widget.place,
+        onEdit: _openPostDetail,
+      );
     }
 
     final showsEditVariant = _isHovered || _showsTouchVariant;
@@ -41,7 +44,7 @@ class _ProfilePlaceTileState extends State<ProfilePlaceTile> {
       },
       child: GestureDetector(
         onTap: _toggleTouchVariant,
-        onLongPress: _openEditor,
+        onLongPress: _openPostDetail,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
@@ -129,7 +132,7 @@ class _ProfilePlaceTileState extends State<ProfilePlaceTile> {
                   top: 51,
                   left: 10,
                   child: showsEditVariant
-                      ? _EditPlaceButton(onTap: _openEditor)
+                      ? _EditPlaceButton(onTap: _openPostDetail)
                       : const SizedBox.shrink(),
                 ),
                 Positioned(
@@ -194,11 +197,11 @@ class _ProfilePlaceTileState extends State<ProfilePlaceTile> {
     );
   }
 
-  void _openEditor() {
+  void _openPostDetail() {
     _showsTouchVariant = false;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => EditPlacePage(place: widget.place),
+        builder: (_) => PostDetailPage(place: widget.place),
       ),
     );
   }
