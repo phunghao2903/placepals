@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:placepals/core/core.dart';
 import 'package:placepals/core/firebase/push_notification_service.dart';
+import 'package:placepals/feature/map/presentation/pages/map_page2.dart';
 import 'package:placepals/feature/signup_signin/presentation/pages/splash_page.dart';
 import 'package:placepals/firebase_options.dart';
 
@@ -31,7 +34,13 @@ Future<void> main() async {
     debugPaintBaselinesEnabled = false;
     return true;
   }());
+  await setup();
   runApp(const MyApp());
+}
+
+Future<void> setup() async {
+  await dotenv.load(fileName: ".env");
+  MapboxOptions.setAccessToken(dotenv.env['MAPBOX_ACCESS_TOKEN']!);
 }
 
 class MyApp extends StatelessWidget {
@@ -47,11 +56,12 @@ class MyApp extends StatelessWidget {
       return true;
     }());
 
-    return MaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      home: const SplashPage(),
-    );
+    // return MaterialApp(
+    //   title: AppConstants.appName,
+    //   debugShowCheckedModeBanner: false,
+    //   theme: AppTheme.light(),
+    //   home: const SplashPage(),
+    // );
+    return MapPage2();
   }
 }
