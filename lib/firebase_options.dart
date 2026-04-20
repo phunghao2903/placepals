@@ -41,29 +41,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDsJO9Ind-GeauDbagHgCKsoPA73OsSops',
-    appId: '1:286137181612:web:94e275bec6950b8b1cc609',
-    messagingSenderId: '286137181612',
-    projectId: 'placepals-a5221',
-    authDomain: 'placepals-a5221.firebaseapp.com',
-    storageBucket: 'placepals-a5221.firebasestorage.app',
-    measurementId: 'G-MP4NER1L6P',
+    apiKey: 'AIzaSyA7ftbsgOres_iX0FcQ4iKBXRFi9yjnpbE',
+    appId: '1:330723890500:web:6b70fe1da70cc7a8cef311',
+    messagingSenderId: '330723890500',
+    projectId: 'placepals24',
+    authDomain: 'placepals24.firebaseapp.com',
+    storageBucket: 'placepals24.firebasestorage.app',
+    measurementId: 'G-R3M1YQ7SSE',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAVnlnt2-Y8oIcTiSQzNgSfG1eZPmo-DeE',
-    appId: '1:286137181612:android:9debeb501bd8beb71cc609',
-    messagingSenderId: '286137181612',
-    projectId: 'placepals-a5221',
-    storageBucket: 'placepals-a5221.firebasestorage.app',
+    apiKey: 'AIzaSyCKBNQqPb6daSgdUOZxmdIqczZ6PpXLpMU',
+    appId: '1:330723890500:android:405cca72a4cce21bcef311',
+    messagingSenderId: '330723890500',
+    projectId: 'placepals24',
+    storageBucket: 'placepals24.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyChxkMCJxo0aBuOc0SH2SxckIGqSfK0nho',
-    appId: '1:286137181612:ios:7b5513948650546e1cc609',
-    messagingSenderId: '286137181612',
-    projectId: 'placepals-a5221',
-    storageBucket: 'placepals-a5221.firebasestorage.app',
+    apiKey: 'AIzaSyBosXM4pGi3lCdbEUe1kSeA8B6FDaQo6JI',
+    appId: '1:330723890500:ios:3f81dcd9c30d2454cef311',
+    messagingSenderId: '330723890500',
+    projectId: 'placepals24',
+    storageBucket: 'placepals24.firebasestorage.app',
     iosBundleId: 'com.example.placepals',
   );
 
@@ -77,12 +77,13 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDsJO9Ind-GeauDbagHgCKsoPA73OsSops',
-    appId: '1:286137181612:web:780a5ef78c02886a1cc609',
-    messagingSenderId: '286137181612',
-    projectId: 'placepals-a5221',
-    authDomain: 'placepals-a5221.firebaseapp.com',
-    storageBucket: 'placepals-a5221.firebasestorage.app',
-    measurementId: 'G-GQ2DHQLVWF',
+    apiKey: 'AIzaSyA7ftbsgOres_iX0FcQ4iKBXRFi9yjnpbE',
+    appId: '1:330723890500:web:b877b50f017e41c3cef311',
+    messagingSenderId: '330723890500',
+    projectId: 'placepals24',
+    authDomain: 'placepals24.firebaseapp.com',
+    storageBucket: 'placepals24.firebasestorage.app',
+    measurementId: 'G-5D9K8NLEE8',
   );
+
 }
