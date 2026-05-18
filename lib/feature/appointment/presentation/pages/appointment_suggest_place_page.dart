@@ -6,6 +6,7 @@ import '../../domain/entities/appointment_place_suggestion.dart';
 import 'appointment_group_voting_page.dart';
 
 class AppointmentSuggestPlacePage extends StatefulWidget {
+  final String? appointmentId;
   final String title;
   final String dateLabel;
   final String timeLabel;
@@ -15,6 +16,7 @@ class AppointmentSuggestPlacePage extends StatefulWidget {
 
   const AppointmentSuggestPlacePage({
     super.key,
+    this.appointmentId,
     required this.title,
     required this.dateLabel,
     required this.timeLabel,
@@ -28,16 +30,15 @@ class AppointmentSuggestPlacePage extends StatefulWidget {
       _AppointmentSuggestPlacePageState();
 }
 
-class _AppointmentSuggestPlacePageState extends State<AppointmentSuggestPlacePage> {
+class _AppointmentSuggestPlacePageState
+    extends State<AppointmentSuggestPlacePage> {
   late List<AppointmentPlaceSuggestion> _places;
 
   @override
   void initState() {
     super.initState();
     _places = (widget.initialPlaces ?? _seedPlaces)
-        .map(
-          (place) => place.copyWith(),
-        )
+        .map((place) => place.copyWith())
         .toList(growable: true);
   }
 
@@ -54,9 +55,7 @@ class _AppointmentSuggestPlacePageState extends State<AppointmentSuggestPlacePag
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
               decoration: const BoxDecoration(
                 color: Color(0xFFF8F6F5),
-                border: Border(
-                  bottom: BorderSide(color: Color(0xFFF1E7E2)),
-                ),
+                border: Border(bottom: BorderSide(color: Color(0xFFF1E7E2))),
               ),
               child: Column(
                 children: <Widget>[
@@ -94,7 +93,10 @@ class _AppointmentSuggestPlacePageState extends State<AppointmentSuggestPlacePag
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: <Widget>[
-                        const Icon(Icons.search_rounded, color: Color(0xFFD0C2BB)),
+                        const Icon(
+                          Icons.search_rounded,
+                          color: Color(0xFFD0C2BB),
+                        ),
                         const SizedBox(width: 12),
                         Text(
                           'Search for restaurant, cafe...',
@@ -214,7 +216,11 @@ class _AppointmentSuggestPlacePageState extends State<AppointmentSuggestPlacePag
                       const SizedBox(height: 6),
                       Row(
                         children: <Widget>[
-                          const Icon(Icons.star_rounded, size: 15, color: Color(0xFFF4B23E)),
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 15,
+                            color: Color(0xFFF4B23E),
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${place.rating.toStringAsFixed(1)} (${place.reviewsCount})',
@@ -273,9 +279,7 @@ class _AppointmentSuggestPlacePageState extends State<AppointmentSuggestPlacePag
 class _BackButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const _BackButton({
-    required this.onTap,
-  });
+  const _BackButton({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -298,9 +302,7 @@ class _BackButton extends StatelessWidget {
 class _SelectionCircle extends StatelessWidget {
   final bool isSelected;
 
-  const _SelectionCircle({
-    required this.isSelected,
-  });
+  const _SelectionCircle({required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -381,7 +383,11 @@ class _BottomCta extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
+              const Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
             ],
           ),
         ),
@@ -390,73 +396,74 @@ class _BottomCta extends StatelessWidget {
   }
 }
 
-const List<AppointmentPlaceSuggestion> _seedPlaces = <AppointmentPlaceSuggestion>[
-  AppointmentPlaceSuggestion(
-    id: 'salmon',
-    name: 'Salmon Sushi Bar',
-    cuisine: 'Japanese',
-    priceLabel: '\$\$',
-    distanceLabel: '0.2 mi',
-    rating: 4.8,
-    reviewsCount: 128,
-    imageAssetPath: 'assets/images/cafe_tan.png',
-    status: AppointmentPlaceStatus.open,
-    statusLabel: 'Open until 10 PM',
-    socialProofLabel: 'You and 3 others',
-    voteProgress: 0.78,
-    isSelected: false,
-    isTopChoice: true,
-    isHighlighted: false,
-  ),
-  AppointmentPlaceSuggestion(
-    id: 'rustic',
-    name: 'The Rustic Table',
-    cuisine: 'American',
-    priceLabel: '\$\$\$',
-    distanceLabel: '1.4 mi',
-    rating: 4.5,
-    reviewsCount: 84,
-    imageAssetPath: 'assets/images/bean_bloom.png',
-    status: AppointmentPlaceStatus.closingSoon,
-    statusLabel: 'Closes soon (9 PM)',
-    socialProofLabel: 'Mike voted for this',
-    voteProgress: 0.24,
-    isSelected: true,
-    isTopChoice: false,
-    isHighlighted: false,
-  ),
-  AppointmentPlaceSuggestion(
-    id: 'luigi',
-    name: 'Luigi\'s Trattoria',
-    cuisine: 'Italian',
-    priceLabel: '\$\$',
-    distanceLabel: '0.8 mi',
-    rating: 4.9,
-    reviewsCount: 312,
-    imageAssetPath: 'assets/images/korea_food.jpeg',
-    status: AppointmentPlaceStatus.open,
-    statusLabel: 'Open until 11 PM',
-    socialProofLabel: 'Sarah and 1 other',
-    voteProgress: 0.52,
-    isSelected: false,
-    isTopChoice: false,
-    isHighlighted: false,
-  ),
-  AppointmentPlaceSuggestion(
-    id: 'pizza',
-    name: 'Pizza Heaven',
-    cuisine: 'Pizza',
-    priceLabel: '\$',
-    distanceLabel: '3.2 mi',
-    rating: 4.2,
-    reviewsCount: 56,
-    imageAssetPath: 'assets/images/profile.jpg',
-    status: AppointmentPlaceStatus.open,
-    statusLabel: 'Open until 2 AM',
-    socialProofLabel: 'Be the first to vote for this',
-    voteProgress: 0.0,
-    isSelected: false,
-    isTopChoice: false,
-    isHighlighted: false,
-  ),
-];
+const List<AppointmentPlaceSuggestion> _seedPlaces =
+    <AppointmentPlaceSuggestion>[
+      AppointmentPlaceSuggestion(
+        id: 'salmon',
+        name: 'Salmon Sushi Bar',
+        cuisine: 'Japanese',
+        priceLabel: '\$\$',
+        distanceLabel: '0.2 mi',
+        rating: 4.8,
+        reviewsCount: 128,
+        imageAssetPath: 'assets/images/cafe_tan.png',
+        status: AppointmentPlaceStatus.open,
+        statusLabel: 'Open until 10 PM',
+        socialProofLabel: 'You and 3 others',
+        voteProgress: 0.78,
+        isSelected: false,
+        isTopChoice: true,
+        isHighlighted: false,
+      ),
+      AppointmentPlaceSuggestion(
+        id: 'rustic',
+        name: 'The Rustic Table',
+        cuisine: 'American',
+        priceLabel: '\$\$\$',
+        distanceLabel: '1.4 mi',
+        rating: 4.5,
+        reviewsCount: 84,
+        imageAssetPath: 'assets/images/bean_bloom.png',
+        status: AppointmentPlaceStatus.closingSoon,
+        statusLabel: 'Closes soon (9 PM)',
+        socialProofLabel: 'Mike voted for this',
+        voteProgress: 0.24,
+        isSelected: true,
+        isTopChoice: false,
+        isHighlighted: false,
+      ),
+      AppointmentPlaceSuggestion(
+        id: 'luigi',
+        name: 'Luigi\'s Trattoria',
+        cuisine: 'Italian',
+        priceLabel: '\$\$',
+        distanceLabel: '0.8 mi',
+        rating: 4.9,
+        reviewsCount: 312,
+        imageAssetPath: 'assets/images/korea_food.jpeg',
+        status: AppointmentPlaceStatus.open,
+        statusLabel: 'Open until 11 PM',
+        socialProofLabel: 'Sarah and 1 other',
+        voteProgress: 0.52,
+        isSelected: false,
+        isTopChoice: false,
+        isHighlighted: false,
+      ),
+      AppointmentPlaceSuggestion(
+        id: 'pizza',
+        name: 'Pizza Heaven',
+        cuisine: 'Pizza',
+        priceLabel: '\$',
+        distanceLabel: '3.2 mi',
+        rating: 4.2,
+        reviewsCount: 56,
+        imageAssetPath: 'assets/images/profile.jpg',
+        status: AppointmentPlaceStatus.open,
+        statusLabel: 'Open until 2 AM',
+        socialProofLabel: 'Be the first to vote for this',
+        voteProgress: 0.0,
+        isSelected: false,
+        isTopChoice: false,
+        isHighlighted: false,
+      ),
+    ];

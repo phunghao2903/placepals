@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -19,24 +18,19 @@ abstract class CurrentUserProfileRemoteDataSource {
 
 class CurrentUserProfileRemoteDataSourceImpl
     implements CurrentUserProfileRemoteDataSource {
-  static const String _functionsRegion = 'asia-southeast1';
   static const String _avatarStoragePath = 'profile/avatar.jpg';
   static const String _coverStoragePath = 'profile/cover.jpg';
 
   final FirebaseAuthService _authService;
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
-  final FirebaseFunctions _functions;
 
   CurrentUserProfileRemoteDataSourceImpl(
     this._authService, {
     FirebaseFirestore? firestore,
     FirebaseStorage? storage,
-    FirebaseFunctions? functions,
   }) : _firestore = firestore ?? FirebaseFirestore.instance,
-       _storage = storage ?? FirebaseStorage.instance,
-       _functions =
-           functions ?? FirebaseFunctions.instanceFor(region: _functionsRegion);
+       _storage = storage ?? FirebaseStorage.instance;
 
   @override
   Stream<CurrentUserProfileModel> watchCurrentUserProfile() {
@@ -95,31 +89,71 @@ class CurrentUserProfileRemoteDataSourceImpl
       );
     }
 
-    final payload = <String, dynamic>{
-      'displayName': input.displayName,
-      'username': input.username,
-      'bio': input.bio,
-      'phoneNumber': input.phoneNumber,
-    };
+    final userRef = _usersCollection.doc(authUser.uid);
+    final usernamesRef = _firestore.collection('usernames').doc(input.username);
 
-    if (input.clearAvatar) {
-      payload['clearAvatar'] = true;
-    } else if (uploadedAvatarUrl != null) {
-      payload['avatarUrl'] = uploadedAvatarUrl;
-    }
+    await _firestore.runTransaction((transaction) async {
+      final userSnapshot = await transaction.get(userRef);
+      final currentData = userSnapshot.data();
+      final existingUsername = _normalizeUsername(
+        currentData?['usernameLowercase'] ?? currentData?['username'],
+      );
+      final usernameSnapshot = await transaction.get(usernamesRef);
+      final usernameOwner = _asTrimmedString(usernameSnapshot.data()?['uid']);
 
-    if (input.clearCover) {
-      payload['clearCover'] = true;
-    } else if (uploadedCoverUrl != null) {
-      payload['coverUrl'] = uploadedCoverUrl;
-    }
+      if (usernameSnapshot.exists &&
+          usernameOwner != null &&
+          usernameOwner != authUser.uid) {
+        throw Exception('Username is already taken.');
+      }
 
-    final callable = _functions.httpsCallable(
-      'upsertCurrentUserProfile',
-      options: HttpsCallableOptions(timeout: const Duration(seconds: 20)),
-    );
+      transaction.set(
+        usernamesRef,
+        <String, dynamic>{
+          'uid': authUser.uid,
+          'username': input.username,
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
 
-    await callable.call(payload);
+      if (existingUsername != null && existingUsername != input.username) {
+        transaction.delete(_firestore.collection('usernames').doc(existingUsername));
+      }
+
+      final payload = <String, dynamic>{
+        'fullName': input.displayName,
+        'username': input.username,
+        'usernameLowercase': input.username,
+        'bio': input.bio.trim().isEmpty ? null : input.bio.trim(),
+        'phoneNumber': input.phoneNumber,
+        'email':
+            (_authService.currentUser?.email ?? authUser.email ?? '')
+                .trim()
+                .toLowerCase(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      if (!userSnapshot.exists) {
+        payload['createdAt'] = FieldValue.serverTimestamp();
+      }
+
+      if (input.clearAvatar) {
+        payload['avatarUrl'] = null;
+      } else if (uploadedAvatarUrl != null) {
+        payload['avatarUrl'] = uploadedAvatarUrl;
+      }
+
+      if (input.clearCover) {
+        payload['coverUrl'] = null;
+      } else if (uploadedCoverUrl != null) {
+        payload['coverUrl'] = uploadedCoverUrl;
+      }
+
+      transaction.set(userRef, payload, SetOptions(merge: true));
+    });
+
+    await authUser.updateDisplayName(input.displayName);
     await _authService.reloadCurrentUser();
   }
 
@@ -160,5 +194,28 @@ class CurrentUserProfileRemoteDataSourceImpl
     }
 
     return currentUser;
+  }
+
+  static String? _asTrimmedString(Object? value) {
+    if (value is! String) {
+      return null;
+    }
+
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+
+  static String? _normalizeUsername(Object? value) {
+    final trimmed = _asTrimmedString(value);
+    if (trimmed == null) {
+      return null;
+    }
+
+    final normalized = trimmed.replaceFirst(RegExp(r'^@+'), '').toLowerCase();
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    return normalized;
   }
 }

@@ -84,6 +84,14 @@ class AppointmentInvitee {
     required this.showRemoveBadge,
   });
 
+  bool get hasAvatar => avatarAssetPath.trim().isNotEmpty;
+
+  bool get usesNetworkAvatar {
+    final normalized = avatarAssetPath.trim().toLowerCase();
+    return normalized.startsWith('http://') ||
+        normalized.startsWith('https://');
+  }
+
   AppointmentInvitee copyWith({
     String? id,
     String? name,

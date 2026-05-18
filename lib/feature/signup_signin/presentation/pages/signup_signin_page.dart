@@ -133,6 +133,8 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
         final isSubmitting =
             isLoading &&
             (state.currentRequest == SignupSigninRequest.signIn ||
+                state.currentRequest == SignupSigninRequest.googleSignIn ||
+                state.currentRequest == SignupSigninRequest.facebookSignIn ||
                 state.currentRequest == SignupSigninRequest.signUp);
 
         return Scaffold(
@@ -388,7 +390,8 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
                                 style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
                                   minimumSize: Size.zero,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: Text(
                                   'Forgot password?',
@@ -495,10 +498,16 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
                             backgroundColor: Colors.white,
                             foregroundColor: const Color(0xFF3F3D56),
                             leading: const _GoogleMark(size: 20),
-                            onTap: () {},
+                            onTap: isLoading
+                                ? null
+                                : () {
+                                    context.read<SignupSigninBloc>().add(
+                                      const SignupSigninGoogleSignInSubmitted(),
+                                    );
+                                  },
                           ),
                           const SizedBox(width: 12),
-                          const SocialAuthButton(
+                          SocialAuthButton(
                             label: 'Facebook',
                             backgroundColor: Color(0xFF3B82F6),
                             foregroundColor: Colors.white,
@@ -508,6 +517,13 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
                               size: 20,
                             ),
                             boxShadow: <BoxShadow>[],
+                            onTap: isLoading
+                                ? null
+                                : () {
+                                    context.read<SignupSigninBloc>().add(
+                                      const SignupSigninFacebookSignInSubmitted(),
+                                    );
+                                  },
                           ),
                         ],
                       ),
@@ -550,7 +566,9 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
     bloc.add(SignupSigninFullNameChanged(_fullNameController.text));
     bloc.add(SignupSigninEmailChanged(_emailController.text));
     bloc.add(SignupSigninPasswordChanged(_passwordController.text));
-    bloc.add(SignupSigninConfirmPasswordChanged(_confirmPasswordController.text));
+    bloc.add(
+      SignupSigninConfirmPasswordChanged(_confirmPasswordController.text),
+    );
   }
 
   void _openForgotPasswordDialog(BuildContext context) {
@@ -582,11 +600,6 @@ class _SignupSigninViewState extends State<_SignupSigninView> {
   }
 }
 
-
-
-
-
-
 class _GoogleMark extends StatelessWidget {
   final double size;
 
@@ -594,10 +607,7 @@ class _GoogleMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _GoogleMarkPainter(),
-    );
+    return CustomPaint(size: Size.square(size), painter: _GoogleMarkPainter());
   }
 }
 
@@ -619,13 +629,7 @@ class _GoogleMarkPainter extends CustomPainter {
         ..strokeWidth = strokeWidth
         ..strokeCap = StrokeCap.round;
 
-      canvas.drawArc(
-        rect,
-        _deg(startDeg),
-        _deg(sweepDeg),
-        false,
-        paint,
-      );
+      canvas.drawArc(rect, _deg(startDeg), _deg(sweepDeg), false, paint);
     }
 
     drawSegment(const Color(0xFFEA4335), -42, 84);
@@ -652,5 +656,3 @@ class _GoogleMarkPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-

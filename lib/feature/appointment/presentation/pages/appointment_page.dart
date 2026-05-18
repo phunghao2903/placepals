@@ -37,13 +37,32 @@ class _AppointmentView extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<AppointmentBloc, AppointmentState>(
           listenWhen: (previous, current) =>
-              previous.infoMessage != current.infoMessage &&
-              current.infoMessage != null &&
-              current.infoMessage!.isNotEmpty,
+              (previous.infoMessage != current.infoMessage &&
+                  current.infoMessage != null &&
+                  current.infoMessage!.isNotEmpty) ||
+              (previous.createdAppointmentId != current.createdAppointmentId &&
+                  current.createdAppointmentId != null),
           listener: (context, state) {
             if (state.infoMessage != null && state.infoMessage!.isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.infoMessage!)),
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.infoMessage!)));
+            }
+
+            if (state.createdAppointmentId != null && state.feed != null) {
+              final feed = state.feed!;
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => AppointmentSuggestPlacePage(
+                    appointmentId: state.createdAppointmentId,
+                    title: feed.planName.trim().isEmpty
+                        ? 'Saturday Dinner'
+                        : feed.planName.trim(),
+                    dateLabel: feed.dateLabel,
+                    timeLabel: feed.timeLabel,
+                    invitees: feed.invitees,
+                  ),
+                ),
               );
             }
           },
@@ -71,7 +90,8 @@ class _AppointmentView extends StatelessWidget {
                 if (feed.invitees.isEmpty) {
                   return const AppointmentEmptyState(
                     title: 'No friends available',
-                    description: 'Add friends first so you can invite them to a new hangout.',
+                    description:
+                        'Add friends first so you can invite them to a new hangout.',
                   );
                 }
 
@@ -99,7 +119,10 @@ class _AppointmentView extends StatelessWidget {
                               },
                             ),
                             const SizedBox(height: 31),
-                            _SectionLabel(label: feed.whenLabel, isPrimary: true),
+                            _SectionLabel(
+                              label: feed.whenLabel,
+                              isPrimary: true,
+                            ),
                             const SizedBox(height: 16),
                             Wrap(
                               spacing: 12,
@@ -203,21 +226,11 @@ class _AppointmentView extends StatelessWidget {
                     ),
                     _BottomActionBar(
                       label: feed.ctaLabel,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => AppointmentSuggestPlacePage(
-                              title: feed.planName.trim().isEmpty
-                                  ? 'Saturday Dinner'
-                                  : feed.planName.trim(),
-                              dateLabel: feed.dateLabel,
-                              timeLabel: feed.timeLabel,
-                              invitees: feed.invitees,
-                            ),
-                          ),
-                        );
-                      },
-                    )
+                      isLoading: state.isSubmitting,
+                      onTap: () => context.read<AppointmentBloc>().add(
+                        const AppointmentSubmitted(),
+                      ),
+                    ),
                   ],
                 );
             }
@@ -251,13 +264,13 @@ class _AppointmentView extends StatelessWidget {
   ) async {
     final result = await Navigator.of(context)
         .push<AppointmentWhenSelectionResult>(
-      MaterialPageRoute<AppointmentWhenSelectionResult>(
-        builder: (_) => AppointmentSelectWhenPage(
-          initialDateLabel: dateLabel,
-          initialTimeLabel: timeLabel,
-        ),
-      ),
-    );
+          MaterialPageRoute<AppointmentWhenSelectionResult>(
+            builder: (_) => AppointmentSelectWhenPage(
+              initialDateLabel: dateLabel,
+              initialTimeLabel: timeLabel,
+            ),
+          ),
+        );
 
     if (result == null || !context.mounted) return;
 
@@ -271,10 +284,7 @@ class _SectionLabel extends StatelessWidget {
   final String label;
   final bool isPrimary;
 
-  const _SectionLabel({
-    required this.label,
-    this.isPrimary = false,
-  });
+  const _SectionLabel({required this.label, this.isPrimary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -295,10 +305,12 @@ class _SectionLabel extends StatelessWidget {
 
 class _BottomActionBar extends StatelessWidget {
   final String label;
+  final bool isLoading;
   final VoidCallback onTap;
 
   const _BottomActionBar({
     required this.label,
+    required this.isLoading,
     required this.onTap,
   });
 
@@ -320,8 +332,8 @@ class _BottomActionBar extends StatelessWidget {
         ),
       ),
       child: AppointmentPrimaryButton(
-        label: label,
-        onTap: onTap,
+        label: isLoading ? 'Saving...' : label,
+        onTap: isLoading ? () {} : onTap,
       ),
     );
   }

@@ -9,6 +9,10 @@ abstract class SignupSigninRemoteDataSource {
     required String password,
   });
 
+  Future<AuthUserModel> loginWithGoogle();
+
+  Future<AuthUserModel> loginWithFacebook();
+
   Future<AuthUserModel> register({
     required String fullName,
     required String email,
@@ -18,8 +22,7 @@ abstract class SignupSigninRemoteDataSource {
   Future<void> forgotPassword({required String email});
 }
 
-class SignupSigninRemoteDataSourceImpl
-    implements SignupSigninRemoteDataSource {
+class SignupSigninRemoteDataSourceImpl implements SignupSigninRemoteDataSource {
   final FirebaseAuthService _authService;
 
   const SignupSigninRemoteDataSourceImpl(this._authService);
@@ -69,6 +72,26 @@ class SignupSigninRemoteDataSourceImpl
   }
 
   @override
+  Future<AuthUserModel> loginWithGoogle() async {
+    try {
+      final credential = await _authService.signInWithGoogle();
+      return _buildSocialAuthUserModel(credential);
+    } on FirebaseAuthException catch (error) {
+      throw Exception(_mapFirebaseAuthException(error));
+    }
+  }
+
+  @override
+  Future<AuthUserModel> loginWithFacebook() async {
+    try {
+      final credential = await _authService.signInWithFacebook();
+      return _buildSocialAuthUserModel(credential);
+    } on FirebaseAuthException catch (error) {
+      throw Exception(_mapFirebaseAuthException(error));
+    }
+  }
+
+  @override
   Future<AuthUserModel> register({
     required String fullName,
     required String email,
@@ -106,6 +129,43 @@ class SignupSigninRemoteDataSourceImpl
     } on FirebaseAuthException catch (error) {
       throw Exception(_mapFirebaseAuthException(error));
     }
+  }
+
+  Future<AuthUserModel> _buildSocialAuthUserModel(
+    UserCredential credential,
+  ) async {
+    final user = credential.user;
+    if (user == null) {
+      throw Exception('Unable to sign in right now.');
+    }
+
+    final normalizedName = (user.displayName ?? '').trim();
+    final fallbackName = normalizedName.isEmpty
+        ? 'PlacePals User'
+        : normalizedName;
+    final normalizedEmail = (user.email ?? '').trim().toLowerCase();
+
+    final profile = await _authService.getUserProfile(user.uid);
+    if (profile == null) {
+      await _authService.saveUserProfile(
+        uid: user.uid,
+        fullName: fallbackName,
+        email: normalizedEmail,
+      );
+    }
+
+    final latestProfile =
+        profile ?? await _authService.getUserProfile(user.uid);
+
+    return AuthUserModel(
+      id: user.uid,
+      fullName:
+          latestProfile?['fullName'] as String? ??
+          user.displayName ??
+          fallbackName,
+      email: user.email ?? normalizedEmail,
+      password: '',
+    );
   }
 
   @override

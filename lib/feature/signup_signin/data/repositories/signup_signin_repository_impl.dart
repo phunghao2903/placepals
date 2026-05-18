@@ -22,6 +22,18 @@ class SignupSigninRepositoryImpl implements SignupSigninRepository {
   }
 
   @override
+  Future<AuthUser> loginWithGoogle() async {
+    final user = await remoteDataSource.loginWithGoogle();
+    return user.toEntity();
+  }
+
+  @override
+  Future<AuthUser> loginWithFacebook() async {
+    final user = await remoteDataSource.loginWithFacebook();
+    return user.toEntity();
+  }
+
+  @override
   Future<AuthUser> register({
     required String fullName,
     required String email,

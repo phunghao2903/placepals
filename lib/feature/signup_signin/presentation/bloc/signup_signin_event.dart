@@ -54,6 +54,14 @@ class SignupSigninSignInSubmitted extends SignupSigninEvent {
   const SignupSigninSignInSubmitted();
 }
 
+class SignupSigninGoogleSignInSubmitted extends SignupSigninEvent {
+  const SignupSigninGoogleSignInSubmitted();
+}
+
+class SignupSigninFacebookSignInSubmitted extends SignupSigninEvent {
+  const SignupSigninFacebookSignInSubmitted();
+}
+
 class SignupSigninSignUpSubmitted extends SignupSigninEvent {
   const SignupSigninSignUpSubmitted();
 }

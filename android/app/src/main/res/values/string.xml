@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">placepals</string>
+    <string name="facebook_app_id">985786464204028</string>
+    <string name="facebook_client_token">b7bbb29c91913b3cac229a990b26fadc</string>
+    <string name="fb_login_protocol_scheme">fb985786464204028</string>
+</resources>
