@@ -59,19 +59,29 @@ class AppointmentChatPage extends StatelessWidget {
                           child: ListView.separated(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: invitees.where((e) => e.isSelected).length + 1,
-                            separatorBuilder: (_, _) => const SizedBox(width: 4),
+                            itemCount:
+                                invitees.where((e) => e.isSelected).length + 1,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(width: 4),
                             itemBuilder: (context, index) {
-                              final selected =
-                                  invitees.where((e) => e.isSelected).toList();
+                              final selected = invitees
+                                  .where((e) => e.isSelected)
+                                  .toList();
                               if (index < selected.length) {
                                 final invitee = selected[index];
                                 return CircleAvatar(
                                   radius: 14,
-                                  backgroundImage: invitee.avatarAssetPath.isNotEmpty
-                                      ? AssetImage(invitee.avatarAssetPath)
+                                  backgroundImage: invitee.hasAvatar
+                                      ? (invitee.usesNetworkAvatar
+                                                ? NetworkImage(
+                                                    invitee.avatarAssetPath,
+                                                  )
+                                                : AssetImage(
+                                                    invitee.avatarAssetPath,
+                                                  ))
+                                            as ImageProvider
                                       : null,
-                                  child: invitee.avatarAssetPath.isEmpty
+                                  child: !invitee.hasAvatar
                                       ? Text(invitee.name.characters.first)
                                       : null,
                                 );
@@ -90,7 +100,10 @@ class AppointmentChatPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.info_outline_rounded, color: Color(0xFFFF6B5A)),
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: Color(0xFFFF6B5A),
+                  ),
                 ],
               ),
             ),
@@ -101,7 +114,10 @@ class AppointmentChatPage extends StatelessWidget {
                 children: <Widget>[
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF1F4F7),
                         borderRadius: BorderRadius.circular(16),
@@ -148,8 +164,10 @@ class AppointmentChatPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Icon(Icons.sentiment_satisfied_alt_outlined,
-                              color: Color(0xFFB8AAA3)),
+                          const Icon(
+                            Icons.sentiment_satisfied_alt_outlined,
+                            color: Color(0xFFB8AAA3),
+                          ),
                         ],
                       ),
                     ),
@@ -178,9 +196,12 @@ class _ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final align = message.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor =
-        message.isMine ? const Color(0xFFFF7D71) : const Color(0xFFF1F4F7);
+    final align = message.isMine
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
+    final bubbleColor = message.isMine
+        ? const Color(0xFFFF7D71)
+        : const Color(0xFFF1F4F7);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 18),
@@ -201,8 +222,9 @@ class _ChatMessageBubble extends StatelessWidget {
             ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment:
-                message.isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: message.isMine
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             children: <Widget>[
               if (!message.isMine) ...<Widget>[
                 CircleAvatar(
@@ -213,7 +235,10 @@ class _ChatMessageBubble extends StatelessWidget {
               ],
               Flexible(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     color: bubbleColor,
                     borderRadius: BorderRadius.circular(24),
@@ -223,7 +248,9 @@ class _ChatMessageBubble extends StatelessWidget {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: message.isMine ? Colors.white : const Color(0xFF2D2D2D),
+                      color: message.isMine
+                          ? Colors.white
+                          : const Color(0xFF2D2D2D),
                     ),
                   ),
                 ),

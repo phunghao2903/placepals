@@ -6,10 +6,7 @@ import '../../domain/entities/appointment_feed.dart';
 class AppointmentInviteButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  const AppointmentInviteButton({
-    super.key,
-    required this.onTap,
-  });
+  const AppointmentInviteButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +72,7 @@ class AppointmentInviteeAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = invitee.isSelected;
-    final hasAvatar = invitee.avatarAssetPath.isNotEmpty;
+    final hasAvatar = invitee.hasAvatar;
 
     return Padding(
       padding: const EdgeInsets.only(right: 16),
@@ -96,15 +93,18 @@ class AppointmentInviteeAvatar extends StatelessWidget {
                       Container(
                         width: 72,
                         height: 72,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
+                        decoration: const BoxDecoration(shape: BoxShape.circle),
                         clipBehavior: Clip.antiAlias,
                         child: hasAvatar
-                            ? Image.asset(
-                                invitee.avatarAssetPath,
-                                fit: BoxFit.cover,
-                              )
+                            ? (invitee.usesNetworkAvatar
+                                  ? Image.network(
+                                      invitee.avatarAssetPath,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      invitee.avatarAssetPath,
+                                      fit: BoxFit.cover,
+                                    ))
                             : Container(
                                 color: invitee.id == 'alex_lee'
                                     ? const Color(0xFFE0ECFF)

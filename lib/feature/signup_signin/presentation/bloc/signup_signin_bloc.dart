@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/firebase/welcome_push_coordinator.dart';
 import '../../../../core/utils/validators.dart';
 import '../../domain/usecases/forgot_password_usecase.dart';
+import '../../domain/usecases/facebook_sign_in_usecase.dart';
+import '../../domain/usecases/google_sign_in_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 
@@ -13,12 +15,16 @@ part 'signup_signin_state.dart';
 
 class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
   final LoginUseCase loginUseCase;
+  final GoogleSignInUseCase googleSignInUseCase;
+  final FacebookSignInUseCase facebookSignInUseCase;
   final RegisterUseCase registerUseCase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final WelcomePushCoordinator welcomePushCoordinator;
 
   SignupSigninBloc({
     required this.loginUseCase,
+    required this.googleSignInUseCase,
+    required this.facebookSignInUseCase,
     required this.registerUseCase,
     required this.forgotPasswordUseCase,
     required this.welcomePushCoordinator,
@@ -34,6 +40,8 @@ class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
       _onConfirmPasswordVisibilityToggled,
     );
     on<SignupSigninSignInSubmitted>(_onSignInSubmitted);
+    on<SignupSigninGoogleSignInSubmitted>(_onGoogleSignInSubmitted);
+    on<SignupSigninFacebookSignInSubmitted>(_onFacebookSignInSubmitted);
     on<SignupSigninSignUpSubmitted>(_onSignUpSubmitted);
     on<SignupSigninForgotPasswordSubmitted>(_onForgotPasswordSubmitted);
     on<SignupSigninActionCleared>(_onActionCleared);
@@ -185,6 +193,78 @@ class SignupSigninBloc extends Bloc<SignupSigninEvent, SignupSigninState> {
         state.copyWith(
           status: SignupSigninStatus.failure,
           currentRequest: SignupSigninRequest.signIn,
+          errorMessage: error.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onGoogleSignInSubmitted(
+    SignupSigninGoogleSignInSubmitted event,
+    Emitter<SignupSigninState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: SignupSigninStatus.loading,
+        currentRequest: SignupSigninRequest.googleSignIn,
+        completedAction: SignupSigninAction.none,
+        errorMessage: null,
+      ),
+    );
+
+    try {
+      await googleSignInUseCase();
+      unawaited(welcomePushCoordinator.triggerAfterLogin());
+      emit(
+        state.copyWith(
+          status: SignupSigninStatus.success,
+          currentRequest: SignupSigninRequest.googleSignIn,
+          completedAction: SignupSigninAction.signedIn,
+          errorMessage: null,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          status: SignupSigninStatus.failure,
+          currentRequest: SignupSigninRequest.googleSignIn,
+          completedAction: SignupSigninAction.none,
+          errorMessage: error.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onFacebookSignInSubmitted(
+    SignupSigninFacebookSignInSubmitted event,
+    Emitter<SignupSigninState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: SignupSigninStatus.loading,
+        currentRequest: SignupSigninRequest.facebookSignIn,
+        completedAction: SignupSigninAction.none,
+        errorMessage: null,
+      ),
+    );
+
+    try {
+      await facebookSignInUseCase();
+      unawaited(welcomePushCoordinator.triggerAfterLogin());
+      emit(
+        state.copyWith(
+          status: SignupSigninStatus.success,
+          currentRequest: SignupSigninRequest.facebookSignIn,
+          completedAction: SignupSigninAction.signedIn,
+          errorMessage: null,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          status: SignupSigninStatus.failure,
+          currentRequest: SignupSigninRequest.facebookSignIn,
+          completedAction: SignupSigninAction.none,
           errorMessage: error.toString().replaceFirst('Exception: ', ''),
         ),
       );

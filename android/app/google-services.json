@@ -1,26 +1,51 @@
 {
   "project_info": {
-    "project_number": "286137181612",
-    "project_id": "placepals-a5221",
-    "storage_bucket": "placepals-a5221.firebasestorage.app"
+    "project_number": "330723890500",
+    "project_id": "placepals24",
+    "storage_bucket": "placepals24.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:286137181612:android:9debeb501bd8beb71cc609",
+        "mobilesdk_app_id": "1:330723890500:android:405cca72a4cce21bcef311",
         "android_client_info": {
           "package_name": "app.phunghao.placepals"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "330723890500-nqsniaqbkh5hv0hqd303i0bd0vj56qbp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.phunghao.placepals",
+            "certificate_hash": "7d589d04f190364c4a8f43ffa2d04977202249b0"
+          }
+        },
+        {
+          "client_id": "330723890500-borld7anjh63tgmbk822ksbsd4b5m0nj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAVnlnt2-Y8oIcTiSQzNgSfG1eZPmo-DeE"
+          "current_key": "AIzaSyCKBNQqPb6daSgdUOZxmdIqczZ6PpXLpMU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330723890500-borld7anjh63tgmbk822ksbsd4b5m0nj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "330723890500-6ou87fcnd7el4be054pdkk9riu6gqp80.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.placepals"
+              }
+            }
+          ]
         }
       }
     }

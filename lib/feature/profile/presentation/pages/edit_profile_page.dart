@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -548,22 +547,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (mounted) {
         Navigator.of(context).pop(true);
       }
-    } on FirebaseFunctionsException catch (error) {
-      if (error.code == 'already-exists') {
-        setState(() {
-          _usernameError = error.message ?? 'This username is already taken.';
-        });
-      } else {
-        setState(() {
-          _generalError =
-              error.message ?? 'Unable to save your profile right now.';
-        });
-      }
     } catch (error) {
+      final message = error is Exception
+          ? error.toString().replaceFirst('Exception: ', '')
+          : 'Unable to save your profile right now.';
       setState(() {
-        _generalError = error is Exception
-            ? error.toString().replaceFirst('Exception: ', '')
-            : 'Unable to save your profile right now.';
+        if (message == 'Username is already taken.') {
+          _usernameError = message;
+        } else {
+          _generalError = message;
+        }
       });
     } finally {
       if (mounted) {

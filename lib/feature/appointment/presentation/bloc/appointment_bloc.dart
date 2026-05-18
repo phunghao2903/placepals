@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/appointment_create_input.dart';
 import '../../domain/entities/appointment_feed.dart';
+import '../../domain/usecases/create_appointment_usecase.dart';
 import '../../domain/usecases/get_appointment_feed_usecase.dart';
 
 part 'appointment_event.dart';
@@ -8,9 +10,11 @@ part 'appointment_state.dart';
 
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   final GetAppointmentFeedUseCase getAppointmentFeedUseCase;
+  final CreateAppointmentUseCase createAppointmentUseCase;
 
   AppointmentBloc({
     required this.getAppointmentFeedUseCase,
+    required this.createAppointmentUseCase,
   }) : super(const AppointmentState()) {
     on<AppointmentStarted>(_onStarted);
     on<AppointmentPlanNameChanged>(_onPlanNameChanged);
@@ -20,6 +24,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     on<AppointmentInviteTapped>(_onInviteTapped);
     on<AppointmentInviteesUpdated>(_onInviteesUpdated);
     on<AppointmentInviteeToggled>(_onInviteeToggled);
+    on<AppointmentSubmitted>(_onSubmitted);
   }
 
   Future<void> _onStarted(
@@ -35,6 +40,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
           status: AppointmentStatus.success,
           feed: feed,
           errorMessage: null,
+          createdAppointmentId: null,
         ),
       );
     } catch (_) {
@@ -59,6 +65,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(planName: event.value),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -75,6 +82,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(description: event.value),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -91,6 +99,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(dateLabel: event.label),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -107,6 +116,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(timeLabel: event.label),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -145,10 +155,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     final updatedInvitees = currentFeed.invitees
         .map(
           (invitee) => invitee.id == nextInvitee.id
-              ? invitee.copyWith(
-                  isSelected: true,
-                  isMuted: false,
-                )
+              ? invitee.copyWith(isSelected: true, isMuted: false)
               : invitee,
         )
         .toList(growable: false);
@@ -158,6 +165,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(invitees: updatedInvitees),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -174,6 +182,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(invitees: event.invitees),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
   }
@@ -205,6 +214,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
           status: AppointmentStatus.success,
           feed: currentFeed.copyWith(invitees: updatedInvitees),
           infoMessage: 'Select at least one friend for the hangout.',
+          createdAppointmentId: null,
         ),
       );
       return;
@@ -215,7 +225,66 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         status: AppointmentStatus.success,
         feed: currentFeed.copyWith(invitees: updatedInvitees),
         infoMessage: null,
+        createdAppointmentId: null,
       ),
     );
+  }
+
+  Future<void> _onSubmitted(
+    AppointmentSubmitted event,
+    Emitter<AppointmentState> emit,
+  ) async {
+    final currentFeed = state.feed;
+    if (currentFeed == null || state.isSubmitting) return;
+
+    final selectedInvitees = currentFeed.invitees
+        .where((invitee) => invitee.isSelected)
+        .toList();
+    if (selectedInvitees.isEmpty) {
+      emit(
+        state.copyWith(
+          infoMessage: 'Select at least one registered user before continuing.',
+          createdAppointmentId: null,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        infoMessage: null,
+        createdAppointmentId: null,
+      ),
+    );
+
+    try {
+      final appointmentId = await createAppointmentUseCase(
+        AppointmentCreateInput(
+          planName: currentFeed.planName,
+          dateLabel: currentFeed.dateLabel,
+          timeLabel: currentFeed.timeLabel,
+          description: currentFeed.description,
+          invitees: currentFeed.invitees,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          status: AppointmentStatus.success,
+          isSubmitting: false,
+          createdAppointmentId: appointmentId,
+          infoMessage: null,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          createdAppointmentId: null,
+          infoMessage: error.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
   }
 }

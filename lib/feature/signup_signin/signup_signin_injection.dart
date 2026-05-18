@@ -9,7 +9,9 @@ import 'data/repositories/signup_signin_repository_impl.dart';
 import 'domain/repositories/notifications_repository.dart';
 import 'domain/repositories/signup_signin_repository.dart';
 import 'domain/usecases/forgot_password_usecase.dart';
+import 'domain/usecases/facebook_sign_in_usecase.dart';
 import 'domain/usecases/get_notifications_feed_usecase.dart';
+import 'domain/usecases/google_sign_in_usecase.dart';
 import 'domain/usecases/login_usecase.dart';
 import 'domain/usecases/register_usecase.dart';
 import 'presentation/bloc/notifications_bloc.dart';
@@ -32,6 +34,12 @@ void registerSignupSigninDependencies(GetIt getIt) {
     ..registerLazySingleton<LoginUseCase>(
       () => LoginUseCase(getIt<SignupSigninRepository>()),
     )
+    ..registerLazySingleton<GoogleSignInUseCase>(
+      () => GoogleSignInUseCase(getIt<SignupSigninRepository>()),
+    )
+    ..registerLazySingleton<FacebookSignInUseCase>(
+      () => FacebookSignInUseCase(getIt<SignupSigninRepository>()),
+    )
     ..registerLazySingleton<RegisterUseCase>(
       () => RegisterUseCase(getIt<SignupSigninRepository>()),
     )
@@ -44,6 +52,8 @@ void registerSignupSigninDependencies(GetIt getIt) {
     ..registerFactory<SignupSigninBloc>(
       () => SignupSigninBloc(
         loginUseCase: getIt<LoginUseCase>(),
+        googleSignInUseCase: getIt<GoogleSignInUseCase>(),
+        facebookSignInUseCase: getIt<FacebookSignInUseCase>(),
         registerUseCase: getIt<RegisterUseCase>(),
         forgotPasswordUseCase: getIt<ForgotPasswordUseCase>(),
         welcomePushCoordinator: getIt<WelcomePushCoordinator>(),

@@ -6,10 +6,7 @@ import '../../domain/entities/appointment_feed.dart';
 class AppointmentAddFriendsPage extends StatefulWidget {
   final List<AppointmentInvitee> initialInvitees;
 
-  const AppointmentAddFriendsPage({
-    super.key,
-    required this.initialInvitees,
-  });
+  const AppointmentAddFriendsPage({super.key, required this.initialInvitees});
 
   @override
   State<AppointmentAddFriendsPage> createState() =>
@@ -17,11 +14,14 @@ class AppointmentAddFriendsPage extends StatefulWidget {
 }
 
 class _AppointmentAddFriendsPageState extends State<AppointmentAddFriendsPage> {
+  late final TextEditingController _searchController;
   late List<AppointmentInvitee> _invitees;
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     _invitees = widget.initialInvitees
         .map(
           (invitee) => invitee.copyWith(
@@ -33,10 +33,21 @@ class _AppointmentAddFriendsPageState extends State<AppointmentAddFriendsPage> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final suggested = _invitees.take(2).toList(growable: false);
-    final allFriends = _invitees.skip(2).toList(growable: false);
-    final selectedCount = _invitees.where((invitee) => invitee.isSelected).length;
+    final visibleInvitees = _invitees
+        .where(_matchesSearch)
+        .toList(growable: false);
+    final suggested = visibleInvitees.take(2).toList(growable: false);
+    final allFriends = visibleInvitees.skip(2).toList(growable: false);
+    final selectedCount = _invitees
+        .where((invitee) => invitee.isSelected)
+        .length;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6F5),
@@ -91,25 +102,52 @@ class _AppointmentAddFriendsPageState extends State<AppointmentAddFriendsPage> {
                           color: Color(0xFF94A3B8),
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          'Search friends...',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF94A3B8),
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (value) {
+                              setState(() {
+                                _searchQuery = value.trim().toLowerCase();
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Search registered users...',
+                              border: InputBorder.none,
+                            ),
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF2D2D2D),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 28),
-                  _SectionTitle(title: 'Suggested'),
-                  const SizedBox(height: 12),
-                  ...suggested.map(_buildFriendCard),
-                  const SizedBox(height: 20),
-                  _SectionTitle(title: 'All Friends'),
-                  const SizedBox(height: 12),
-                  ...allFriends.map(_buildFriendCard),
+                  if (visibleInvitees.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: Text(
+                        'No registered users match your search.',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF9E8F8A),
+                        ),
+                      ),
+                    )
+                  else ...<Widget>[
+                    _SectionTitle(title: 'Suggested'),
+                    const SizedBox(height: 12),
+                    ...suggested.map(_buildFriendCard),
+                    if (allFriends.isNotEmpty) ...<Widget>[
+                      const SizedBox(height: 20),
+                      _SectionTitle(title: 'All Registered Users'),
+                      const SizedBox(height: 12),
+                      ...allFriends.map(_buildFriendCard),
+                    ],
+                  ],
                 ],
               ),
             ),
@@ -121,9 +159,8 @@ class _AppointmentAddFriendsPageState extends State<AppointmentAddFriendsPage> {
                   Navigator.of(context).pop(
                     _invitees
                         .map(
-                          (invitee) => invitee.copyWith(
-                            isMuted: !invitee.isSelected,
-                          ),
+                          (invitee) =>
+                              invitee.copyWith(isMuted: !invitee.isSelected),
                         )
                         .toList(growable: false),
                   );
@@ -210,14 +247,21 @@ class _AppointmentAddFriendsPageState extends State<AppointmentAddFriendsPage> {
           .toList(growable: false);
     });
   }
+
+  bool _matchesSearch(AppointmentInvitee invitee) {
+    if (_searchQuery.isEmpty) {
+      return true;
+    }
+
+    final haystack = '${invitee.name} ${invitee.subtitle}'.toLowerCase();
+    return haystack.contains(_searchQuery);
+  }
 }
 
 class _SectionTitle extends StatelessWidget {
   final String title;
 
-  const _SectionTitle({
-    required this.title,
-  });
+  const _SectionTitle({required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -235,13 +279,11 @@ class _SectionTitle extends StatelessWidget {
 class _FriendAvatar extends StatelessWidget {
   final AppointmentInvitee invitee;
 
-  const _FriendAvatar({
-    required this.invitee,
-  });
+  const _FriendAvatar({required this.invitee});
 
   @override
   Widget build(BuildContext context) {
-    if (invitee.avatarAssetPath.isEmpty) {
+    if (!invitee.hasAvatar) {
       final initials = invitee.name
           .split(' ')
           .where((part) => part.isNotEmpty)
@@ -276,12 +318,19 @@ class _FriendAvatar extends StatelessWidget {
     }
 
     return ClipOval(
-      child: Image.asset(
-        invitee.avatarAssetPath,
-        width: 56,
-        height: 56,
-        fit: BoxFit.cover,
-      ),
+      child: invitee.usesNetworkAvatar
+          ? Image.network(
+              invitee.avatarAssetPath,
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+            )
+          : Image.asset(
+              invitee.avatarAssetPath,
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+            ),
     );
   }
 }
@@ -289,9 +338,7 @@ class _FriendAvatar extends StatelessWidget {
 class _FriendSelectionIndicator extends StatelessWidget {
   final bool isSelected;
 
-  const _FriendSelectionIndicator({
-    required this.isSelected,
-  });
+  const _FriendSelectionIndicator({required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -317,10 +364,7 @@ class _CircleIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _CircleIconButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _CircleIconButton({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -343,10 +387,7 @@ class _PrimaryFooterButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _PrimaryFooterButton({
-    required this.label,
-    required this.onTap,
-  });
+  const _PrimaryFooterButton({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

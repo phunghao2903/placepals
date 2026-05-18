@@ -4,7 +4,14 @@ enum SignupSigninMode { signIn, signUp }
 
 enum SignupSigninStatus { initial, loading, success, failure }
 
-enum SignupSigninRequest { none, signIn, signUp, forgotPassword }
+enum SignupSigninRequest {
+  none,
+  signIn,
+  googleSignIn,
+  facebookSignIn,
+  signUp,
+  forgotPassword,
+}
 
 enum SignupSigninAction { none, signedIn, registered, resetLinkSent }
 

@@ -34,7 +34,8 @@ class AppointmentEditHangoutPage extends StatefulWidget {
       _AppointmentEditHangoutPageState();
 }
 
-class _AppointmentEditHangoutPageState extends State<AppointmentEditHangoutPage> {
+class _AppointmentEditHangoutPageState
+    extends State<AppointmentEditHangoutPage> {
   late String _dateLabel;
   late String _timeLabel;
   late List<AppointmentInvitee> _invitees;
@@ -49,8 +50,9 @@ class _AppointmentEditHangoutPageState extends State<AppointmentEditHangoutPage>
 
   @override
   Widget build(BuildContext context) {
-    final visibleInvitees =
-        _invitees.where((invitee) => invitee.isSelected).toList(growable: false);
+    final visibleInvitees = _invitees
+        .where((invitee) => invitee.isSelected)
+        .toList(growable: false);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6F5),
@@ -155,7 +157,10 @@ class _AppointmentEditHangoutPageState extends State<AppointmentEditHangoutPage>
                           _invitees = _invitees
                               .map(
                                 (item) => item.id == invitee.id
-                                    ? item.copyWith(isSelected: false, isMuted: true)
+                                    ? item.copyWith(
+                                        isSelected: false,
+                                        isMuted: true,
+                                      )
                                     : item,
                               )
                               .toList(growable: false);
@@ -179,7 +184,10 @@ class _AppointmentEditHangoutPageState extends State<AppointmentEditHangoutPage>
                   style: BorderStyle.solid,
                 ),
               ),
-              icon: const Icon(Icons.person_add_alt_1_rounded, color: Color(0xFFFF6B5A)),
+              icon: const Icon(
+                Icons.person_add_alt_1_rounded,
+                color: Color(0xFFFF6B5A),
+              ),
               label: Text(
                 'Add Friends',
                 style: GoogleFonts.plusJakartaSans(
@@ -196,14 +204,15 @@ class _AppointmentEditHangoutPageState extends State<AppointmentEditHangoutPage>
   }
 
   Future<void> _openWhenPicker() async {
-    final result = await Navigator.of(context).push<AppointmentWhenSelectionResult>(
-      MaterialPageRoute<AppointmentWhenSelectionResult>(
-        builder: (_) => AppointmentSelectWhenPage(
-          initialDateLabel: _dateLabel,
-          initialTimeLabel: _timeLabel,
-        ),
-      ),
-    );
+    final result = await Navigator.of(context)
+        .push<AppointmentWhenSelectionResult>(
+          MaterialPageRoute<AppointmentWhenSelectionResult>(
+            builder: (_) => AppointmentSelectWhenPage(
+              initialDateLabel: _dateLabel,
+              initialTimeLabel: _timeLabel,
+            ),
+          ),
+        );
 
     if (result == null || !mounted) return;
 
@@ -315,18 +324,19 @@ class _AttendeeTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFF1E7E2)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFF1E7E2))),
       ),
       child: Row(
         children: <Widget>[
           CircleAvatar(
             radius: 20,
-            backgroundImage: invitee.avatarAssetPath.isNotEmpty
-                ? AssetImage(invitee.avatarAssetPath)
+            backgroundImage: invitee.hasAvatar
+                ? (invitee.usesNetworkAvatar
+                          ? NetworkImage(invitee.avatarAssetPath)
+                          : AssetImage(invitee.avatarAssetPath))
+                      as ImageProvider
                 : null,
-            child: invitee.avatarAssetPath.isEmpty
+            child: !invitee.hasAvatar
                 ? Text(invitee.name.characters.first)
                 : null,
           ),
@@ -372,10 +382,7 @@ class _HeaderButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _HeaderButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _HeaderButton({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

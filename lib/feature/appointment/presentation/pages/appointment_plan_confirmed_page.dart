@@ -154,7 +154,9 @@ class AppointmentPlanConfirmedPage extends StatelessWidget {
                                       style: OutlinedButton.styleFrom(
                                         minimumSize: const Size.fromHeight(46),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(24),
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
                                         ),
                                         side: const BorderSide(
                                           color: Color(0x55FF6B5A),
@@ -193,10 +195,7 @@ class AppointmentPlanConfirmedPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _InfoSummaryCard(
-                    dateLabel: dateLabel,
-                    timeLabel: timeLabel,
-                  ),
+                  _InfoSummaryCard(dateLabel: dateLabel, timeLabel: timeLabel),
                   const SizedBox(height: 20),
                   Row(
                     children: <Widget>[
@@ -234,20 +233,29 @@ class AppointmentPlanConfirmedPage extends StatelessWidget {
                     height: 48,
                     child: Row(
                       children: <Widget>[
-                        ...attending.take(4).map(
-                          (invitee) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: CircleAvatar(
-                              radius: 22,
-                              backgroundImage: invitee.avatarAssetPath.isNotEmpty
-                                  ? AssetImage(invitee.avatarAssetPath)
-                                  : null,
-                              child: invitee.avatarAssetPath.isEmpty
-                                  ? Text(invitee.name.characters.first)
-                                  : null,
+                        ...attending
+                            .take(4)
+                            .map(
+                              (invitee) => Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: CircleAvatar(
+                                  radius: 22,
+                                  backgroundImage: invitee.hasAvatar
+                                      ? (invitee.usesNetworkAvatar
+                                                ? NetworkImage(
+                                                    invitee.avatarAssetPath,
+                                                  )
+                                                : AssetImage(
+                                                    invitee.avatarAssetPath,
+                                                  ))
+                                            as ImageProvider
+                                      : null,
+                                  child: !invitee.hasAvatar
+                                      ? Text(invitee.name.characters.first)
+                                      : null,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                         Container(
                           width: 44,
                           height: 44,
@@ -255,7 +263,10 @@ class AppointmentPlanConfirmedPage extends StatelessWidget {
                             color: Color(0xFFF7F3F1),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.add_rounded, color: Color(0xFFB1A49D)),
+                          child: const Icon(
+                            Icons.add_rounded,
+                            color: Color(0xFFB1A49D),
+                          ),
                         ),
                       ],
                     ),
@@ -315,7 +326,10 @@ class AppointmentPlanConfirmedPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(27),
                         ),
                       ),
-                      icon: const Icon(Icons.directions_outlined, color: Colors.white),
+                      icon: const Icon(
+                        Icons.directions_outlined,
+                        color: Colors.white,
+                      ),
                       label: Text(
                         'Get Directions',
                         style: GoogleFonts.plusJakartaSans(
@@ -340,10 +354,7 @@ class _InfoSummaryCard extends StatelessWidget {
   final String dateLabel;
   final String timeLabel;
 
-  const _InfoSummaryCard({
-    required this.dateLabel,
-    required this.timeLabel,
-  });
+  const _InfoSummaryCard({required this.dateLabel, required this.timeLabel});
 
   @override
   Widget build(BuildContext context) {
